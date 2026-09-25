@@ -1,0 +1,1267 @@
+{
+ "Communications - Telecom Carriers & Spectrum": {
+  "fvz": "Telecom Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Communications - Cable, Fiber & Business Connectivity": {
+  "fvz": "Telecom Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Communications - Internet, Social & Audience Platforms": {
+  "fvz": "Internet Content & Information",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Communications - Advertising Agencies, Lead Generation & Print": {
+  "fvz": "Advertising Agencies",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Communications - Advertising Technology": {
+  "fvz": "Advertising Agencies",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Communications - Film, Television & Streaming Video": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Communications - Video Games & Development Platforms": {
+  "fvz": "Electronic Gaming & Multimedia",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Communications - Music & Audio Platforms": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Communications - Publishing, Digital Media & Broadcasting": {
+  "fvz": "Broadcasting",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Communications - Live Sports, Events & Ticketing": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Technology - Cloud & Enterprise Infrastructure": {
+  "fvz": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - AI Cloud & GPU Services": {
+  "fvz": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Data-Center Development & HPC Hosting": {
+  "fvz": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Enterprise AI Applications": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Cybersecurity": {
+  "fvz": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Identity & Fraud Prevention": {
+  "fvz": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - DevOps, IT Management & Observability": {
+  "fvz": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Data Platforms & Analytics": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Backup, Content & Information Management": {
+  "fvz": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Workflow & Work Management": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Voice, Video & Contact Centers": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Customer Engagement & Marketing Software": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Payroll & Human Capital Software": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Accounting, Tax & Reporting": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Commerce & Hospitality Software": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Construction & Property Software": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Industrial Data, Navigation & Supply-Chain Software": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Legal, Public-Sector & Professional Software": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Creative, Web & Media Tools": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - IT Consulting & Managed Services": {
+  "fvz": "Information Technology Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - IT Distribution & Solutions": {
+  "fvz": "Electronics & Computer Distribution",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Network Infrastructure & Application Delivery": {
+  "fvz": "Communication Equipment",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Servers & Enterprise Computing": {
+  "fvz": "Computer Hardware",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Memory & Data Storage": {
+  "fvz": "Computer Hardware",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Personal Computing & Consumer Electronics": {
+  "fvz": "Consumer Electronics",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Transaction, Identification & Display Hardware": {
+  "fvz": "Computer Hardware",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Connected Home & Personal Safety": {
+  "fvz": "Consumer Electronics",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Electronics Manufacturing Services": {
+  "fvz": "Electronic Components",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Connectors, PCBs & Passive Components": {
+  "fvz": "Electronic Components",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Sensors & Electronic Components": {
+  "fvz": "Electronic Components",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Power Delivery & Data-Center Cooling": {
+  "fvz": "Electrical Equipment & Parts",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Analog, Mixed-Signal & Embedded Chips": {
+  "fvz": "Semiconductors",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Power Semiconductors": {
+  "fvz": "Semiconductors",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - AI Networking & Interconnect Chips": {
+  "fvz": "Semiconductors",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Compute, Programmable Logic & Foundries": {
+  "fvz": "Semiconductors",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - RF, Connectivity & Edge Chips": {
+  "fvz": "Semiconductors",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Semiconductor Design Software & IP": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Wafer Equipment & Process Control": {
+  "fvz": "Semiconductor Equipment & Materials",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Assembly, Packaging & Test": {
+  "fvz": "Semiconductor Equipment & Materials",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Semiconductor & Electronic Materials": {
+  "fvz": "Semiconductor Equipment & Materials",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Optical Communications & Photonic Interconnects": {
+  "fvz": "Communication Equipment",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Lasers, Infrared & Display Optics": {
+  "fvz": "Scientific & Technical Instruments",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Technology - Quantum Computing": {
+  "fvz": "Semiconductors",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Aerospace Platforms, Engines & Avionics": {
+  "fvz": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Aerospace Components & Aftermarket": {
+  "fvz": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Defense Platforms, Electronics & Weapons": {
+  "fvz": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Drones & Autonomous Defense": {
+  "fvz": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Advanced Air Mobility": {
+  "fvz": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Defense IT, Intelligence & Government Services": {
+  "fvz": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Space & Satellites": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Industrials - Public Safety & Security Technology": {
+  "fvz": "Security & Protection Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Security, Corrections & Protection Services": {
+  "fvz": "Security & Protection Services",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Industrials - Diversified Industrial Technology": {
+  "fvz": "Specialty Industrial Machinery",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Factory & Process Automation": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Industrials - Measurement, Testing & Instrumentation": {
+  "fvz": "Scientific & Technical Instruments",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Electrical Grid & Power Equipment": {
+  "fvz": "Electrical Equipment & Parts",
+  "score": 0.67,
+  "how": "keyword"
+ },
+ "Industrials - HVAC, Building Controls & Climate": {
+  "fvz": "Building Products & Equipment",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Building Fixtures & Components": {
+  "fvz": "Building Products & Equipment",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Construction Materials Distribution": {
+  "fvz": "Building Materials",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Industrial Distribution": {
+  "fvz": "Industrial Distribution",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Industrials - Infrastructure & Utility Construction": {
+  "fvz": "Engineering & Construction",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Industrials - Building Installation & Specialty Contracting": {
+  "fvz": "Engineering & Construction",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Engineering & Environmental Consulting": {
+  "fvz": "Consulting Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Heavy Equipment & Specialty Vehicles": {
+  "fvz": "Farm & Heavy Construction Machinery",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Commercial Vehicles & Powertrains": {
+  "fvz": "Farm & Heavy Construction Machinery",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Agricultural & Grounds Equipment": {
+  "fvz": "Farm & Heavy Construction Machinery",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Flow, Motion & Process Equipment": {
+  "fvz": "Specialty Industrial Machinery",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Water Infrastructure & Treatment Equipment": {
+  "fvz": "Pollution & Treatment Controls",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Metalworking, Bearings & Industrial Tools": {
+  "fvz": "Metal Fabrication",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Food & Specialty Process Machinery": {
+  "fvz": "Specialty Industrial Machinery",
+  "score": 0.67,
+  "how": "keyword"
+ },
+ "Industrials - Digital Manufacturing & 3D Printing": {
+  "fvz": "Specialty Industrial Machinery",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Equipment & Vehicle Rental": {
+  "fvz": "Rental & Leasing Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Waste Collection & Environmental Services": {
+  "fvz": "Waste Management",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Industrials - Filtration, Pollution Control & Engineered Products": {
+  "fvz": "Pollution & Treatment Controls",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Facility, Uniform & Food Services": {
+  "fvz": "Specialty Business Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Professional Consulting, Research & Testing": {
+  "fvz": "Consulting Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Staffing, Recruitment & PEO Services": {
+  "fvz": "Staffing & Employment Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Freight Rail & Rolling Stock": {
+  "fvz": "Railroads",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Parcel, Freight Forwarding & Contract Logistics": {
+  "fvz": "Integrated Freight & Logistics",
+  "score": 0.67,
+  "how": "keyword"
+ },
+ "Industrials - Trucking & Ground Freight": {
+  "fvz": "Trucking",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Tankers & Petroleum Shipping": {
+  "fvz": "Marine Shipping",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Dry Bulk, Containers & Diversified Shipping": {
+  "fvz": "Marine Shipping",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Gas Shipping & Floating LNG": {
+  "fvz": "Marine Shipping",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Industrials - Airlines, Airports & Transport Infrastructure": {
+  "fvz": "Airlines",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Diversified US Banks": {
+  "fvz": "Banks - Diversified",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Canadian & International Banks": {
+  "fvz": "Banks - Diversified",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Financials - Digital Banks & Consumer-Lending Platforms": {
+  "fvz": "Banks - Diversified",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Financials - Consumer Credit, Specialty Lending & Recovery": {
+  "fvz": "Credit Services",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Custody & Asset Servicing": {
+  "fvz": "Asset Management",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Financials - Traditional Asset Managers": {
+  "fvz": "Asset Management",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Financials - Alternative Asset Managers": {
+  "fvz": "Asset Management",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Financials - BDCs & Direct Lending": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Financials - Holding Companies & Principal Investments": {
+  "fvz": "Financial Conglomerates",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Investment Banks & Institutional Brokers": {
+  "fvz": "Capital Markets",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Retail Brokers & Wealth Platforms": {
+  "fvz": "Capital Markets",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Exchanges & Trading Infrastructure": {
+  "fvz": "Financial Data & Stock Exchanges",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Financial Data, Ratings & Decision Analytics": {
+  "fvz": "Financial Data & Stock Exchanges",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Banking, Insurance & Investment Software": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Payments & Merchant Infrastructure": {
+  "fvz": "Credit Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Crypto Exchanges, Custody & Tokenization": {
+  "fvz": "Financial Data & Stock Exchanges",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Crypto Treasury & Investment Exposure": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Financials - Bitcoin Mining": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Financials - Life Insurance & Retirement": {
+  "fvz": "Insurance - Life",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Reinsurance & Insurance Capital": {
+  "fvz": "Insurance - Reinsurance",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Property & Casualty Insurance - Diversified": {
+  "fvz": "Insurance - Diversified",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Property & Casualty Insurance - Specialty": {
+  "fvz": "Insurance - Property & Casualty",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Digital Insurance & Distribution": {
+  "fvz": "Insurance - Diversified",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Insurance Brokers & Claims Services": {
+  "fvz": "Insurance Brokers",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Mortgage & Title Insurance": {
+  "fvz": "Mortgage Finance",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Mortgage Origination & Real-Estate Finance": {
+  "fvz": "Mortgage Finance",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Mortgage REITs & Property Credit": {
+  "fvz": "REIT - Mortgage",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Financials - Regional & Community Banks: Size Tier 1": {
+  "fvz": "Banks - Regional",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Regional & Community Banks: Size Tier 2": {
+  "fvz": "Banks - Regional",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Regional & Community Banks: Size Tier 3": {
+  "fvz": "Banks - Regional",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Regional & Community Banks: Size Tier 4": {
+  "fvz": "Banks - Regional",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Regional & Community Banks: Size Tier 5": {
+  "fvz": "Banks - Regional",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Financials - Asset & Infrastructure Finance": {
+  "fvz": "Asset Management",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Passenger Vehicles & EV Manufacturers": {
+  "fvz": "Auto Manufacturers",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Auto Components & Drivetrain": {
+  "fvz": "Auto Parts",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Autonomy & LiDAR": {
+  "fvz": "Auto Parts",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Auto Dealers & Vehicle Marketplaces": {
+  "fvz": "Auto & Truck Dealerships",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Auto Aftermarket & Services": {
+  "fvz": "Auto Parts",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Mobility, Delivery & Local Commerce": {
+  "fvz": "Internet Content & Information",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - E-Commerce Marketplaces": {
+  "fvz": "Internet Retail",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Apparel Brands & Accessories": {
+  "fvz": "Apparel Manufacturing",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Footwear Brands": {
+  "fvz": "Footwear & Accessories",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Apparel & Off-Price Retail": {
+  "fvz": "Apparel Retail",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - General Merchandise & Department Stores": {
+  "fvz": "Department Stores",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Specialty Retail & Consumer Categories": {
+  "fvz": "Specialty Retail",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Home Improvement & Furnishings Retail": {
+  "fvz": "Home Improvement Retail",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Home, Office & Household Durables": {
+  "fvz": "Furnishings, Fixtures & Appliances",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Homebuilders & Manufactured Housing": {
+  "fvz": "Residential Construction",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Home & Personal Services": {
+  "fvz": "Personal Services",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Education & Workforce Training": {
+  "fvz": "Education & Training Services",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Restaurants - Quick Service & Coffee": {
+  "fvz": "Restaurants",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Restaurants - Casual & Fast Casual": {
+  "fvz": "Restaurants",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Hotels, Resorts & Vacation Ownership": {
+  "fvz": "Lodging",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Travel Booking & Corporate Travel": {
+  "fvz": "Travel Services",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Cruise Lines": {
+  "fvz": "Leisure",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Casinos & Gaming Operators": {
+  "fvz": "Resorts & Casinos",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Online Betting & Gaming Technology": {
+  "fvz": "Gambling",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Cinemas, Parks & Attractions": {
+  "fvz": "Entertainment",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Discretionary - Sporting Goods, Toys & Leisure Products": {
+  "fvz": "Leisure",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Discretionary - Boats, RVs & Powersports": {
+  "fvz": "Recreational Vehicles",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Staples - Grocery, Warehouse & Convenience Retail": {
+  "fvz": "Grocery Stores",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Staples - Food Distribution & Agricultural Merchandising": {
+  "fvz": "Food Distribution",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Staples - Agricultural Merchandising & Renewable Feedstocks": {
+  "fvz": "Agricultural Inputs",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Consumer Staples - Protein, Produce & Farm Products": {
+  "fvz": "Farm Products",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Staples - Packaged Foods, Snacks & Pet Food": {
+  "fvz": "Packaged Foods",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Staples - Nutrition, Ingredients & Supplements": {
+  "fvz": "Packaged Foods",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Staples - Nonalcoholic Beverages": {
+  "fvz": "Beverages - Non-Alcoholic",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Consumer Staples - Alcohol, Tobacco & Cannabis": {
+  "fvz": "Tobacco",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Staples - Beauty, Personal & Consumer Health": {
+  "fvz": "Personal Services",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Consumer Staples - Home Care, Garden & Household Consumables": {
+  "fvz": "Household & Personal Products",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Clinical, Practice & Life-Science Software": {
+  "fvz": "Software - Application",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Digital Care & Prescription Access": {
+  "fvz": "Health Information Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Benefits & Value-Based Care": {
+  "fvz": "Healthcare Plans",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Managed Care & Health Plans": {
+  "fvz": "Healthcare Plans",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Hospitals & Surgical Facilities": {
+  "fvz": "Medical Care Facilities",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Post-Acute, Senior & Home Care": {
+  "fvz": "Medical Care Facilities",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Outpatient, Specialty & Emergency Care": {
+  "fvz": "Medical Care Facilities",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Pharmacy, Infusion & Medical Distribution": {
+  "fvz": "Medical Distribution",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Healthcare - Diagnostic Labs & Imaging": {
+  "fvz": "Diagnostics & Research",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Precision Diagnostics & Genomic Testing": {
+  "fvz": "Diagnostics & Research",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Healthcare - Life-Science Tools & Bioprocessing": {
+  "fvz": "Diagnostics & Research",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Clinical Research & Development Services": {
+  "fvz": "Diagnostics & Research",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Healthcare - Computational & Antibody Discovery Platforms": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Animal Health": {
+  "fvz": "Drug Manufacturers - General",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Diversified Biopharma": {
+  "fvz": "Drug Manufacturers - General",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Specialty Pharma, Generics & Gastrointestinal": {
+  "fvz": "Drug Manufacturers - Specialty & Generic",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Drug Royalties & Licensing": {
+  "fvz": "Drug Manufacturers - General",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Healthcare - Diabetes, Sleep & Patient Monitoring": {
+  "fvz": "Medical Devices",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Cardiovascular & Critical-Care Devices": {
+  "fvz": "Medical Devices",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Healthcare - Orthopedics, Spine & Regenerative Devices": {
+  "fvz": "Medical Devices",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Healthcare - Eye Care & Dental Devices": {
+  "fvz": "Medical Devices",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Healthcare - Surgery, Robotics & Treatment Systems": {
+  "fvz": "Medical Devices",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Medical Supplies, Components & Sterilization": {
+  "fvz": "Medical Instruments & Supplies",
+  "score": 0.67,
+  "how": "keyword"
+ },
+ "Healthcare - Diagnostic, Imaging & Cancer Devices": {
+  "fvz": "Medical Devices",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Healthcare - RNA, Gene Editing & Genetic Medicines": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Metabolic, Obesity & Endocrine Medicines": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Cardiorenal & Pulmonary Medicines": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Rare Disease & Hematology Medicines": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Neuroscience: Neurology & Epilepsy": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Neuroscience: Psychiatry, Pain & Addiction": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Dermatology, Eye & Allergy Medicines": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Immunology & Inflammatory Medicines": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Immune Cell Therapies": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Vaccines & Anti-Infective Medicines": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Oncology: Targeted Medicines": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Healthcare - Oncology: Immunotherapy, Biologics & Platforms": {
+  "fvz": "Biotechnology",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Utilities - Regulated Electric & Multi-Utilities: Larger": {
+  "fvz": "Utilities - Regulated Electric",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Utilities - Regulated Electric & Multi-Utilities: Mid & Smaller": {
+  "fvz": "Utilities - Regulated Electric",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Utilities - Gas Utilities": {
+  "fvz": "Utilities - Regulated Gas",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Utilities - Water Utilities": {
+  "fvz": "Utilities - Regulated Water",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Utilities - Merchant Power & Generation": {
+  "fvz": "Utilities - Independent Power Producers",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Utilities - Renewable Power & Infrastructure": {
+  "fvz": "Utilities - Renewable",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Energy - Integrated Oil & Canadian Producers": {
+  "fvz": "Oil & Gas Integrated",
+  "score": 0.67,
+  "how": "keyword"
+ },
+ "Energy - Oil-Weighted Exploration & Production": {
+  "fvz": "Oil & Gas E&P",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Energy - Gas-Weighted Exploration & Production": {
+  "fvz": "Oil & Gas E&P",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Energy - Smaller Oil & Diversified Producers": {
+  "fvz": "Oil & Gas E&P",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Energy - Energy Royalties & Land": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Pipelines & Midstream": {
+  "fvz": "Oil & Gas Midstream",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Energy - LNG Export & Infrastructure": {
+  "fvz": "Oil & Gas Midstream",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Energy - Refining, Fuel Distribution & Retail": {
+  "fvz": "Oil & Gas Refining & Marketing",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Energy - Oilfield Services & Equipment": {
+  "fvz": "Oil & Gas Equipment & Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Energy - Offshore Services & Marine Support": {
+  "fvz": "Marine Shipping",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Energy - Contract Drilling": {
+  "fvz": "Oil & Gas Drilling",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Energy - Coal & Metallurgical Carbon": {
+  "fvz": "Coking Coal",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Energy - Solar Equipment & Distributed Energy": {
+  "fvz": "Solar",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Energy - Batteries & Energy Storage": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Hydrogen & Fuel Cells": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Distributed Power & Engines": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Nuclear Reactors & Services": {
+  "fvz": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Uranium, Enrichment & Isotopes": {
+  "fvz": "Uranium",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Fertilizers, Crop Inputs & Seeds": {
+  "fvz": "Agricultural Inputs",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Materials - Lithium & Battery Materials": {
+  "fvz": "Other Industrial Metals & Mining",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Materials - Rare Earths & Strategic Minerals": {
+  "fvz": "Other Industrial Metals & Mining",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Materials - Copper & Base Metals": {
+  "fvz": "Copper",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Aluminum & Rolled Products": {
+  "fvz": "Aluminum",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Steel & Metal Service Centers": {
+  "fvz": "Steel",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Gold Producers & Developers": {
+  "fvz": "Gold",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Silver & Precious-Metal Miners": {
+  "fvz": "Silver",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Precious-Metal Royalties & Trading": {
+  "fvz": "Other Precious Metals & Mining",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Materials - Cement, Aggregates & Building Materials": {
+  "fvz": "Building Materials",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Wood, Pulp & Paper Products": {
+  "fvz": "Paper & Paper Products",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Packaging & Containers": {
+  "fvz": "Packaging & Containers",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Coatings, Adhesives & Sealants": {
+  "fvz": "Specialty Chemicals",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Materials - Commodity Chemicals & Industrial Gases": {
+  "fvz": "Chemicals",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Specialty Chemicals & Engineered Materials": {
+  "fvz": "Chemicals",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Materials - Engineered Metal Building Products": {
+  "fvz": "Building Products & Equipment",
+  "score": 0.67,
+  "how": "keyword"
+ },
+ "Real Estate - Data Centers & Information Storage": {
+  "fvz": "REIT - Specialty",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Real Estate - Towers & Telecom Sites": {
+  "fvz": "Telecom Services",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Real Estate - Industrial & Logistics Property": {
+  "fvz": "REIT - Industrial",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Real Estate - Healthcare & Senior-Housing Property": {
+  "fvz": "REIT - Healthcare Facilities",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Real Estate - Apartments & Residential Communities": {
+  "fvz": "REIT - Residential",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Real Estate - Single-Family & Manufactured Communities": {
+  "fvz": "REIT - Residential",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Real Estate - Retail Centers & Malls": {
+  "fvz": "REIT - Retail",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Real Estate - Net-Lease & Diversified Property": {
+  "fvz": "REIT - Diversified",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Real Estate - Office & Government Property": {
+  "fvz": "REIT - Office",
+  "score": 0.5,
+  "how": "keyword"
+ },
+ "Real Estate - Hotel, Gaming & Leisure Property": {
+  "fvz": "Leisure",
+  "score": 1.0,
+  "how": "keyword"
+ },
+ "Real Estate - Self-Storage": {
+  "fvz": "REIT - Specialty",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Real Estate - Property Services, Brokerage & Platforms": {
+  "fvz": "Real Estate Services",
+  "score": 1.0,
+  "how": "override"
+ },
+ "Real Estate - Land, Timber & Real-Estate Development": {
+  "fvz": "Real Estate - Development",
+  "score": 1.0,
+  "how": "keyword"
+ }
+}

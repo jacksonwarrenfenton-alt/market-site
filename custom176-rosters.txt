@@ -1,0 +1,253 @@
+Communications - Telecom Carriers & Spectrum|VZ,TMUS,T,ECHO,BCE,RCI,TIGO,TU,VEON,TDS,AD,ATEX
+Communications - Cable, Fiber & Business Connectivity|CMCSA,CHTR,LUMN,LBTYA,UNIT,IDT,OOMA
+Communications - Internet, Social & Audience Platforms|GOOG,META,RDDT,PINS,MTCH,SNAP,JOYY,GRND,DJT,OPRA,WB,YELP
+Communications - Advertising Agencies, Lead Generation & Print|OMC,LAMR,OUT,PTRN,CMPR,STGW,CCO,QNST,DLX,EVER,MAX
+Communications - Advertising Technology|APP,TTD,MGNI,LFTO,DV,APPS,TBLA,MNTN,IBTA,CRTO,PUBM,NEXN
+Communications - Film, Television & Streaming Video|NFLX,DIS,WBD,FOX,ROKU,PSKY,VSNT,LION,FUBO,IQ,ANGX,AMCX
+Communications - Video Games & Development Platforms|NTES,TTWO,RBLX,U
+Communications - Music & Audio Platforms|SPOT,WMG,TME,SIRI
+Communications - Publishing, Digital Media & Broadcasting|NWS,NYT,NXST,RUM,PPLI,WLY,ZD,WBTN,NMAX,TDAY,DJCO,EVC,SCHL
+Communications - Live Sports, Events & Ticketing|LYV,TKO,FWONA,LLYVA,MSGS,SPHR,MANU,MSGE,STUB
+Technology - Cloud & Enterprise Infrastructure|MSFT,ORCL,IBM,NTNX,DOCN,KC,RXT
+Technology - AI Cloud & GPU Services|NBIS,CRWV,IREN,SHAZ,BRUN,WYFI
+Technology - Data-Center Development & HPC Hosting|HUT,WULF,APLD,GDS,CIFR,CORZ,CSQR,FRMI
+Technology - Enterprise AI Applications|PLTR,SOUN,INOD,AI,BBAI,RZLV
+Technology - Cybersecurity|PANW,CRWD,FTNT,NET,ZS,RBRK,GEN,CHKP,S,QLYS,NTSK,VRNS,TENB,RPD
+Technology - Identity & Fraud Prevention|OKTA,SAIL,YOU,RDVT,MITK,RSKD,OSPN
+Technology - DevOps, IT Management & Observability|DDOG,DT,FROG,ESTC,GTLB,NTCT,PRGS,PD,NABL
+Technology - Data Platforms & Analytics|SNOW,MDB,TDC,AMPL
+Technology - Backup, Content & Information Management|DBX,OTEX,CVLT,BOX,AVPT,BLZE
+Technology - Workflow & Work Management|NOW,TEAM,DOCU,PATH,PEGA,MNDY,APPN,ASAN
+Technology - Voice, Video & Contact Centers|TWLO,ZM,RNG,FIVN,BAND
+Technology - Customer Engagement & Marketing Software|CRM,HUBS,ZETA,KVYO,BRZE,FRSH,RAMP,CXM,GTM,SMWB,SPT
+Technology - Payroll & Human Capital Software|ADP,WDAY,PAYX,PAYC,PCTY
+Technology - Accounting, Tax & Reporting|INTU,WK,BILL,VERX,BL,DFIN
+Technology - Commerce & Hospitality Software|SHOP,TOST,GLBE,AGYS,LSPD,VYX,PAR
+Technology - Construction & Property Software|ADSK,BSY,PCOR,TTAN,APPF
+Technology - Industrial Data, Navigation & Supply-Chain Software|ROP,IOT,PTC,TRMB,MANH,DSGX,MBGL,OCTV,BB,SPSC,NN,ITRN
+Technology - Legal, Public-Sector & Professional Software|TRI,TYL,INTA,BLKB,CLVT,LZ
+Technology - Creative, Web & Media Tools|ADBE,BSP,VRSN,FIG,GDDY,DLB,WIX,ADEA
+Technology - IT Consulting & Managed Services|ACN,CTSH,GIB,DOX,G,EPAM,EXLS,KD,CNXC,DXC,GLOB,EFOR,GDYN
+Technology - IT Distribution & Solutions|SNX,CDW,ARW,AVT,INGM,NSIT,PLUS,CNXN,SCSC
+Technology - Network Infrastructure & Application Delivery|CSCO,ANET,UI,FFIV,AKAM,FSLY,EXTR,DGII,CALX,ATEN,VISN,HLIT,RDWR,ADTN,NTGR
+Technology - Servers & Enterprise Computing|DELL,HPE,SMCI,PENG
+Technology - Memory & Data Storage|MU,SNDK,STX,WDC,NTAP,P,SIMO,QMCO
+Technology - Personal Computing & Consumer Electronics|AAPL,GRMN,HPQ,LOGI,SONO,CRSR
+Technology - Transaction, Identification & Display Hardware|ZBRA,VNT,CXT,PBI,DBD,DAKT
+Technology - Connected Home & Personal Safety|LIF,REZI,ALRM,ARLO
+Technology - Electronics Manufacturing Services|FLEX,CLS,JBL,SANM,PLXS,BHE,KE
+Technology - Connectors, PCBs & Passive Components|APH,TEL,TTMI,LFUS,VSH,BDC,BELFA
+Technology - Sensors & Electronic Components|ST,KN,CTS,VPG,MEI
+Technology - Power Delivery & Data-Center Cooling|VRT,NVT,MAIR,AEIS,MOD,VICR
+Technology - Analog, Mixed-Signal & Embedded Chips|TXN,ADI,NXPI,MCHP,SITM,ALGM,HIMX,AMBQ,INDI
+Technology - Power Semiconductors|MPWR,ON,DIOD,NVTS,POWI,WOLF,AOSL
+Technology - AI Networking & Interconnect Chips|AVGO,MRVL,ALAB,CRDO
+Technology - Compute, Programmable Logic & Foundries|NVDA,AMD,INTC,CBRS,GFS,TSEM,LSCC
+Technology - RF, Connectivity & Edge Chips|QCOM,MTSI,SMTC,SWKS,QRVO,SLAB,MXL,CRUS,PI,SYNA,AMBA,LAES
+Technology - Semiconductor Design Software & IP|ARM,CDNS,SNPS,RMBS,IDCC,PDFS,AIP,CEVA
+Technology - Wafer Equipment & Process Control|LRCX,AMAT,KLAC,MKSI,ONTO,NVMI,CAMT,ACMR,ACLS,UCTT,VECO,ICHR
+Technology - Assembly, Packaging & Test|TER,AMKR,FORM,KLIC,AEHR,COHU
+Technology - Semiconductor & Electronic Materials|Q,ENTG,MTRN,AXTI,ROG,PLAB
+Technology - Optical Communications & Photonic Interconnects|GLW,LITE,COHR,CIEN,FN,AAOI,VIAV,POET,LWLG
+Technology - Lasers, Infrared & Display Optics|NOVT,OLED,IPGP,LASR,KOPN,LPTH
+Technology - Quantum Computing|IONQ,QNT,QBTS,RGTI,XNDU,INFQ,QUBT,HQ,PSQL
+Industrials - Aerospace Platforms, Engines & Avionics|GE,BA,HONA,TDY,ARXS,MOG.A,CAE
+Industrials - Aerospace Components & Aftermarket|HWM,TDG,HEI,ATI,CW,WWD,FTAI,CR,SARO,ESE,HXL,LOAR,DPC,VSEC,KRMN,AIR,DCO,AADX,PKE
+Industrials - Defense Platforms, Electronics & Weapons|RTX,LMT,GD,NOC,LHX,ESLT,TXT,HII,DRS,MRCY,NPK
+Industrials - Drones & Autonomous Defense|KTOS,AVAV,ONDS,AVEX,RCAT,UMAC,SWMR
+Industrials - Advanced Air Mobility|JOBY,BETA,ACHR,ATRO,AMPX
+Industrials - Defense IT, Intelligence & Government Services|LDOS,CACI,BAH,SAIC,PSN,AMTM,KBR,VVX
+Industrials - Space & Satellites|SPCX,RKLB,ASTS,GSAT,VSAT,PL,IRDM,MDA,FLY,LUNR,RDW,VOYG,HAWK,YSS,BKSY,GILT,SATL,FEIM,TSAT,SPIR
+Industrials - Public Safety & Security Technology|MSI,AXON,OSIS,CLBT,NSSC,EVLV,CGNT
+Industrials - Security, Corrections & Protection Services|MSA,ADT,BCO,BRC,GEO,CXW,CDRE
+Industrials - Diversified Industrial Technology|PH,MMM,ITW,HON,AME,DOV,ITT,FTV
+Industrials - Factory & Process Automation|EMR,ROK,SYM,CGNX,ALNT
+Industrials - Measurement, Testing & Instrumentation|KEYS,RAL,ITRI,MIR,TRNS
+Industrials - Electrical Grid & Power Equipment|GEV,ETN,HUBB,RRX,FPS,ENS,POWL,ATKR,PLPC,AMSC
+Industrials - HVAC, Building Controls & Climate|TT,JCI,CARR,LII,WSO,SPXC,AOS,AAON,CSW
+Industrials - Building Fixtures & Components|OTIS,MAS,ALLE,AYI,MHK,SSD,AWI,FBIN,TREX,GFF,HAYW,TILE,TGLS,MBC,APOG,LYTS,JBI
+Industrials - Construction Materials Distribution|FERG,QXO,CNM,BLDR,POOL,SITE,BXC
+Industrials - Industrial Distribution|GWW,FAST,WCC,AIT,MSM,DXPE,ADIG,DSGR,HLMN
+Industrials - Infrastructure & Utility Construction|PWR,MTZ,STRL,DY,FLR,ROAD,ECG,AGX,GVA,MWH,TPC,MYRG,PRIM,CTRI,CDNL
+Industrials - Building Installation & Specialty Contracting|FIX,EME,APG,IESC,IBP,LGN
+Industrials - Engineering & Environmental Consulting|J,TTEK,ACM,STN,WLDN,BWMN,ONT
+Industrials - Heavy Equipment & Specialty Vehicles|CAT,OSK,TEX,FSS,EQPT,ASTE,PLOW,AEBI,MTW,MLR,WNC,CMCO
+Industrials - Commercial Vehicles & Powertrains|CMI,PCAR,ALSN,BLBD,CYD
+Industrials - Agricultural & Grounds Equipment|DE,CNH,TTC,AGCO,ALG,LNN
+Industrials - Flow, Motion & Process Equipment|IR,NDSN,IEX,GGG,FLS,GTES,FELE,KAI,HLIO,GRC,EPAC,GHM
+Industrials - Water Infrastructure & Treatment Equipment|XYL,VLTO,WTS,WMS,PNR,ZWS,BMI,MWA,NWPX
+Industrials - Metalworking, Bearings & Industrial Tools|SNA,RBC,LECO,SWK,TKR,ESAB,SXI,WOR,KMT,ELMT
+Industrials - Food & Specialty Process Machinery|JBTM,MIDD,ALH,MFP,TNC,KODK
+Industrials - Digital Manufacturing & 3D Printing|XMTR,PRLB,SSYS,DDD
+Industrials - Equipment & Vehicle Rental|URI,SUNB,UHAL,R,HRI,CAR,WSC,MGRC,CTOS,HTZ
+Industrials - Waste Collection & Environmental Services|WM,RSG,WCN,CLH,GFL,CWST,NVRI
+Industrials - Filtration, Pollution Control & Engineered Products|DCI,NPO,CECO,AIN,MYE,MATV
+Industrials - Facility, Uniform & Food Services|CTAS,ROL,ARMK,UNF,ABM,VSTS,HCSG,BV
+Industrials - Professional Consulting, Research & Testing|ULS,IT,ANDG,NIQ,FCN,FA,EXPO,MMS,CBZ,HURN,TIC,ICFI,CRAI
+Industrials - Staffing, Recruitment & PEO Services|BZ,RHI,KFY,TNET,MAN,NSP,AMN,UPWK,KFRC,BBSI,KELYA
+Industrials - Freight Rail & Rolling Stock|UNP,CSX,CP,NSC,CNI,WAB,TRN,GBX
+Industrials - Parcel, Freight Forwarding & Contract Logistics|UPS,FDX,EXPD,CHRW,ZTO,YMM,GXO,RXO,HUBG,FWRD
+Industrials - Trucking & Ground Freight|ODFL,JBHT,XPO,FDXF,TFII,KNX,SAIA,LSTR,SNDR,ARCB,WERN,MRTN,HTLD,CVLG
+Industrials - Tankers & Petroleum Shipping|FRO,INSW,HAFN,STNG,TRMD,DHT,TNK,ECO,NAT,TEN,TK,ASC
+Industrials - Dry Bulk, Containers & Diversified Shipping|KEX,MATX,CMBT,SBLK,ZIM,DAC,NMM,CMRE,SFL,GSL,GNK,SB,HSHP
+Industrials - Gas Shipping & Floating LNG|GLNG,BWLP,LPG,FLNG,NVGS
+Industrials - Airlines, Airports & Transport Infrastructure|DAL,FER,UAL,LUV,AAL,CPA,ALK,CAAP,SKYW,ALGT,JBLU,ULCC,VRRM
+Financials - Diversified US Banks|JPM,BAC,WFC,C,USB,PNC,TFC
+Financials - Canadian & International Banks|RY,TD,UBS,BMO,BNS,CM,DB,BAP,IFS,NTB,BLX
+Financials - Digital Banks & Consumer-Lending Platforms|NU,AFRM,SOFI,CHYM,KLAR,DAVE,SEZL,UPST,INTR,HAPN,PGY,WLTH
+Financials - Consumer Credit, Specialty Lending & Recovery|AXP,COF,SYF,ALLY,FCFS,OMF,CACC,ENVA,SLM,NNI,BFH,ECPG,EZPW,PRG,ATLC,JCAP,UPBD,NAVI,WRLD,PRAA
+Financials - Custody & Asset Servicing|BNY,STT,NTRS,SEIC
+Financials - Traditional Asset Managers|BLK,TROW,BEN,IVZ,AMG,VCTR,FHI,CNS,WT,APAM,AB,SII,AAMI,VRTS,RHLD
+Financials - Alternative Asset Managers|BX,KKR,BN,BAM,APO,ARES,TPG,OWL,CG,PS,STEP,HLNE,DBRG,GCMG,PAX
+Financials - BDCs & Direct Lending|ARCC,BXSL,OBDC,MAIN,OTF,FSK,GBDC,HTGC,TSLX,TRIN,CSWC,MSDL,PSEC,OCSL,GSBD,BBDC,KBDC,CGBD,MFIC,BCSF,FDUS,PFLT
+Financials - Holding Companies & Principal Investments|BRK.A,IEP,GPGI,BH,CODI,CNNE
+Financials - Investment Banks & Institutional Brokers|MS,GS,JEF,EVR,VIRT,HLI,SNEX,BGC,MC,PIPR,MRX,PJT,LAZ,LCLN,PWP,OPY
+Financials - Retail Brokers & Wealth Platforms|SCHW,IBKR,HOOD,AMP,RJF,LPLA,FUTU,SF,FRHC,XP,BULL,ETOR,TIGR
+Financials - Exchanges & Trading Infrastructure|CME,ICE,NDAQ,TW,MKTX,MIAX
+Financials - Financial Data, Ratings & Decision Analytics|SPGI,MCO,MSCI,VRSK,FICO,EFX,TRU,FDS,MORN,NRDS
+Financials - Banking, Insurance & Investment Software|FIS,BR,SSNC,GWRE,JKHY,ACIW,CCC,QTWO,NCNO,ALKT
+Financials - Payments & Merchant Infrastructure|V,MA,XYZ,PYPL,FISV,CPAY,GPN,WSE,PAYP,WEX,RELY,PAY,DLO,FOUR,NATL,EEFT,PAGS,PAYO,STNE,FLYW,WU,EVTC,MQ,PICS,PAYS,CASS
+Financials - Crypto Exchanges, Custody & Tokenization|COIN,CRCL,GLXY,BLSH,SECZ,BTGO,GEMI
+Financials - Crypto Treasury & Investment Exposure|MSTR,BMNR,XXI,PURR,ASST,SBET,BTBT
+Financials - Bitcoin Mining|RIOT,MARA,IOND,CLSK,BTDR,KEEL,ABTC
+Financials - Life Insurance & Retirement|MFC,MET,AFL,SLF,PRU,PFG,UNM,CRBG,EQH,GL,VOYA,JXN,PRI,LNC,CNO,GNW,FG,BHF
+Financials - Reinsurance & Insurance Capital|RGA,EG,RNR,SPNT,PLGO
+Financials - Property & Casualty Insurance - Diversified|CB,PGR,TRV,ALL,AIG,HIG,ACGL,CINF,WRB,MKL,L,AIZ,CNA,ERIE,AFG,ORI,THG,AXS,RLI,SIGI,WTM,AGO
+Financials - Property & Casualty Insurance - Specialty|KNSL,MCY,ARX,HG,PLMR,SLDE,SKWD,HCI,HMN,KMPR,SAFT,UFCS,TRUP,UVE,BOW,HRTG,EIG,AII
+Financials - Digital Insurance & Distribution|LMND,LIFE,PRCH,HIPO,ROOT
+Financials - Insurance Brokers & Claims Services|MRSH,AON,AJG,WTW,BRO,RYAN,NP,BWIN,CRVL,GSHD,TWFG
+Financials - Mortgage & Title Insurance|FNF,FAF,ACT,MTG,ESNT,RDN,NMIH,STC,ITIC
+Financials - Mortgage Origination & Real-Estate Finance|RKT,FIGR,PFSI,UWMC,AGM,WD
+Financials - Mortgage REITs & Property Credit|NLY,AGNC,STWD,RITM,DX,BXMT,ARR,EFC,ORC,LADR,CIM,ABR,MFA,ADAM,ARI,PMT,IVR,FBRT,TRTX,RWT
+Financials - Regional & Community Banks: Size Tier 1|FITB,MTB,HBAN,CFG,RF,FCNCA,KEY,EWBC,PNFP,FHN,UMBF,BPOP,WTFC,SSB,CFR,ONB,PB,WAL,COLB,BOKF,CBSH,CBC,VLY,FNB,UBSI,GBCI,HWC,HOMB,ASB,AUB
+Financials - Regional & Community Banks: Size Tier 2|ABCB,OZK,FLG,AX,EBC,TFSL,FFIN,SFBS,FULT,IBOC,TCBI,FBP,UCB,CATY,WSFS,CVBF,INDB,WSBC,RNST,BANF,MCHB,NIC,PRK,FIBK,TOWN,FFBC,SBCF,CBU,BKU,SFNC
+Financials - Regional & Community Banks: Size Tier 3|FHB,CLBK,PFS,BOH,BANC,FBK,TRMK,TBBK,NBTB,WAFD,CUBI,FBNC,FRME,BBT,BUSE,SYBT,MBIN,BANR,EFSC,NWBI,OFG,HTH,FCF,SRCE,CHCO,GABC,OCFC,LOB,NBHC,DCOM
+Financials - Regional & Community Banks: Size Tier 4|HOPE,FSUN,STBA,BY,TCBK,TFIN,BFC,CASH,RBCAA,QCRH,OBK,CNOB,LKFN,AMAL,BHRB,PEBO,TMP,CTBI,PFBC,ESQ,WABC,FMBH,OSBC,HFWA,UVSP,MCB,AMTB,FSBC,NBN,CFFN
+Financials - Regional & Community Banks: Size Tier 5|BFST,HBNC,CPF,TRST,CAC,THFF,FMNB,HAFC,NBBK,GSBC,EGBN,IBCP,SMBC,FISI,PGC,HTB,WASH,CCB,CWBC,CARE,MSBI,ACNB,HIFS,KRNY,SFST,HBCP
+Financials - Asset & Infrastructure Finance|AER,GATX,HASI,WLFC
+Consumer Discretionary - Passenger Vehicles & EV Manufacturers|TSLA,RACE,GM,F,RIVN,STLA,LI,XPEV,NIO,LCID
+Consumer Discretionary - Auto Components & Drivetrain|MGA,BWA,APTV,ALV,LEA,GTX,GNTX,ATMU,VGNT,DAN,VC,PHIN,GT,DCH,ADNT,THRM
+Consumer Discretionary - Autonomy & LiDAR|AUR,MBLY,PONY,HSAI,OUST,WRD,AEVA
+Consumer Discretionary - Auto Dealers & Vehicle Marketplaces|CVNA,CPRT,PAG,KMX,LAD,AN,RUSHA,OPLN,ABG,CARG,GPI,ATHM,SAH,ACVA,CARS
+Consumer Discretionary - Auto Aftermarket & Services|ORLY,AZO,GPC,LKQ,VVV,DORM,AAP,DRVN,XPEL
+Consumer Discretionary - Mobility, Delivery & Local Commerce|UBER,DASH,GRAB,CART,LYFT,LIME,VIA
+Consumer Discretionary - E-Commerce Marketplaces|AMZN,BABA,PDD,MELI,SE,EBAY,JD,CPNG,ETSY,GCT,REAL,LQDT,GRPN
+Consumer Discretionary - Apparel Brands & Accessories|TPR,RL,AS,LULU,GIL,LEVI,ZGN,VFC,KTB,PVH,COLM,FIGS,UA,WWW,CPRI,GIII,GOOS,OXM,MOV
+Consumer Discretionary - Footwear Brands|NKE,DECK,ONON,BIRK,CROX,SHOO
+Consumer Discretionary - Apparel & Off-Price Retail|TJX,ROST,BURL,GAP,VSXY,URBN,ANF,VIPS,BOOT,AEO,BKE,RVLV,CRI,WINA,REF,CTRN
+Consumer Discretionary - General Merchandise & Department Stores|TGT,DG,DLTR,FIVE,DDS,GME,M,OLLI,MNSO,KSS,SVV
+Consumer Discretionary - Specialty Retail & Consumer Categories|ULTA,TSCO,BBY,DKS,CHWY,SIG,WRBY,ASO,SBH,EYE
+Consumer Discretionary - Home Improvement & Furnishings Retail|HD,LOW,WSM,W,FND,RH,BOBS,LZB,ARHS,ETD
+Consumer Discretionary - Home, Office & Household Durables|SN,SGI,HNI,WHR,NWL,SPB,MLKN,HELE
+Consumer Discretionary - Homebuilders & Manufactured Housing|DHI,PHM,LEN,NVR,TOL,SKY,MTH,CVCO,MHO,KBH,GRBK,CCS,LGIH,DFH,BZH,HOV
+Consumer Discretionary - Home & Personal Services|SCI,LTH,HRB,FTDR,GHC,PLNT,OSW,MATW
+Consumer Discretionary - Education & Workforce Training|EDU,DUOL,TAL,LAUR,CVSA,LOPE,BFAM,LRN,MH,PRDO,STRA,COUR,UTI,APEI,LINC
+Consumer Discretionary - Restaurants - Quick Service & Coffee|MCD,SBUX,YUM,QSR,YUMC,DPZ,BROS,JMKE,CHA,ARCO,WEN,PZZA,DNUT
+Consumer Discretionary - Restaurants - Casual & Fast Casual|CMG,DRI,TXRH,EAT,CAVA,CAKE,WING,SHAK,BJRI,CBRL,BLMN,SG,FWRG,KRUS
+Consumer Discretionary - Hotels, Resorts & Vacation Ownership|MAR,HLT,H,HTHT,WH,CHH,ATAT,TNL,VAC,HGV,TH
+Consumer Discretionary - Travel Booking & Corporate Travel|BKNG,ABNB,EXPE,TCOM,NAVN,MMYT,GBTG,TRIP,SABR
+Consumer Discretionary - Cruise Lines|RCL,VIK,CCL,NCLH,LIND
+Consumer Discretionary - Casinos & Gaming Operators|LVS,MGM,WYNN,CZR,RRR,BYD,PENN,MCRI,MLCO
+Consumer Discretionary - Online Betting & Gaming Technology|FLUT,DKNG,SGHC,CHDN,RSI,SRAD,GENI,BRSL
+Consumer Discretionary - Cinemas, Parks & Attractions|MTN,CNK,IMAX,AMC,PRKS,FUN,PRSU,MCS
+Consumer Discretionary - Sporting Goods, Toys & Leisure Products|HAS,GOLF,MAT,YETI,CALY,PTON,RGR,SWBI
+Consumer Discretionary - Boats, RVs & Powersports|BC,DOO,THO,PII,HOG,PATK,LCII,HZO,WGO,FOXF,CWH,MBUU
+Consumer Staples - Grocery, Warehouse & Convenience Retail|WMT,COST,KR,CASY,BJ,SFM,ACI,TBBB,PSMT,WMK,YSWY,IMKTA,GO
+Consumer Staples - Food Distribution & Agricultural Merchandising|SYY,USFD,PFGC,CHEF,UNFI
+Consumer Staples - Agricultural Merchandising & Renewable Feedstocks|ADM,BG,DAR,ANDE,REX,GPRE
+Consumer Staples - Protein, Produce & Farm Products|TSN,JBS,SFD,PPC,CALM,SEB,AGRO,DMC,DOLE,AVO
+Consumer Staples - Packaged Foods, Snacks & Pet Food|MDLZ,HSY,KHC,GIS,MKC,SJM,MICC,HRL,CAG,LW,CPB,POST,FRPT,MZTI,TR,UTZ,JJSF,NOMD,FLO,SENEA,JBSS,MAMA,OFRM
+Consumer Staples - Nutrition, Ingredients & Supplements|IFF,INGR,SXT,BCPC,HLF,BRBR,SMPL
+Consumer Staples - Nonalcoholic Beverages|KO,PEP,MNST,CCEP,KDP,COKE,CELH,PRMB,COCO,FIZZ
+Consumer Staples - Alcohol, Tobacco & Cannabis|PM,MO,STZ,TAP,TRLV,RLX,SAM,TPB,CRON,UVV,TLRY
+Consumer Staples - Beauty, Personal & Consumer Health|PG,CL,EL,KVUE,KMB,ELF,BBWI,IPAR,COTY,PBH,PRGO,EPC,ODD,HNST
+Consumer Staples - Home Care, Garden & Household Consumables|CHD,CLX,REYN,SMG,CENT,ENR,ODC
+Healthcare - Clinical, Practice & Life-Science Software|VEEV,WAY,DOCS,HTFL,HSTM,PHR,CCSI,WEAV
+Healthcare - Digital Care & Prescription Access|HNGE,HIMS,OMDA,GDRX,TDOC
+Healthcare - Benefits & Value-Based Care|HQY,PRVA,PGNY,ASTH,AGL,EVH
+Healthcare - Managed Care & Health Plans|UNH,ELV,CI,HUM,CNC,MOH,OSCR,ALHC,CLOV
+Healthcare - Hospitals & Surgical Facilities|HCA,THC,UHS,ACHC,SGRY,NUTX
+Healthcare - Post-Acute, Senior & Home Care|EHC,BTSG,ENSG,CHE,PACS,NHC,AVAH,BKD,ADUS,SNDA,PNTG
+Healthcare - Outpatient, Specialty & Emergency Care|DVA,LFST,CON,GRDN,MD,USPH,LMRI,GMRS,STLN
+Healthcare - Pharmacy, Infusion & Medical Distribution|CVS,MCK,COR,CAH,HSIC,OPCH,AHCO
+Healthcare - Diagnostic Labs & Imaging|LH,DGX,LNTH,RDNT
+Healthcare - Precision Diagnostics & Genomic Testing|NTRA,GH,TEM,CAI,BLLN,ADPT,GRAL,VCYT,CDNA,WGS,NEO,PSNL,FRNM,CSTL
+Healthcare - Life-Science Tools & Bioprocessing|TMO,DHR,A,WAT,ILMN,MTD,RVTY,TECH,BIO,RGEN,AVTR,TWST,QGEN,BRKR,TXG,NEOG,ALMR,MRVI,BLFS,AZTA,CYRX,MLAB
+Healthcare - Clinical Research & Development Services|IQV,MEDP,CRL,ICLR,FTRE
+Healthcare - Computational & Antibody Discovery Platforms|ABCL,GENB,RXRX,ABSI,SDGR,CERT,OABI
+Healthcare - Animal Health|IDXX,ZTS,ELAN,PAHC
+Healthcare - Diversified Biopharma|LLY,JNJ,ABBV,MRK,AZN,AMGN,GILD,PFE,VRTX,BMY,REGN,BIIB,INCY
+Healthcare - Specialty Pharma, Generics & Gastrointestinal|VTRS,JAZZ,AMRX,OGN,ZLAB,BHC,ALVO,ANIP,ARDX,AMPH,PHAT,IRWD
+Healthcare - Drug Royalties & Licensing|RPRX,HALO,LGND,ANAB,INVA
+Healthcare - Diabetes, Sleep & Patient Monitoring|RMD,DXCM,PODD,MMED,INSP,TNDM,BBNX,TCMD
+Healthcare - Cardiovascular & Critical-Care Devices|BSX,EW,PEN,MMSI,HAE,LIVN,ICUI,IRTC,TMDX,ATRC,LMAT,KMTS,AORT,AVR
+Healthcare - Orthopedics, Spine & Regenerative Devices|SYK,ZBH,GMED,AXGN,VCEL,ATEC,ENOV,IART,BVS,SIBN,KIDS
+Healthcare - Eye Care & Dental Devices|ALC,COO,ALGN,GKOS,BLCO,NVST,XRAY,STAA
+Healthcare - Surgery, Robotics & Treatment Systems|ISRG,MDT,TFX,PLSE,ESTA,OMCL,CNMD,PRCT,INMD
+Healthcare - Medical Supplies, Components & Sterilization|ABT,BDX,MDLN,WST,STE,SOLV,BAX,STVN,SHC,ITGR,UFPT
+Healthcare - Diagnostic, Imaging & Cancer Devices|GEHC,BFLY,NVCR,DRTS,IRMD,QDEL,CBLL,VREX,DCTH
+Healthcare - RNA, Gene Editing & Genetic Medicines|ALNY,ARWR,KRYS,IONS,CRSP,DYN,QURE,BEAM,RARE,SRPT,STOK,TSHA,NTLA,MGTX,SANA,SLDB,WVE,DSGN,FDMT,NGNE,PRME,RGNX,SCTX
+Healthcare - Metabolic, Obesity & Endocrine Medicines|ASND,MDGL,CORT,CRNX,RYTM,VKTX,GPCR,NAMS,MBX,KLRA,SEPN,XERS,LXRX,SGMT,ALT,VOGX
+Healthcare - Cardiorenal & Pulmonary Medicines|INSM,UTHR,CYTK,TVTX,LQDA,TRVI,MLYS,BRVE,KARD,AVLN,MNKD,APMD,SVRA,TBPH,TECX
+Healthcare - Rare Disease & Hematology Medicines|BBIO,BMRN,SRRK,MIRM,PTCT,EWTX,IRON,BCRX,PHVS,COAG,ADMA,AGIO,DMRA,ETON,MAZE,ZVRA,CAPR
+Healthcare - Neuroscience: Neurology & Epilepsy|NBIX,PRAX,TGTX,XENE,ACAD,AMLX,DNLI,SUPN,RAPP,HRMY,ANNX,CTNM
+Healthcare - Neuroscience: Psychiatry, Pain & Addiction|AXSM,ALKS,DFTX,INDV,ATAI,BHVN,LBRX,ANRO,PCRX,ACHV,COLL,MPLT,AQST
+Healthcare - Dermatology, Eye & Allergy Medicines|BLTE,MANE,TARS,ARQT,VRDN,KOD,OCUL,PVLA,HROW,EOLS,SPRY
+Healthcare - Immunology & Inflammatory Medicines|ROIV,APGE,KYMR,PTGX,IMVT,SYRE,KNSA,ORKA,DNTH,CLDX,ALMS,NKTR,VERA,AUPH,ZBIO,TRAX,CGEM,OMER,VOR,JBIO,MLTX,CRVS,GLUE,AVTX,ACRS,CLYM,STTK,ZURA
+Healthcare - Immune Cell Therapies|LEGN,IOVA,PGEN,IMTX,IMMX,ALLO,CABA,KYTX
+Healthcare - Vaccines & Anti-Infective Medicines|MRNA,BNTX,PCVX,VIR,NVAX,ABUS,ASMB,CRMD
+Healthcare - Oncology: Targeted Medicines|RVMD,EXEL,ERAS,COGT,PBLS,CELC,ELVN,RLAY,TNGX,IDYA,NRIX,NUVB,URGN,SNDX,TYRA,AVBP,ORIC,KURA,GERN,OLMA,FTH,RIGL,NVCT,VSTM,ARVN
+Healthcare - Oncology: Immunotherapy, Biologics & Platforms|SMMT,IBRX,CGON,RCUS,IMNM,SLS,ZYME,XNCR,IMCR,INBX,BCAX,REPL,AKTS,JANX,CADL,AURA,MNPR,CTMX,EIKN
+Utilities - Regulated Electric & Multi-Utilities: Larger|NEE,SO,DUK,AEP,D,SRE,ETR,XEL,EXC,ED,PCG,PEG,WEC,AEE,DTE,FTS,EIX,ES,FE,CNP
+Utilities - Regulated Electric & Multi-Utilities: Mid & Smaller|PPL,CMS,EVRG,LNT,EMA,PNW,AES,OGE,IDA,TXNM,POR,BKH,AQN,NWE,OTTR,AVA,MGEE,HE,UTL
+Utilities - Gas Utilities|ATO,NI,UGI,NFG,SWX,NJR,OGS,SR,MDU,CPK,NWN
+Utilities - Water Utilities|AWK,WTRG,AWR,CWT,HTO,MSEX
+Utilities - Merchant Power & Generation|CEG,VST,NRG,TLN,TAC,HNRG
+Utilities - Renewable Power & Infrastructure|BIP,ENLT,ORA,BEPC,FRVO,RNW,XIFR
+Energy - Integrated Oil & Canadian Producers|XOM,CVX,TTE,PBR,CNQ,SU,IMO,CVE
+Energy - Oil-Weighted Exploration & Production|COP,EOG,OXY,FANG,DVN,PR,OVV,APA,SM,CHRD,MTDR,MGY,MUR,CRC,CRGY,NOG
+Energy - Gas-Weighted Exploration & Production|EQT,EXE,AR,RRC,CNX,CRK,GPOR,BKV
+Energy - Smaller Oil & Diversified Producers|BTE,TALO,VET,KOS,DEC,SOC,REPX,OBE,VTS,GRNT,EGY,WTI
+Energy - Energy Royalties & Land|TPL,VNOM,LB,KRP
+Energy - Pipelines & Midstream|ENB,WMB,EPD,ET,KMI,TRP,TRGP,MPLX,OKE,PBA,WES,PAA,DTM,AM,KNTK,HESM,SOBO,PAGP,DKL
+Energy - LNG Export & Infrastructure|LNG,VG,CQP,EE,NEXT
+Energy - Refining, Fuel Distribution & Retail|MPC,VLO,PSX,DINO,SUN,MUSA,PBF,DK,CVI,CLMT,PARR,SUNC,WKC
+Energy - Oilfield Services & Equipment|SLB,BKR,HAL,FTI,NOV,WFRD,KGS,WHD,AROC,USAC,WBI,SEI,NESR,LBRT,DNOW,WTTR,EFXT,INVX,XPRO,FLOC,AESI,RES,PUMP,NPKI,TTI,ACDC,FET,FTK,CLB
+Energy - Offshore Services & Marine Support|OII,TDW,HLX,VTOL
+Energy - Contract Drilling|NE,RIG,VAL,PTEN,HP,SDRL,BORR,NBR,PDS
+Energy - Coal & Metallurgical Carbon|HCC,CNR,BTU,ARLP,AMR,SXC,METC
+Energy - Solar Equipment & Distributed Energy|FSLR,NXT,ENPH,RUN,SEDG,TE,SHLS,AMRC,DQ,CSIQ,ARRY,JKS
+Energy - Batteries & Energy Storage|QS,FLNC,EOSE,ENVX,NRGV,SLDP
+Energy - Hydrogen & Fuel Cells|BE,PLUG,FCEL,BLDP
+Energy - Distributed Power & Engines|INIO,GNRC,EROC,BW,PSIX,HYLN
+Energy - Nuclear Reactors & Services|BWXT,OKLO,XE,SMR,STDN,NNE,IMSR
+Energy - Uranium, Enrichment & Isotopes|CCJ,NXE,UEC,LEU,DNN,UROY,ASPI
+Materials - Fertilizers, Crop Inputs & Seeds|CTVA,NTR,CF,MOS,ICL,FMC,UAN,LXU,IPI
+Materials - Lithium & Battery Materials|ALB,SGML,LAC,LAR
+Materials - Rare Earths & Strategic Minerals|MP,ALM,USAR,CRML,UAMY,ALOY,NB
+Materials - Copper & Base Metals|SCCO,FCX,TECK,HBM,ERO,TGB,TMC,IE,NEXA,NAK,GSM
+Materials - Aluminum & Rolled Products|AA,CENX,CSTM,KALU
+Materials - Steel & Metal Service Centers|NUE,STLD,CRS,RS,TX,CMC,CLF,WS,RYZ,MTUS
+Materials - Gold Producers & Developers|NEM,AEM,B,AU,KGC,AGI,EQX,EGO,IAG,SSRM,BTG,AUGO,OGC,CGAU,ARIS,SKE,NG,FSM,SA,AAUC,HYMC,MUX,OGG,DC,GAU,ITRG,IDR
+Materials - Silver & Precious-Metal Miners|PAAS,CDE,HL,AG,AYA,EXK,SVM,USAS,VZLA,ASM,SCZM,CTGO
+Materials - Precious-Metal Royalties & Trading|WPM,FNV,RGLD,TFPM,OR,GOLD,VMET,MTA,GROY
+Materials - Cement, Aggregates & Building Materials|CRH,MLM,VMC,AMRZ,JHX,CSL,OC,EXP,KNF,USLM,RMIX
+Materials - Wood, Pulp & Paper Products|WFG,LPX,UFPI,BCC,SLVM,RYAM
+Materials - Packaging & Containers|SW,AMCR,PKG,IP,BALL,AVY,CCK,ATR,SON,SLGN,GEF,GPK,AMBP,TRS,OI,KRT
+Materials - Coatings, Adhesives & Sealants|SHW,PPG,RPM,AXTA,FUL,WDFC
+Materials - Commodity Chemicals & Industrial Gases|LIN,APD,DOW,LYB,WLK,EMN,CE,MEOH,OLN,HUN,TROX
+Materials - Specialty Chemicals & Engineered Materials|ECL,DD,SOLS,ESI,NEU,PRM,CBT,AVNT,ASH,KWR,HWKN,NGVT,CC,IOSP,MTX,SCL,PCT,ECVT,CMP,KOP
+Materials - Engineered Metal Building Products|MLI,VMI,ACA,AZZ,ROCK
+Real Estate - Data Centers & Information Storage|EQIX,DLR,IRM,BXDC
+Real Estate - Towers & Telecom Sites|AMT,CCI,SBAC,IHS
+Real Estate - Industrial & Logistics Property|PLD,EGP,LINE,FR,REXR,TRNO,STAG,COLD,LXP,IIPR
+Real Estate - Healthcare & Senior-Housing Property|WELL,VTR,DOC,OHI,AHR,JAN,CTRE,ARE,HR,SBRA,NHI,MPT,LTC,DHC
+Real Estate - Apartments & Residential Communities|VMRK,ESS,MAA,CPT,UDR,IRT,CSR,NXRT
+Real Estate - Single-Family & Manufactured Communities|INVH,SUI,ELS,AMH,UMH
+Real Estate - Retail Centers & Malls|SPG,KIM,REG,FRT,BRX,MAC,PECO,KRG,SKT,CURB,AKR,UE,IVT,CBL,ALX,CTO
+Real Estate - Net-Lease & Diversified Property|O,WPC,ADC,NNN,EPRT,BNL,FCPT,GNL,NTST,GTY,AAT,FVR
+Real Estate - Office & Government Property|BXP,CDP,VNO,CUZ,SLG,KRC,HIW,DEI,PDM,DEA,PSTL,ESRT,HPP,JBGS
+Real Estate - Hotel, Gaming & Leisure Property|VICI,HST,GLPI,RHP,EPR,APLE,PK,DRH,SHO,PEB,XHR,RLJ,SVC
+Real Estate - Self-Storage|PSA,EXR,CUBE,SMA
+Real Estate - Property Services, Brokerage & Platforms|CBRE,JLL,CSGP,COMP,Z,FSV,CIGI,CWK,OPEN,NMRK
+Real Estate - Land, Timber & Real-Estate Development|WY,RYN,MRP,HHH,JOE
