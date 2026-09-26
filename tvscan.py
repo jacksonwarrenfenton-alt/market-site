@@ -52,6 +52,10 @@ def load():
 
     # The scan keys on the group CODE; the board keys on the group NAME. Join
     # through the probe map that generated the walk so the two cannot drift.
+    # tv_scan.csv itself may already carry its own `group` column (the weekly
+    # TV-walk trigger writes one) -- drop it first so the merge can't produce
+    # group_x/group_y and silently orphan the `group` name downstream.
+    d = d.drop(columns=["group"], errors="ignore")
     pm = pd.read_csv(f"{D}/tv_probes_253.csv")[["code", "group"]]
     d = d.merge(pm, on="code", how="left")
     d = d.dropna(subset=["rs21d", "group"]).drop_duplicates("group", keep="last")

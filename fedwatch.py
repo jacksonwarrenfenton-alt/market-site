@@ -27,7 +27,12 @@ import pandas as pd, numpy as np, json, os, sys, html, urllib.request, ssl
 D = os.path.expanduser("~/pos")
 OUT = f"{D}/fedwatch.json"
 URL = ("https://www.atlantafed.org/-/media/Project/Atlanta/FRBA/Documents/"
-       "cenfis/market-probability-tracker/mpt_histdata.xlsx")
+       "research-and-data/data/market-probability-tracker/mpt_histdata.xlsx")
+       # path changed 2026-09-26: the old cenfis/market-probability-tracker/
+       # path now 404s. Atlanta Fed moved it under research-and-data/data/
+       # (same filename, same DATA-sheet schema) -- if this 404s again, refetch
+       # https://www.atlantafed.org/cenfis/market-probability-tracker and grep
+       # the page for the current *.xlsx href rather than guessing.
 CTX = ssl._create_unverified_context()
 H = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                    "AppleWebKit/537.36 Chrome/124"}
