@@ -1,0 +1,1267 @@
+{
+ "Communications - Telecom Carriers & Spectrum": {
+  "moo": "Telecom Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Communications - Cable, Fiber & Business Connectivity": {
+  "moo": "Telecom Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Communications - Internet, Social & Audience Platforms": {
+  "moo": "Internet Content & Information",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Communications - Advertising Agencies, Lead Generation & Print": {
+  "moo": "Advertising Agencies",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Communications - Advertising Technology": {
+  "moo": "Advertising Agencies",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Communications - Film, Television & Streaming Video": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Communications - Video Games & Development Platforms": {
+  "moo": "Electronic Gaming & Multimedia",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Communications - Music & Audio Platforms": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Communications - Publishing, Digital Media & Broadcasting": {
+  "moo": "Broadcasting",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Communications - Live Sports, Events & Ticketing": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Technology - Cloud & Enterprise Infrastructure": {
+  "moo": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - AI Cloud & GPU Services": {
+  "moo": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Data-Center Development & HPC Hosting": {
+  "moo": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Enterprise AI Applications": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Cybersecurity": {
+  "moo": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Identity & Fraud Prevention": {
+  "moo": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - DevOps, IT Management & Observability": {
+  "moo": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Data Platforms & Analytics": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Backup, Content & Information Management": {
+  "moo": "Software - Infrastructure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Workflow & Work Management": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Voice, Video & Contact Centers": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Customer Engagement & Marketing Software": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Payroll & Human Capital Software": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Accounting, Tax & Reporting": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Commerce & Hospitality Software": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Construction & Property Software": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Industrial Data, Navigation & Supply-Chain Software": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Legal, Public-Sector & Professional Software": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Creative, Web & Media Tools": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - IT Consulting & Managed Services": {
+  "moo": "Information Technology Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - IT Distribution & Solutions": {
+  "moo": "Electronics & Computer Distribution",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Network Infrastructure & Application Delivery": {
+  "moo": "Communication Equipment",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Servers & Enterprise Computing": {
+  "moo": "Computer Hardware",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Memory & Data Storage": {
+  "moo": "Computer Hardware",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Personal Computing & Consumer Electronics": {
+  "moo": "Consumer Electronics",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Transaction, Identification & Display Hardware": {
+  "moo": "Computer Hardware",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Connected Home & Personal Safety": {
+  "moo": "Consumer Electronics",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Electronics Manufacturing Services": {
+  "moo": "Electronic Components",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Connectors, PCBs & Passive Components": {
+  "moo": "Electronic Components",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Sensors & Electronic Components": {
+  "moo": "Electronic Components",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Power Delivery & Data-Center Cooling": {
+  "moo": "Electrical Equipment & Parts",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Analog, Mixed-Signal & Embedded Chips": {
+  "moo": "Semiconductors",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Power Semiconductors": {
+  "moo": "Semiconductors",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - AI Networking & Interconnect Chips": {
+  "moo": "Semiconductors",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Compute, Programmable Logic & Foundries": {
+  "moo": "Semiconductors",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - RF, Connectivity & Edge Chips": {
+  "moo": "Semiconductors",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Semiconductor Design Software & IP": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Wafer Equipment & Process Control": {
+  "moo": "Semiconductor Equipment & Materials",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Assembly, Packaging & Test": {
+  "moo": "Semiconductor Equipment & Materials",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Semiconductor & Electronic Materials": {
+  "moo": "Semiconductor Equipment & Materials",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Optical Communications & Photonic Interconnects": {
+  "moo": "Communication Equipment",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Lasers, Infrared & Display Optics": {
+  "moo": "Scientific & Technical Instruments",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Technology - Quantum Computing": {
+  "moo": "Semiconductors",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Aerospace Platforms, Engines & Avionics": {
+  "moo": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Aerospace Components & Aftermarket": {
+  "moo": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Defense Platforms, Electronics & Weapons": {
+  "moo": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Drones & Autonomous Defense": {
+  "moo": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Advanced Air Mobility": {
+  "moo": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Defense IT, Intelligence & Government Services": {
+  "moo": "Aerospace & Defense",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Space & Satellites": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Industrials - Public Safety & Security Technology": {
+  "moo": "Security & Protection Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Security, Corrections & Protection Services": {
+  "moo": "Security & Protection Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Diversified Industrial Technology": {
+  "moo": "Specialty Industrial Machinery",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Factory & Process Automation": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Industrials - Measurement, Testing & Instrumentation": {
+  "moo": "Scientific & Technical Instruments",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Electrical Grid & Power Equipment": {
+  "moo": "Electrical Equipment & Parts",
+  "score": 0.67,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - HVAC, Building Controls & Climate": {
+  "moo": "Building Products & Equipment",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Building Fixtures & Components": {
+  "moo": "Building Products & Equipment",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Construction Materials Distribution": {
+  "moo": "Building Materials",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Industrial Distribution": {
+  "moo": "Industrial Distribution",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Infrastructure & Utility Construction": {
+  "moo": "Engineering & Construction",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Building Installation & Specialty Contracting": {
+  "moo": "Engineering & Construction",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Engineering & Environmental Consulting": {
+  "moo": "Consulting Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Heavy Equipment & Specialty Vehicles": {
+  "moo": "Farm & Heavy Construction Machinery",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Commercial Vehicles & Powertrains": {
+  "moo": "Farm & Heavy Construction Machinery",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Agricultural & Grounds Equipment": {
+  "moo": "Farm & Heavy Construction Machinery",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Flow, Motion & Process Equipment": {
+  "moo": "Specialty Industrial Machinery",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Water Infrastructure & Treatment Equipment": {
+  "moo": "Pollution & Treatment Controls",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Metalworking, Bearings & Industrial Tools": {
+  "moo": "Metal Fabrication",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Food & Specialty Process Machinery": {
+  "moo": "Specialty Industrial Machinery",
+  "score": 0.67,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Digital Manufacturing & 3D Printing": {
+  "moo": "Specialty Industrial Machinery",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Equipment & Vehicle Rental": {
+  "moo": "Rental & Leasing Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Waste Collection & Environmental Services": {
+  "moo": "Waste Management",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Filtration, Pollution Control & Engineered Products": {
+  "moo": "Pollution & Treatment Controls",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Facility, Uniform & Food Services": {
+  "moo": "Specialty Business Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Professional Consulting, Research & Testing": {
+  "moo": "Consulting Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Staffing, Recruitment & PEO Services": {
+  "moo": "Staffing & Employment Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Freight Rail & Rolling Stock": {
+  "moo": "Railroads",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Parcel, Freight Forwarding & Contract Logistics": {
+  "moo": "Integrated Freight & Logistics",
+  "score": 0.67,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Trucking & Ground Freight": {
+  "moo": "Trucking",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Tankers & Petroleum Shipping": {
+  "moo": "Marine Shipping",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Dry Bulk, Containers & Diversified Shipping": {
+  "moo": "Marine Shipping",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Gas Shipping & Floating LNG": {
+  "moo": "Marine Shipping",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Industrials - Airlines, Airports & Transport Infrastructure": {
+  "moo": "Airlines",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Diversified US Banks": {
+  "moo": "Banks - Diversified",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Canadian & International Banks": {
+  "moo": "Banks - Diversified",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Digital Banks & Consumer-Lending Platforms": {
+  "moo": "Banks - Diversified",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Consumer Credit, Specialty Lending & Recovery": {
+  "moo": "Credit Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Custody & Asset Servicing": {
+  "moo": "Asset Management",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Traditional Asset Managers": {
+  "moo": "Asset Management",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Alternative Asset Managers": {
+  "moo": "Asset Management",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - BDCs & Direct Lending": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Financials - Holding Companies & Principal Investments": {
+  "moo": "Financial Conglomerates",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Investment Banks & Institutional Brokers": {
+  "moo": "Capital Markets",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Retail Brokers & Wealth Platforms": {
+  "moo": "Capital Markets",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Exchanges & Trading Infrastructure": {
+  "moo": "Financial Data & Stock Exchanges",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Financial Data, Ratings & Decision Analytics": {
+  "moo": "Financial Data & Stock Exchanges",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Banking, Insurance & Investment Software": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Payments & Merchant Infrastructure": {
+  "moo": "Credit Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Crypto Exchanges, Custody & Tokenization": {
+  "moo": "Financial Data & Stock Exchanges",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Crypto Treasury & Investment Exposure": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Financials - Bitcoin Mining": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Financials - Life Insurance & Retirement": {
+  "moo": "Insurance - Life",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Reinsurance & Insurance Capital": {
+  "moo": "Insurance - Reinsurance",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Property & Casualty Insurance - Diversified": {
+  "moo": "Insurance - Diversified",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Property & Casualty Insurance - Specialty": {
+  "moo": "Insurance - Property & Casualty",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Digital Insurance & Distribution": {
+  "moo": "Insurance - Diversified",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Insurance Brokers & Claims Services": {
+  "moo": "Insurance Brokers",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Mortgage & Title Insurance": {
+  "moo": "Mortgage Finance",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Mortgage Origination & Real-Estate Finance": {
+  "moo": "Mortgage Finance",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Mortgage REITs & Property Credit": {
+  "moo": "REIT - Mortgage",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Regional & Community Banks: Size Tier 1": {
+  "moo": "Banks - Regional",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Regional & Community Banks: Size Tier 2": {
+  "moo": "Banks - Regional",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Regional & Community Banks: Size Tier 3": {
+  "moo": "Banks - Regional",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Regional & Community Banks: Size Tier 4": {
+  "moo": "Banks - Regional",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Regional & Community Banks: Size Tier 5": {
+  "moo": "Banks - Regional",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Financials - Asset & Infrastructure Finance": {
+  "moo": "Asset Management",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Passenger Vehicles & EV Manufacturers": {
+  "moo": "Auto Manufacturers",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Auto Components & Drivetrain": {
+  "moo": "Auto Parts",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Autonomy & LiDAR": {
+  "moo": "Auto Parts",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Auto Dealers & Vehicle Marketplaces": {
+  "moo": "Auto & Truck Dealerships",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Auto Aftermarket & Services": {
+  "moo": "Auto Parts",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Mobility, Delivery & Local Commerce": {
+  "moo": "Internet Content & Information",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - E-Commerce Marketplaces": {
+  "moo": "Internet Retail",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Apparel Brands & Accessories": {
+  "moo": "Apparel Manufacturing",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Footwear Brands": {
+  "moo": "Footwear & Accessories",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Apparel & Off-Price Retail": {
+  "moo": "Apparel Retail",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - General Merchandise & Department Stores": {
+  "moo": "Department Stores",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Specialty Retail & Consumer Categories": {
+  "moo": "Specialty Retail",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Home Improvement & Furnishings Retail": {
+  "moo": "Home Improvement Retail",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Home, Office & Household Durables": {
+  "moo": "Furnishings, Fixtures & Appliances",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Homebuilders & Manufactured Housing": {
+  "moo": "Residential Construction",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Home & Personal Services": {
+  "moo": "Personal Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Education & Workforce Training": {
+  "moo": "Education & Training Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Restaurants - Quick Service & Coffee": {
+  "moo": "Restaurants",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Restaurants - Casual & Fast Casual": {
+  "moo": "Restaurants",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Hotels, Resorts & Vacation Ownership": {
+  "moo": "Lodging",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Travel Booking & Corporate Travel": {
+  "moo": "Travel Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Cruise Lines": {
+  "moo": "Leisure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Casinos & Gaming Operators": {
+  "moo": "Resorts & Casinos",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Online Betting & Gaming Technology": {
+  "moo": "Gambling",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Cinemas, Parks & Attractions": {
+  "moo": "Entertainment",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Sporting Goods, Toys & Leisure Products": {
+  "moo": "Leisure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Discretionary - Boats, RVs & Powersports": {
+  "moo": "Recreational Vehicles",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Grocery, Warehouse & Convenience Retail": {
+  "moo": "Grocery Stores",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Food Distribution & Agricultural Merchandising": {
+  "moo": "Food Distribution",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Agricultural Merchandising & Renewable Feedstocks": {
+  "moo": "Agricultural Inputs",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Protein, Produce & Farm Products": {
+  "moo": "Farm Products",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Packaged Foods, Snacks & Pet Food": {
+  "moo": "Packaged Foods",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Nutrition, Ingredients & Supplements": {
+  "moo": "Packaged Foods",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Nonalcoholic Beverages": {
+  "moo": "Beverages - Non-Alcoholic",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Alcohol, Tobacco & Cannabis": {
+  "moo": "Tobacco",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Beauty, Personal & Consumer Health": {
+  "moo": "Personal Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Consumer Staples - Home Care, Garden & Household Consumables": {
+  "moo": "Household & Personal Products",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Clinical, Practice & Life-Science Software": {
+  "moo": "Software - Application",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Digital Care & Prescription Access": {
+  "moo": "Health Information Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Benefits & Value-Based Care": {
+  "moo": "Healthcare Plans",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Managed Care & Health Plans": {
+  "moo": "Healthcare Plans",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Hospitals & Surgical Facilities": {
+  "moo": "Medical Care Facilities",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Post-Acute, Senior & Home Care": {
+  "moo": "Medical Care Facilities",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Outpatient, Specialty & Emergency Care": {
+  "moo": "Medical Care Facilities",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Pharmacy, Infusion & Medical Distribution": {
+  "moo": "Medical Distribution",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Diagnostic Labs & Imaging": {
+  "moo": "Diagnostics & Research",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Precision Diagnostics & Genomic Testing": {
+  "moo": "Diagnostics & Research",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Life-Science Tools & Bioprocessing": {
+  "moo": "Diagnostics & Research",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Clinical Research & Development Services": {
+  "moo": "Diagnostics & Research",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Computational & Antibody Discovery Platforms": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Animal Health": {
+  "moo": "Drug Manufacturers - General",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Diversified Biopharma": {
+  "moo": "Drug Manufacturers - General",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Specialty Pharma, Generics & Gastrointestinal": {
+  "moo": "Drug Manufacturers - Specialty & Generic",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Drug Royalties & Licensing": {
+  "moo": "Drug Manufacturers - General",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Diabetes, Sleep & Patient Monitoring": {
+  "moo": "Medical Devices",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Cardiovascular & Critical-Care Devices": {
+  "moo": "Medical Devices",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Orthopedics, Spine & Regenerative Devices": {
+  "moo": "Medical Devices",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Eye Care & Dental Devices": {
+  "moo": "Medical Devices",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Surgery, Robotics & Treatment Systems": {
+  "moo": "Medical Devices",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Medical Supplies, Components & Sterilization": {
+  "moo": "Medical Instruments & Supplies",
+  "score": 0.67,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Diagnostic, Imaging & Cancer Devices": {
+  "moo": "Medical Devices",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - RNA, Gene Editing & Genetic Medicines": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Metabolic, Obesity & Endocrine Medicines": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Cardiorenal & Pulmonary Medicines": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Rare Disease & Hematology Medicines": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Neuroscience: Neurology & Epilepsy": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Neuroscience: Psychiatry, Pain & Addiction": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Dermatology, Eye & Allergy Medicines": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Immunology & Inflammatory Medicines": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Immune Cell Therapies": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Vaccines & Anti-Infective Medicines": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Oncology: Targeted Medicines": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Healthcare - Oncology: Immunotherapy, Biologics & Platforms": {
+  "moo": "Biotechnology",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Utilities - Regulated Electric & Multi-Utilities: Larger": {
+  "moo": "Utilities - Regulated Electric",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Utilities - Regulated Electric & Multi-Utilities: Mid & Smaller": {
+  "moo": "Utilities - Regulated Electric",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Utilities - Gas Utilities": {
+  "moo": "Utilities - Regulated Gas",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Utilities - Water Utilities": {
+  "moo": "Utilities - Regulated Water",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Utilities - Merchant Power & Generation": {
+  "moo": "Utilities - Independent Power Producers",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Utilities - Renewable Power & Infrastructure": {
+  "moo": "Utilities - Renewable",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Integrated Oil & Canadian Producers": {
+  "moo": "Oil & Gas Integrated",
+  "score": 0.67,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Oil-Weighted Exploration & Production": {
+  "moo": "Oil & Gas E&P",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Gas-Weighted Exploration & Production": {
+  "moo": "Oil & Gas E&P",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Smaller Oil & Diversified Producers": {
+  "moo": "Oil & Gas E&P",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Energy Royalties & Land": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Pipelines & Midstream": {
+  "moo": "Oil & Gas Midstream",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - LNG Export & Infrastructure": {
+  "moo": "Oil & Gas Midstream",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Refining, Fuel Distribution & Retail": {
+  "moo": "Oil & Gas Refining & Marketing",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Oilfield Services & Equipment": {
+  "moo": "Oil & Gas Equipment & Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Offshore Services & Marine Support": {
+  "moo": "Marine Shipping",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Contract Drilling": {
+  "moo": "Oil & Gas Drilling",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Coal & Metallurgical Carbon": {
+  "moo": "Coking Coal",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Solar Equipment & Distributed Energy": {
+  "moo": "Solar",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Energy - Batteries & Energy Storage": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Hydrogen & Fuel Cells": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Distributed Power & Engines": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Nuclear Reactors & Services": {
+  "moo": null,
+  "score": 0.0,
+  "how": "no_match_confirmed"
+ },
+ "Energy - Uranium, Enrichment & Isotopes": {
+  "moo": "Uranium",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Fertilizers, Crop Inputs & Seeds": {
+  "moo": "Agricultural Inputs",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Lithium & Battery Materials": {
+  "moo": "Other Industrial Metals & Mining",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Rare Earths & Strategic Minerals": {
+  "moo": "Other Industrial Metals & Mining",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Copper & Base Metals": {
+  "moo": "Copper",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Aluminum & Rolled Products": {
+  "moo": "Aluminum",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Steel & Metal Service Centers": {
+  "moo": "Steel",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Gold Producers & Developers": {
+  "moo": "Gold",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Silver & Precious-Metal Miners": {
+  "moo": "Silver",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Precious-Metal Royalties & Trading": {
+  "moo": "Other Precious Metals & Mining",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Cement, Aggregates & Building Materials": {
+  "moo": "Building Materials",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Wood, Pulp & Paper Products": {
+  "moo": "Paper & Paper Products",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Packaging & Containers": {
+  "moo": "Packaging & Containers",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Coatings, Adhesives & Sealants": {
+  "moo": "Specialty Chemicals",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Commodity Chemicals & Industrial Gases": {
+  "moo": "Chemicals",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Specialty Chemicals & Engineered Materials": {
+  "moo": "Chemicals",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Materials - Engineered Metal Building Products": {
+  "moo": "Building Products & Equipment",
+  "score": 0.67,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Data Centers & Information Storage": {
+  "moo": "REIT - Specialty",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Towers & Telecom Sites": {
+  "moo": "Telecom Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Industrial & Logistics Property": {
+  "moo": "REIT - Industrial",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Healthcare & Senior-Housing Property": {
+  "moo": "REIT - Healthcare Facilities",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Apartments & Residential Communities": {
+  "moo": "REIT - Residential",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Single-Family & Manufactured Communities": {
+  "moo": "REIT - Residential",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Retail Centers & Malls": {
+  "moo": "REIT - Retail",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Net-Lease & Diversified Property": {
+  "moo": "REIT - Diversified",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Office & Government Property": {
+  "moo": "REIT - Office",
+  "score": 0.5,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Hotel, Gaming & Leisure Property": {
+  "moo": "Leisure",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Self-Storage": {
+  "moo": "REIT - Specialty",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Property Services, Brokerage & Platforms": {
+  "moo": "Real Estate Services",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ },
+ "Real Estate - Land, Timber & Real-Estate Development": {
+  "moo": "Real Estate - Development",
+  "score": 1.0,
+  "how": "reused_finviz_xmap"
+ }
+}

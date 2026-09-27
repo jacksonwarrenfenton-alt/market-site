@@ -1,17 +1,18 @@
-"""Per-group confluence: ten independent reads, one agreement count.
+"""Per-group confluence: eleven independent reads, one agreement count.
 
 The board already ranks groups. What it did not say is HOW MANY separate reads
 agree on that ranking -- a group at rank 12 on one measure and rank 180 on the
-next is a very different proposition from one that sits top-decile on all ten,
-and the single blended number hides exactly that.
+next is a very different proposition from one that sits top-decile on all
+eleven, and the single blended number hides exactly that.
 
-Eight of the ten legs are computed on jman's own 253-basket roster, so no
+Eight of the eleven legs are computed on jman's own 253-basket roster, so no
 taxonomy crosswalk stands between the data and the group. Each returns a
 percentile in 0-99 (higher = stronger) or NaN when it cannot cover that group;
 NaN is carried through as "not covered" and never imputed, because a leg that
-quietly defaults to 50 votes without having an opinion. The remaining two legs
-(tv, fvz) are genuine outside reads -- see tvscan.py and extscan.py -- so those
-DO cross a taxonomy join, which is why their coverage is never 253/253.
+quietly defaults to 50 votes without having an opinion. The remaining three
+legs (tv, fvz, moo) are genuine outside reads -- see tvscan.py, extscan.py and
+moomoo.py -- so those DO cross a taxonomy join, which is why their coverage is
+never 253/253.
 """
 import pandas as pd, numpy as np, os
 
@@ -29,6 +30,7 @@ LEGS = [
     ("si",    "Short int.",   "short-interest breadth tilt across the group's members"),
     ("tv",    "TradingView",  "the chart indicator's own 21D/63D RS, read from the Data Window"),
     ("fvz",   "Finviz group", "Finviz industry-group 1w/3m performance, crosswalked to this basket"),
+    ("moo",   "moomoo group", "moomoo Sectors single-period performance, crosswalked to this basket"),
 ]
 KEYS = [k for k, _, _ in LEGS]
 HI, LO = 70, 30          # a leg only votes outside this band
@@ -174,6 +176,18 @@ def build(df, bars=None, bench=None, si=None, flow_by_basket=None, group_basket=
     except Exception as e:
         raw["fvz"] = np.nan
         df.attrs["fvz_asof"], df.attrs["fvz_note"] = None, f"Finviz leg failed: {e}"
+    # Third outside read, same one-vote-per-group rule. moomoo's crosswalk is
+    # mechanically reused from extscan.py's Finviz mapping (see moomoo.py's
+    # docstring) so its coverage tracks the Finviz leg's ~240/253 exactly --
+    # that is expected, not a bug to reconcile.
+    try:
+        import moomoo as _MOO
+        v, asof, note = _MOO.leg_moomoo(list(df.name))
+        raw["moo"] = v.values
+        df.attrs["moo_asof"], df.attrs["moo_note"] = asof, note
+    except Exception as e:
+        raw["moo"] = np.nan
+        df.attrs["moo_asof"], df.attrs["moo_note"] = None, f"moomoo leg failed: {e}"
 
     P = pd.DataFrame({k: _pct(raw[k]) for k in KEYS})
     for k in KEYS: df[f"L_{k}"] = P[k]

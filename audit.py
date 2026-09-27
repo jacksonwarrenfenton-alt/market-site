@@ -190,8 +190,8 @@ def run(strict=True, verbose=True):
     # group would just shrink the count and look like a quiet week.
     try:
         import confluence as _CF, marketsite as _MS2
-        if len(_CF.LEGS) != 10:
-            bad(f"confluence has {len(_CF.LEGS)} legs, expected 10")
+        if len(_CF.LEGS) != 11:
+            bad(f"confluence has {len(_CF.LEGS)} legs, expected 11")
         # The TradingView leg must vote at most once per group.
         import tvscan as _TVA
         _td, _ta, _tn = _TVA.load()
@@ -216,6 +216,21 @@ def run(strict=True, verbose=True):
                 bad(f"Finviz crosswalk covers only {len(_fx)} baskets -- expected 200+")
             else:
                 ok(f"Finviz leg: {len(_fd)} industries, {len(_fx)} baskets crosswalked, as of {_fa}")
+        # The moomoo leg: same one-vote-per-group rule, plus its crosswalk is
+        # mechanically reused from extscan.py's Finviz mapping (see moomoo.py),
+        # so its coverage tracking the Finviz leg's own count is expected.
+        import moomoo as _MOOA
+        _md, _ma, _mn = _MOOA.load_moomoo()
+        if _md is None:
+            ok(f"moomoo Sectors leg: not available ({_mn})")
+        elif _md.index.duplicated().any():
+            bad("moomoo scan has duplicate groups -- a source would vote twice")
+        else:
+            _mx = _MOOA._moomoo_xmap()
+            if len(_mx) < 200:
+                bad(f"moomoo crosswalk covers only {len(_mx)} baskets -- expected 200+")
+            else:
+                ok(f"moomoo Sectors leg: {len(_md)} groups, {len(_mx)} baskets crosswalked, as of {_ma}")
         msrc2 = inspect.getsource(_MS2.subsector_board)
         for tok in ("ccell", "scell", "legstrip", "conf_panel"):
             if tok not in msrc2: bad(f"confluence renderer missing: {tok}")
