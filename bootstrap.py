@@ -17,7 +17,6 @@ Inputs that are NOT fetched here -- restore them into ~/pos first if you have
 them, every one degrades gracefully when absent:
   tv_scan.csv, tv_probes_253.csv   TradingView walk (Mac, weekly)
   liqn_hist.csv, liqnnews_hist.csv liqn.ai captures (Mac, daily)
-  etfdb_flows.parquet              etfdb harvest (Mac, weekly)
   chart_index_src.html             chartlib's page index (Mac)
 
 With --site-url/--sentiment-url, the cross-link placeholders are substituted
@@ -61,6 +60,16 @@ def _sbstat():
     subprocess.run([sys.executable, f"{HERE}/run_sbstat.py"], check=True, cwd=HERE)
 
 
+def _etfflows():
+    # Cloud harvest of the daily flow history the Mac used to supply, then the
+    # cross-source check. A failed check is logged, not fatal: the numbers are
+    # still etfdb's own, the check only says how far to trust them.
+    import etfdbflows as EF
+    r = EF.verify(EF.harvest())
+    if not r.get("ok"):
+        _log(f"etfflows: VERIFY WEAK -- {r}")
+
+
 def _derived():
     # Files the audit gates on but marketsite.build() only writes AFTER the
     # audit (or nothing writes at all), so a cold container fails the gate.
@@ -101,6 +110,7 @@ STEPS = [
     ("daily",     lambda: __import__("daily_refresh").run()),
     ("chartdata", lambda: __import__("chartdata").save()),
     ("ratioscan", lambda: __import__("ratioscan").save()),
+    ("etfflows",  _etfflows),
     ("derived",   _derived),
 ]
 
