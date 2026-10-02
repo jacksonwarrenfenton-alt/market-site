@@ -337,6 +337,90 @@ document.querySelectorAll('.chip[data-rs]').forEach(function(c){
 });
 """
 
+# Caliban-style navigation: the tab bar and a row of section chips stay
+# pinned while scrolling, so any panel on a long tab is one click away; and each
+# section's explanatory note shows its first line until asked for the rest, so
+# the data leads and the methodology is there when wanted. Built client-side
+# from the h2s already on the page, so no panel has to register itself.
+NAV_CSS = """
+.navbar{position:sticky;top:0;z-index:40;background:var(--p);
+padding-top:4px;margin:0 -22px 6px;padding-left:22px;padding-right:22px;
+border-bottom:1px solid var(--grid)}
+.navbar .tabs{margin:6px 0 0;align-items:flex-end}
+.xlink{margin-left:auto;color:var(--cool);font-size:12px;font-weight:600;
+text-decoration:none;padding:9px 4px;white-space:nowrap}
+.xlink:hover{text-decoration:underline}
+.secnav{display:flex;gap:6px;overflow-x:auto;padding:8px 0 9px;scrollbar-width:thin}
+.secnav:empty{display:none}
+.secnav a{flex:0 0 auto;font-size:11px;color:var(--ink2);background:var(--s);
+border:1px solid var(--grid);border-radius:99px;padding:3px 11px;text-decoration:none;
+white-space:nowrap}
+.secnav a:hover{border-color:var(--cool);color:var(--ink)}
+.secnav a.on{background:var(--cool);border-color:var(--cool);color:#fff}
+.tabpane h2,.aipane h2{scroll-margin-top:96px}
+p.grpnote.fold{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;
+overflow:hidden;cursor:pointer;position:relative;padding-right:56px}
+p.grpnote.fold::after{content:"more";position:absolute;right:0;top:0;color:var(--cool);
+font-weight:600;background:var(--p);padding-left:6px}
+p.grpnote.unfold{cursor:pointer}
+@media(max-width:700px){.navbar{margin:0 -16px 6px;padding-left:16px;padding-right:16px}
+.navbar .tabs{overflow-x:auto}.tab{padding:9px 10px}.xlink{display:none}}
+/* Wide data tables scroll inside their own box on narrow screens instead of
+   dragging the whole page sideways. */
+@media(max-width:1000px){.wrap table{display:block;overflow-x:auto;max-width:100%}
+.wrap svg{max-width:100%;height:auto}header .legend{display:none}
+.wrap{padding-left:16px;padding-right:16px}}
+@media(max-width:700px){.cwgrid,.si2grid,.dgrid,.cf3,.split,.fwgrid,.clist,
+.wrap div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
+.aitabs{flex-wrap:wrap}.aihead{display:block}
+.tabpane{max-width:100%;overflow-x:auto}}
+"""
+
+NAV_JS = """
+(function(){
+  var nav=document.querySelector('.secnav'); if(!nav) return;
+  function slug(t,i){return 's'+i+'-'+t.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,40);}
+  function short(t){return t.split(/\s+[\u2014\u2013-]\s+/)[0].replace(/^\d+\s*\u00b7\s*/,'');}
+  function build(){
+    var pane=document.querySelector('.tabpane.on')||document.querySelector('.wrap'); nav.innerHTML='';
+    if(!pane) return;
+    var hs=[...pane.querySelectorAll('h2')].filter(h=>h.offsetParent!==null);
+    // A head that several sections share ("Short interest -- market-wide",
+    // "Short interest -- covering vs building") is labelled by its tail instead.
+    var heads=hs.map(h=>short(h.textContent.trim())), seen={};
+    heads.forEach(k=>seen[k]=(seen[k]||0)+1);
+    hs.forEach(function(h,i){
+      if(!h.id) h.id=slug(h.textContent,i);
+      var full=h.textContent.trim(), lab=heads[i];
+      if(seen[lab]>1){var tail=full.split(/\s+[\u2014\u2013-]\s+/).slice(1).join(' ');
+        if(tail) lab=lab+' \u00b7 '+tail.charAt(0).toUpperCase()+tail.slice(1);}
+      var a=document.createElement('a'); a.href='#'+h.id; a.textContent=lab.length>42?lab.slice(0,40)+'\u2026':lab;
+      a.title=h.textContent.trim();
+      a.onclick=function(e){e.preventDefault();h.scrollIntoView({behavior:'smooth'});};
+      nav.appendChild(a);
+    });
+  }
+  document.querySelectorAll('.tab,.aitab').forEach(function(t){t.addEventListener('click',function(){setTimeout(build,0);});});
+  build();
+  // highlight the section in view
+  window.addEventListener('scroll',function(){
+    var best=null;
+    nav.querySelectorAll('a').forEach(function(a){
+      var h=document.getElementById(a.getAttribute('href').slice(1));
+      if(h && h.getBoundingClientRect().top<140) best=a;});
+    nav.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a===best));
+  },{passive:true});
+  // fold long explanatory notes to their first line
+  document.querySelectorAll('p.grpnote').forEach(function(p){
+    if(p.textContent.length<180) return;
+    p.classList.add('fold'); p.title='Click for the full note';
+    p.addEventListener('click',function(e){
+      if(e.target.closest('a')) return;
+      p.classList.toggle('fold'); p.classList.toggle('unfold');});
+  });
+})();
+"""
+
 ETFX_JS = """
 const EFC = __EFC__;
 const ETF_PANES = [['price','Price'],['si','Short interest'],['dtc','Days to cover'],
@@ -384,7 +468,8 @@ const ETF_FOOT = '<p class="chf">Price is unadjusted close with 50/200-day movin
 })();
 """
 
-def compose(pos_html, subsector, diary, css_extra, js_extra, asof, stockpage=""):
+def compose(pos_html, subsector, diary, css_extra, js_extra, asof, stockpage="",
+            si_html="", data_html=""):
     import zoomjs, minichart
     zoom_js = minichart.MINI_JS + zoomjs.ZOOM_JS
     """Split report.py's output and rewrap it as tab 1."""
@@ -402,28 +487,30 @@ def compose(pos_html, subsector, diary, css_extra, js_extra, asof, stockpage="")
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Market Site &mdash; {asof}</title>
-<style>{poscss}{TAB_CSS}{css_extra}</style></head><body>
+<style>{poscss}{TAB_CSS}{NAV_CSS}{css_extra}</style></head><body>
 <div class="wrap">
-{hdr}
-<p class="diarynote"><b>Sentiment, regime, and the AI desk moved.</b> Ticker desk, chart
-builder, regime &amp; allocation, and Global &amp; liquidity (VIX, Fed, Google Trends,
-correlations) now live on the companion <a href="__SENTIMENT_URL__">Market Sentiment &amp;
-Regime</a> page, alongside the regime box, liqn stress read, and "today's read" that used
-to sit at the top of Market Diary.</p>
+{hdr.replace("Weekly Positioning Rundown", "Market Site")}
+<div class="navbar">
 <div class="tabs">
-  <button class="tab on" data-pane="p-pos">Positioning</button>
-  <button class="tab" data-pane="p-sub">Subsector</button>
-  <button class="tab" data-pane="p-stock">Single stock</button>
-  <button class="tab" data-pane="p-diary">Market diary</button>
+  <button class="tab on" data-pane="p-diary">Market</button>
+  <button class="tab" data-pane="p-sub">Groups</button>
+  <button class="tab" data-pane="p-stock">Stocks</button>
+  <button class="tab" data-pane="p-pos">Positioning</button>
+  <button class="tab" data-pane="p-data">Data</button>
+  <a class="xlink" href="__SENTIMENT_URL__">Sentiment &amp; Regime &rarr;</a>
 </div>
-<div id="p-pos" class="tabpane on">{body}</div>
+<div class="secnav" aria-label="Sections on this tab"></div>
+</div>
+<div id="p-diary" class="tabpane on">{diary}</div>
 <div id="p-sub" class="tabpane">{subsector}</div>
 <div id="p-stock" class="tabpane">{stockpage}</div>
-<div id="p-diary" class="tabpane">{diary}</div>
+<div id="p-pos" class="tabpane">{body}{si_html}</div>
+<div id="p-data" class="tabpane">{data_html}</div>
 </div>
 {ovh}
 <script>{posjs}
 {TAB_JS}
+{NAV_JS}
 {js_extra}
 </script>{zoom_js}</body></html>"""
 
@@ -440,22 +527,22 @@ def compose_sentiment(pos_html, top_html, aidesk_body, asof, site_url=""):
     zoom_js = minichart.MINI_JS + zoomjs.ZOOM_JS
     css = re.search(r'<style>(.*?)</style>', pos_html, re.S)
     poscss = css.group(1) if css else ""
-    backlink = (f'<p class="diarynote"><b>Positioning, subsector, and single-stock data '
-                f'live on the companion <a href="{html.escape(site_url)}">Market Site</a> '
-                'page.</b></p>') if site_url else ""
+    backlink = (f'<a class="xlink" style="margin-left:0" href="{html.escape(site_url)}">'
+                '&larr; Market Site (market, groups, stocks, positioning)</a>') if site_url else ""
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Market Sentiment &amp; Regime &mdash; {asof}</title>
-<style>{poscss}{TAB_CSS}</style></head><body>
+<style>{poscss}{TAB_CSS}{NAV_CSS}</style></head><body>
 <div class="wrap">
 <header><h1>Market Sentiment &amp; Regime</h1>
 <p class="dim">As of {asof} &middot; regime read, positioning-unwind watch, and the
 Global &amp; liquidity backdrop (VIX, Fed, Google Trends, correlations), plus the AI
 ticker desk and chart builder.</p></header>
-{backlink}
+<div class="navbar"><div class="tabs" style="border:0">{backlink}</div>
+<div class="secnav" aria-label="Sections on this page"></div></div>
 {top_html}
 {aidesk_body}
-</div>{zoom_js}</body></html>"""
+</div><script>{NAV_JS}</script>{zoom_js}</body></html>"""
 
 BREADTH_COLS = [("adv","Adv"),("dec","Decl"),("net","Net"),
                 ("hi52","Highs"),("lo52","Lows"),("hl_net","Net"),
@@ -1039,41 +1126,17 @@ def build(out=None):
     # earnrx.py's own docstring for why this can't just be a fixed lookback.
     _t(lambda: __import__("earnrx").fetch(), "earnrx fetch")
 
-    diary = (FR.panel(fresh)
-             + liqn_panel()
-             # liqnnews.py ships in CODE_PATCHES.md, NOT in CODE_BUNDLE.md, so it may
-             # legitimately be absent on a container that restored only the bundle.
-             # _t swallows the ImportError and returns "", which is why this is safe to
-             # call unconditionally -- and why dropping the call entirely (as an earlier
-             # draft of the page split did) silently loses the News calendar section
-             # instead of failing loudly.
-             + _t(lambda: __import__("liqnnews").panel(), "liqn news calendar")
-             + "<h2>Short interest &mdash; market-wide</h2>"
-             + '<p class="grpnote">FINRA bi-monthly settlements, chain-linked so a '
-               'change in the covered panel cannot masquerade as a change in '
-               'positioning. Name-level covering and building live on the '
-               '<b>Single stock</b> tab.</p>'
-             + _t(lambda: __import__("report").si_history_html(), "si index")
-             + si_history_panel(epx)
-             + _t(lambda: __import__("etfsi").panel(), "etf si")
-             # Basket-level SI across recent settlements, and the absolute
-             # extremes. Everything else on this board ranks short interest by
-             # CHANGE over ONE settlement; nothing aggregated to jman's baskets
-             # or ranked by outright level. Only trustworthy since the FINRA
-             # backfill -- 30 of 94 settlements were silently missing, so any
-             # multi-settlement change was over an unknown span.
-             + _t(lambda: __import__("sibaskets").html_panel(), "si baskets")
-             + sb_explorer_html()
-             + _t(lambda: __import__("diverge").html_panel(
-                   pd.read_parquet(f"{D}/diverge.parquet")), "divergences")
-             + _t(lambda: __import__("freshbar").panel(), "freshness")
-             # Per-feed collection audit: each feed against its OWN cadence and
-             # publication calendar, plus session-integrity checks. The existing
-             # freshness strip prints an as-of date; it cannot say whether that
-             # date is as current as it COULD be, which is how a third of the
-             # short-interest history went missing without anything noticing.
-             + "<h2>Feed collection audit &mdash; is every scheduled feed actually collecting?</h2>"
-             + _t(lambda: __import__("feedcheck").html_panel(), "feed check")
+    # Tabs follow the order jman actually trades in -- is the tide rising
+    # (Market), which groups lead (Groups), which names (Stocks), then who is
+    # positioned where (Positioning) -- with the pipeline's own bookkeeping
+    # (freshness, feed audit, research index) on a Data tab instead of mixed
+    # into the market read. Every fragment below is the same string the old
+    # single "Market diary" tab carried; only where it lands changed.
+    _div = lambda: _t(lambda: __import__("diverge").html_panel(
+        pd.read_parquet(f"{D}/diverge.parquet")), "divergences")
+    diary = (regime_html(reg)
+             + "<h2>Today's read &mdash; written from the data below</h2>"
+             + _t(lambda: auto_read(conf, sig, fl, si, reg, fresh, brows, sbrow), "today's read")
              + "<h2>Market internals &mdash; breadth</h2>"
              + '<p class="grpnote">Computed here over the screened US tape '
                '(mcap &ge; $300M, real common stock), not scraped. <b>MA stack</b> is the '
@@ -1082,16 +1145,39 @@ def build(out=None):
                'it normally does.</p>'
              + breadth_html(brows)
              + stockbee_html(sbrow, sbh)
-             + si_breadth_html(si, _bars_for_si)
              + mcclellan_html(bhist)
-             + _t(lambda: __import__("earnrx").html_panel(), "earnings-reaction breadth")
+             + sb_explorer_html()
+             + _div()
+             + _t(lambda: __import__("earnrx").html_panel(), "earnings-reaction breadth"))
+    # Every short-interest read in one place, after COT and flows on the
+    # Positioning tab -- it used to be split three ways across tabs.
+    si_tab = ("<h2>Short interest &mdash; market-wide</h2>"
+             + '<p class="grpnote">FINRA bi-monthly settlements, chain-linked so a '
+               'change in the covered panel cannot masquerade as a change in '
+               'positioning. Name-level covering and building live on the '
+               '<b>Stocks</b> tab.</p>'
+             + _t(lambda: __import__("report").si_history_html(), "si index")
+             + si_history_panel(epx)
+             + si_breadth_html(si, _bars_for_si)
+             + _t(lambda: __import__("etfsi").panel(), "etf si")
+             # Basket-level SI across recent settlements, and the absolute
+             # extremes. Only trustworthy since the FINRA backfill -- 30 of 94
+             # settlements were silently missing before it.
+             + _t(lambda: __import__("sibaskets").html_panel(), "si baskets"))
+    # Crowd attention and crowd-ranked news are about names, so they sit with
+    # the single-stock reads.
+    crowd_extra = (liqn_panel()
+             + _t(lambda: __import__("liqnnews").panel(), "liqn news calendar"))
+    data_tab = (FR.panel(fresh)
+             + _t(lambda: __import__("freshbar").panel(), "freshness")
+             # Per-feed collection audit: each feed against its OWN cadence and
+             # publication calendar, plus session-integrity checks.
+             + "<h2>Feed collection audit &mdash; is every scheduled feed actually collecting?</h2>"
+             + _t(lambda: __import__("feedcheck").html_panel(), "feed check")
              + "<h2>Research library</h2>"
              + '<p class="grpnote">Everything in the connected notes folder, indexed by '
                'source and date. Links open the local file.</p>'
              + research_html(rows)
-             # Notes renders only when there ARE notes. An empty section that says
-             # "no entries yet" every single build is a permanent piece of furniture
-             # that never carries information.
              + ("<h2>Notes</h2>" + ent_html if ent_html else ""))
 
     # Regime evidence, mirrored onto the companion page. Every fragment here is
@@ -1218,7 +1304,8 @@ def build(out=None):
     js_extra = ETFX_JS.replace("__EFC__", json.dumps(efc, separators=(",", ":")))
     asof_str = f"{pd.Timestamp(cot_asof):%Y-%m-%d}"
     h = compose(pos_html, subsector_board(sub, subsrc), diary, "", js_extra,
-                asof_str, stockpage=stockpage)
+                asof_str, stockpage=stockpage + crowd_extra, si_html=si_tab,
+                data_html=data_tab)
     open(out, "w").write(h)
     # Second page, same run: no pipeline is duplicated -- this only re-assembles
     # already-computed fragments into their own file.
