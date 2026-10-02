@@ -25,7 +25,7 @@ CORR_SET = [("SPY", "S&P 500"), ("QQQ", "Nasdaq 100"), ("IWM", "Small caps"),
             ("TLT", "Long bonds"), ("UUP", "Dollar"), ("GLD", "Gold"), ("USO", "Oil"),
             ("BTC-USD", "Bitcoin"), ("HYG", "High yield"), ("XLE", "Energy"),
             ("XLF", "Financials"), ("SMH", "Semis"), ("XLU", "Utilities"), ("ARKK", "Spec growth")]
-PATH_DAYS = 126   # ~6 months of closes, sampled every other day
+PATH_DAYS = 126   # ~6 months of closes, sampled every third day (page-size budget)
 CORR_DAYS = 63
 
 
@@ -98,8 +98,11 @@ def build(sub, efc, regime=None):
         cc = er.corrwith(gr).dropna().sort_values(ascending=False)
         # The closest-trading ETF that actually carries each series: a miner
         # basket's best match may have flows but no FINRA short-interest file.
-        fe = next((e for e in cc.index if _has(e, "flow")), None)
-        se = next((e for e in cc.index if _has(e, "si")), None)
+        # ...but only if it genuinely trades like the group; a loose match
+        # (an EM fund standing in for bitcoin miners) misleads more than a gap.
+        good = cc[cc >= 0.6].index
+        fe = next((e for e in good if _has(e, "flow")), None)
+        se = next((e for e in good if _has(e, "si")), None)
         etf, ec = (fe, round(float(cc[fe]), 2)) if fe else (None, None)
         sie, sic = (se, round(float(cc[se]), 2)) if se else (None, None)
         sec = g.split(" - ")[0] if " - " in g else "Other"
@@ -140,7 +143,7 @@ def build(sub, efc, regime=None):
     for sym in c.columns:
         s = c[sym].dropna()
         if len(s) < 130: continue
-        p = s.iloc[-PATH_DAYS::2]
+        p = s.iloc[-PATH_DAYS::3]
         base = float(p.iloc[0])
         g = g_of.get(sym) or ((idx.get(sym, {}).get("groups") or [None])[0])
         corr = mr.corrwith(rets[sym]).dropna().sort_values()
@@ -148,7 +151,7 @@ def build(sub, efc, regime=None):
         e = idx.get(sym, {}).get("si") or {}
         TK[sym] = {
             "g": g,
-            "p": [round(100 * (v / base - 1), 1) for v in p.values], "px": round(float(s.iloc[-1]), 2),
+            "p": [round(100 * (v / base - 1)) for v in p.values], "px": round(float(s.iloc[-1]), 2),
             "m50": int(last[sym] > ma50[sym]) if np.isfinite(ma50[sym]) else None,
             "m200": int(last[sym] > ma200[sym]) if np.isfinite(ma200[sym]) else None,
             "rs1": round(float(rs1[sym]), 1) if np.isfinite(rs1[sym]) else None,
@@ -194,13 +197,24 @@ def build(sub, efc, regime=None):
         if e in TK: continue
         s_ = ec_[e].dropna()
         if len(s_) < 210: continue
-        p = s_.iloc[-PATH_DAYS::2]; base = float(p.iloc[0])
+        p = s_.iloc[-PATH_DAYS::3]; base = float(p.iloc[0])
         m50, m200 = s_.rolling(50).mean().iloc[-1], s_.rolling(200).mean().iloc[-1]
         r = lambda n: 100 * (s_.iloc[-1] / s_.iloc[-1 - n] - 1)
         sr = lambda n: 100 * (spy_e.iloc[-1] / spy_e.iloc[-1 - n] - 1)
         corr = mre.corrwith(eret[e]).dropna().drop(e, errors="ignore").sort_values()
-        TK[e] = {"g": None, "etf": 1,
-                 "p": [round(100 * (x / base - 1), 1) for x in p.values], "px": round(float(s_.iloc[-1]), 2),
+        ac = mre[[a for a in ASSET_COT if a in mre.columns]].corrwith(eret[e]).dropna()
+        ac = ac[ac.abs() >= 0.4].sort_values(ascending=False)
+        ecot = next(([ASSET_COT[a], round(float(ac[a]), 2)] for a in ac.index if ASSET_COT[a] in TC), None)
+        if ecot is None and cot is not None:
+            for a in ac.index:
+                k = cot[cot.cftc_contract_market_code == ASSET_COT[a]].sort_values("date").tail(52)
+                if len(k):
+                    TC[ASSET_COT[a]] = {"nm": str(k.contract_market_name.iloc[-1]).title()[:40],
+                                        "p": round(float(k.ls_pctile52.iloc[-1])),
+                                        "s": [None if not np.isfinite(x) else round(float(x)) for x in k.ls_pctile52]}
+                    ecot = [ASSET_COT[a], round(float(ac[a]), 2)]; break
+        TK[e] = {"g": None, "etf": 1, "cot": ecot,
+                 "p": [round(100 * (x / base - 1)) for x in p.values], "px": round(float(s_.iloc[-1]), 2),
                  "m50": int(s_.iloc[-1] > m50), "m200": int(s_.iloc[-1] > m200),
                  "rs1": round(float(r(21) - sr(21)), 1), "rs3": round(float(r(63) - sr(63)), 1),
                  "rr": None, "hi": round(float(100 * (s_.iloc[-1] / s_.iloc[-252:].max() - 1)), 1),
@@ -302,8 +316,8 @@ function show(sym){
    add(z<=-1?'p':'o',(z>=1?'Shorts <b>building</b> ':z<=-1?'Shorts <b>covering</b> ':'Short interest ')+f1(pc,'%')+' at the '+esc(t.si.settle)+' settlement, '+t.si.dtc+' days to cover'+(z>=1?' &mdash; fuel if it breaks out, pressure if it fails':''),z<=-1?0.5:0);}
  if(sec)add(sec.b50>=60?'p':sec.b50<=35?'n':'o','Sector breadth (<b>'+esc(g.s)+'</b>): '+sec.b50+'% of names above their 50d',sec.b50>=60?0.5:sec.b50<=35?-0.5:0);
  if(g)add(g.b50>=60?'p':g.b50<=35?'n':'o','Subsector breadth: '+g.b50+'% of the group above its 50d, '+g.b200+'% above its 200d',g.b50>=60?0.5:g.b50<=35?-0.5:0);
- var C=g&&g.cot&&g.cot[0]?X.TC[g.cot[0]]:null;
- if(C)add(C.p>=90||C.p<=10?'n':'o','Futures (<b>'+esc(C.nm)+'</b>'+(g.cotr?', which this group tracks at r='+g.cotr:'')+'): large specs at the <b>'+C.p+(C.p%100>=11&&C.p%100<=13?'th':['th','st','nd','rd'][C.p%10]||'th')+'</b> 52-week percentile'+(C.p>=90?' &mdash; crowded long':C.p<=10?' &mdash; washed out':''),C.p>=90?-0.5:0);
+ var C=g&&g.cot&&g.cot[0]?X.TC[g.cot[0]]:(t.cot?X.TC[t.cot[0]]:null), cr_=g?g.cotr:(t.cot?t.cot[1]:null);
+ if(C)add(C.p>=90||C.p<=10?'n':'o','Futures (<b>'+esc(C.nm)+'</b>'+(cr_?', which this '+(g?'group':'fund')+' tracks at r='+cr_:'')+'): large specs at the <b>'+C.p+(C.p%100>=11&&C.p%100<=13?'th':['th','st','nd','rd'][C.p%10]||'th')+'</b> 52-week percentile'+(C.p>=90?' &mdash; crowded long':C.p<=10?' &mdash; washed out':''),C.p>=90?-0.5:0);
  if(X.R)add('o','Market regime <b>'+esc(X.R.r)+'</b> ('+(X.R.s>0?'+':'')+X.R.s+')'+(X.R.r==='DOWNTREND'?' &mdash; long setups fight the tape':''),X.R.r==='DOWNTREND'?-1:X.R.r==='BREAKOUT'?0.5:0);
  var v=score>=3?['good','CONSTRUCTIVE']:score<=-2?['bad','AVOID / SHORT SIDE']:['warn','MIXED'];
  var px=t.px!=null?'$'+t.px.toLocaleString():'';
@@ -312,8 +326,8 @@ function show(sym){
  var charts=[];
  charts.push('<div class="mc"><h6>'+esc(sym)+' &middot; 6 months<b>'+f1(t.p?t.p[t.p.length-1]:null,'%')+'</b></h6>'+(t.p?spark(t.p,{c:'#c3c2b7',zero:true}):'<div class="na">no price path</div>')+'</div>');
  var fl=pane(E,'flow',26), si=pane(ES,'si',26);
- charts.push('<div class="mc"><h6>'+esc(ef?sym:(etf||'group ETF'))+' weekly flows, 6 months<b>$M</b></h6>'+(fl?spark(fl,{bars:true,zero:true}):'<div class="na">no flow data</div>')+'</div>');
- charts.push('<div class="mc"><h6>'+esc(sie||'group ETF')+' short interest<b>shares</b></h6>'+(si?spark(si,{c:'#9085e9'}):'<div class="na">no short-interest data</div>')+'</div>');
+ charts.push('<div class="mc"><h6>'+esc(ef?sym:(etf||'group ETF'))+' weekly flows, 6 months<b>'+(ef?'$M':(g&&g.ec?'r='+g.ec+' &middot; $M':''))+'</b></h6>'+(fl?spark(fl,{bars:true,zero:true}):'<div class="na">no ETF with flow data trades closely with this group</div>')+'</div>');
+ charts.push('<div class="mc"><h6>'+esc(sie||'group ETF')+' short interest<b>'+(!ef&&g&&g.sic?'r='+g.sic+' &middot; ':'')+'shares</b></h6>'+(si?spark(si,{c:'#9085e9'}):'<div class="na">no ETF with short-interest data trades closely with this group</div>')+'</div>');
  charts.push('<div class="mc"><h6>'+(C?esc(C.nm)+' &middot; large specs':'Futures positioning')+'<b>'+(C?C.p+'th pct':'')+'</b></h6>'+(C?spark(C.s,{c:'#fab219',band:[10,90]}):'<div class="na">no futures contract maps to this group</div>')+'</div>');
  h+='<div class="lkgrid"><div><ul class="why">'+W.join('')+'</ul></div><div class="mini4">'+charts.join('')+'</div></div>';
  var row='';
