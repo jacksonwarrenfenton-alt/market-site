@@ -971,7 +971,9 @@ def build(out=None):
             "no flow history in this container - etfdb_flows.parquet was not "
             "restored (etfdb 403s Cloudflare here; master CSVs live on the Mac)",
             "weekly &middot; etfdb daily series summed to Friday")
-    fresh = [FR.cot(cot_asof), FR.finra(si_settle), flow_row]
+    # si_settle is None when si_latest.parquet is absent (si.build() not run);
+    # report.py already skips the FINRA chip in that case -- do the same here.
+    fresh = [FR.cot(cot_asof)] + ([FR.finra(si_settle)] if si_settle is not None else []) + [flow_row]
 
     bp = f"{D}/cot_built.parquet"
     d = pd.read_parquet(bp) if os.path.exists(bp) else C.build(C.fetch())

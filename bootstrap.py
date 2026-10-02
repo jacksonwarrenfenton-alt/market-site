@@ -1,5 +1,6 @@
 """Cold-start a fresh container into a full site build, in one command.
 
+    pip install -r requirements.txt
     python3 bootstrap.py            # every step, then marketsite.build()
     python3 bootstrap.py --no-build # data only
     python3 bootstrap.py cot si     # just the named steps (no build)
@@ -35,12 +36,33 @@ def _deepbars():
     deepbars.fetch(sorted(breadth.universe().symbol.unique()))
 
 
+def _derived():
+    # Files the audit gates on but marketsite.build() only writes AFTER the
+    # audit (or nothing writes at all), so a cold container fails the gate.
+    import prices as P, universe as U, breadth as BR, subsector as SS
+    import tickerdesk as TDK, diverge as DV
+    proxies = sorted(set(U.BASKET_PROXY.values()))
+    epx = P.fetch_list(proxies, force=True)
+    miss = sorted(set(proxies) - set(epx.columns))
+    if miss:  # transient Yahoo misses -- one targeted retry merges into the cache
+        time.sleep(5)
+        epx = P.fetch_list(miss, force=True)
+    _, _, bars = BR.build()
+    u = BR.universe()
+    sub, _ = SS.build(bars, u, epx)
+    TDK.save(sub)
+    dv = DV.build(bars, u)
+    if dv is not None:
+        dv.to_parquet(f"{D}/diverge.parquet")
+
+
 def _sbstat():
     subprocess.run([sys.executable, f"{HERE}/run_sbstat.py"], check=True, cwd=HERE)
 
 
 STEPS = [
     ("si",        lambda: __import__("si").screener()),
+    ("si_latest", lambda: __import__("si").build()),
     ("cot",       _cot),
     ("sifinra",   lambda: __import__("sifinra").build()),
     ("breadth",   lambda: __import__("breadth").build(force=True)),
@@ -48,7 +70,7 @@ STEPS = [
     ("sbstat",    _sbstat),
     ("daily",     lambda: __import__("daily_refresh").run()),
     ("ratioscan", lambda: __import__("ratioscan").save()),
-    ("tickerdesk", lambda: __import__("tickerdesk").save()),
+    ("derived",   _derived),
 ]
 
 
