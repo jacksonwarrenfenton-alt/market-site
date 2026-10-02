@@ -61,8 +61,8 @@ def panel():
             f'<td><span class="cty">{html.escape(str(r["country"]))}</span></td>'
             f'<td class="nm2">{html.escape(str(r["title"]))}</td>'
             f'<td><span class="imp imp-{imp}">{r["impact"]}</span></td>'
-            f'<td class="dim">fcst {html.escape(str(r["forecast"] or "&ndash;"))} '
-            f'&middot; prev {html.escape(str(r["previous"] or "&ndash;"))}</td></tr>')
+            f'<td class="dim">fcst {html.escape(str(r["forecast"] or "–"))} '
+            f'&middot; prev {html.escape(str(r["previous"] or "–"))}</td></tr>')
     n_hi = int((d.impact == "High").sum())
     return ('<h2>Macro calendar &mdash; this week</h2>'
             f'<p class="grpnote">High and medium impact only, {n_hi} high-impact '
