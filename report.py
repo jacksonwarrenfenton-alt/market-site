@@ -158,9 +158,10 @@ def confluence(df):
     rows = []
     for _, r in df.iterrows():
         if r.n_data == 0: continue
-        cot = ("&ndash;" if _na(r.cot) else f"{r.cot:.0f}th")
-        flw = ("&ndash;" if _na(r.flow_pct) else f"{r.flow_pct:+.2f}%")
-        sii = ("&ndash;" if _na(r.si_z) else f"{r.si_z:+.0f}pp")
+        # Plain U+2013, not "&ndash;": cell() escapes txt, which printed the entity literally.
+        cot = ("–" if _na(r.cot) else f"{r.cot:.0f}th")
+        flw = ("–" if _na(r.flow_pct) else f"{r.flow_pct:+.2f}%")
+        sii = ("–" if _na(r.si_z) else f"{r.si_z:+.0f}pp")
         vcls = ("v3" if r.agree >= 3 else "v2" if r.agree >= 2 else "vm")
         badge = (f'<span class="vb {vcls}">{esc(r.verdict)}</span>'
                  f'<span class="vn">{int(r.agree)}/3</span>') if r.verdict else \
