@@ -35,20 +35,22 @@ def panel(desk, lib=None, regime_html="", global_html=""):
     html_head = f'''<div class="aiwrap">
   <div class="aihead">
     <div>
-      <h2 class="aih2">AI desk</h2>
-      <p class="grpnote aisub">One ticker, every dataset this board holds &mdash;
-      COT positioning, ETF flows, short interest and subsector strength, joined
-      and flagged. Then a chart builder for everything the board does not hold.</p>
+      <h2 class="aih2">Research desk</h2>
+      <p class="grpnote aisub">Chart builder, regime &amp; allocation, and the global
+      backdrop. Single-ticker lookups live on Market Site&rsquo;s Stocks tab.</p>
     </div>
     <div class="aitabs">
-      <button class="aitab on" data-p="p-desk">Ticker desk</button>
-      <button class="aitab" data-p="p-chart">Chart builder</button>
+      <button class="aitab on" data-p="p-chart">Chart builder</button>
       {regime_tab}
       {global_tab}
     </div>
   </div>
 
-  <section id="p-desk" class="aipane">
+  <!-- The ticker desk moved to Market Site's Stocks tab (deskreport.py), which
+       adds the charts, group members, breadth and correlations it lacked. The
+       section stays in the DOM, hidden, because this page's script still binds
+       to its inputs. -->
+  <section id="p-desk" class="aipane" hidden>
     <div class="askbar">
       <input id="tq" type="text" placeholder="Ticker &mdash; try GLD, NVDA, SOXL, PLTR"
              autocomplete="off" spellcheck="false">
@@ -61,7 +63,7 @@ def panel(desk, lib=None, regime_html="", global_html=""):
     <div id="tai" class="aibox" hidden></div>
   </section>
 
-  <section id="p-chart" class="aipane" hidden>
+  <section id="p-chart" class="aipane">
     <p class="grpnote cbnote">Charts are drawn from <b>{nser} series &times; {nwk}
     weeks embedded in this page</b> &mdash; prices, COT percentiles, breadth,
     basket flows and short-interest tilt. A published page cannot reach the

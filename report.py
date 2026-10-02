@@ -18,6 +18,12 @@ EXCLUDE  = ("Ags", "Softs")
 
 COOL, WARM, MID = (0x39,0x87,0xe5), (0xe6,0x67,0x67), (0x38,0x38,0x35)
 
+
+def _ord(v):
+    """12 -> '12th', 2 -> '2nd', 93 -> '93rd' (percentiles in prose and cells)."""
+    n = int(round(float(v)))
+    return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
+
 def _na(v): return v is None or (isinstance(v, float) and np.isnan(v))
 
 def heat(pc):
@@ -64,7 +70,7 @@ def rg(r):
 def thin(r):
     v = r.get("oi_pctile52")
     if _na(v) or v >= THIN_OI: return ""
-    return (f' <span class="thin" title="Open interest in the {v:.0f}th percentile of '
+    return (f' <span class="thin" title="Open interest in the {_ord(v)} percentile of '
             f'its own 52 weeks - the reading is real, the market is just small">THIN</span>')
 
 def cname(r, ctx=""):
@@ -159,7 +165,7 @@ def confluence(df):
     for _, r in df.iterrows():
         if r.n_data == 0: continue
         # Plain U+2013, not "&ndash;": cell() escapes txt, which printed the entity literally.
-        cot = ("–" if _na(r.cot) else f"{r.cot:.0f}th")
+        cot = ("–" if _na(r.cot) else _ord(r.cot))
         flw = ("–" if _na(r.flow_pct) else f"{r.flow_pct:+.2f}%")
         sii = ("–" if _na(r.si_z) else f"{r.si_z:+.0f}pp")
         vcls = ("v3" if r.agree >= 3 else "v2" if r.agree >= 2 else "vm")

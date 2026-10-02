@@ -108,20 +108,31 @@ def regime_html(r):
             f'<p class="rgd">{" &middot; ".join(bits)}</p>'
             f'<div class="rgset"><h4>Setups live in this regime</h4><ul>{setups}</ul></div></div>')
 
+def _ord(v):
+    """12 -> '12th', 2 -> '2nd', 1 -> '1st' (percentiles in prose)."""
+    n = int(round(float(v)))
+    suf = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suf}"
+
+
 def auto_read(conf, sig, flows_latest, si, reg, fresh, brows=None, sbrow=None):
     L = []
     hot = conf[conf.verdict.isin(["CROWDED", "WASHED OUT"])] if conf is not None and len(conf) else None
     if hot is not None and len(hot):
         for _, t in hot.head(4).iterrows():
+            # Only the legs that exist for this theme -- a missing one used to
+            # print as "nanth" / "+nanpp".
+            parts = []
+            if np.isfinite(t.cot): parts.append(f'COT specs at the {_ord(t.cot)} percentile')
+            if np.isfinite(t.flow_pct): parts.append(f'flows {t.flow_pct:+.2f}% of AUM')
+            if np.isfinite(t.si_z): parts.append(f'short-interest breadth tilt {t.si_z:+.0f}pp')
             L.append(f'<b>{html.escape(t.theme)}</b> is <b>{t.verdict}</b> '
-                     f'({int(t.agree)}/3 datasets agree) &mdash; COT specs at the '
-                     f'{t.cot:.0f}th percentile, flows {t.flow_pct:+.2f}% of AUM, '
-                     f'short-interest breadth tilt {t.si_z:+.0f}pp.')
+                     f'({int(t.agree)}/3 datasets agree) &mdash; ' + ", ".join(parts) + '.')
     if sig is not None and len(sig):
         a = sig.iloc[0]; b = sig[sig["read"] != sig.iloc[0]["read"]].head(1)
         L.append(f'Top-ranked positioning signal is <b>{html.escape(str(a["name"]))}</b> &mdash; '
                  f'{html.escape(a.phrase)}, reading <b>{a["read"]}</b> '
-                 f'({a.pct52:.0f}th on 52w, {a.pct3y:.0f}th on 3yr).')
+                 f'({_ord(a.pct52)} on 52w, {_ord(a.pct3y)} on 3yr).')
         if len(b):
             b = b.iloc[0]
             L.append(f'Best signal the other way is <b>{html.escape(str(b["name"]))}</b> &mdash; '
@@ -484,6 +495,12 @@ def compose(pos_html, subsector, diary, css_extra, js_extra, asof, stockpage="",
     head = re.search(r'(<header>.*?</header>)', body, re.S)
     hdr = head.group(1) if head else ""
     body = body.replace(hdr, "") if hdr else body
+    # report.py's section 3 (name-level short-interest movers) repeats the
+    # Stocks tab's covering/building table; drop it here so it shows once.
+    a = body.find("<h2>3 &middot; Short interest")
+    b = body.find('<div class="note" style="margin-top:28px">', a)
+    if a >= 0 and b > a:
+        body = body[:a] + body[b:]
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Market Site &mdash; {asof}</title>
@@ -1134,9 +1151,12 @@ def build(out=None):
     # single "Market diary" tab carried; only where it lands changed.
     _div = lambda: _t(lambda: __import__("diverge").html_panel(
         pd.read_parquet(f"{D}/diverge.parquet")), "divergences")
-    diary = (regime_html(reg)
-             + "<h2>Today's read &mdash; written from the data below</h2>"
-             + _t(lambda: auto_read(conf, sig, fl, si, reg, fresh, brows, sbrow), "today's read")
+    # Dashboard first (quote tape, regime + leaderboard, heatmap) -- the
+    # at-a-glance layer the reference sites lead with -- then the evidence.
+    _rg = regime_html(reg)
+    _rd = _t(lambda: auto_read(conf, sig, fl, si, reg, fresh, brows, sbrow), "today's read")
+    _dash = _t(lambda: __import__("dashboard").top(sub, _rg, _rd), "dashboard")
+    diary = ((_dash or (_rg + "<h2>Today's read &mdash; written from the data below</h2>" + _rd))
              + "<h2>Market internals &mdash; breadth</h2>"
              + '<p class="grpnote">Computed here over the screened US tape '
                '(mcap &ge; $300M, real common stock), not scraped. <b>MA stack</b> is the '
@@ -1180,49 +1200,11 @@ def build(out=None):
              + research_html(rows)
              + ("<h2>Notes</h2>" + ent_html if ent_html else ""))
 
-    # Regime evidence, mirrored onto the companion page. Every fragment here is
-    # ALSO rendered inside `diary` above -- these are the same already-computed
-    # strings, re-emitted, not a second pipeline pass. sbui.panel() ships its own
-    # <script id="sbdata"> payload and handler, and the remaining panels are
-    # static HTML/SVG whose brushes ZOOM_JS already wires on this page, so each
-    # one is self-contained and works standalone in the second document.
-    regime_inputs = ("<h2>Feed freshness &mdash; what this regime read is built on</h2>"
-             + '<p class="grpnote">Same strip as Market Diary. A regime call is only '
-               'as current as its slowest input, and short interest in particular '
-               'settles bi-monthly &mdash; check it here before acting on the box above.</p>'
-             + _t(lambda: FR.panel(fresh), "freshness strip (sentiment)")
-             + _t(lambda: __import__("freshbar").panel(), "freshness bar (sentiment)")
-             + _t(lambda: __import__("feedcheck").html_panel(), "feed check (sentiment)")
-             + "<h2>Market internals &mdash; the breadth vote, unpacked</h2>"
-             + '<p class="grpnote">Computed over the screened US tape (mcap &ge; $300M, '
-               'real common stock). <b>MA stack</b> is the mean z-score of the five '
-               '%-above-MA columns against their own trailing year.</p>'
-             + breadth_html(brows)
-             + stockbee_html(sbrow, sbh)
-             + mcclellan_html(bhist)
-             + sb_explorer_html()
-             + _t(lambda: __import__("diverge").html_panel(
-                   pd.read_parquet(f"{D}/diverge.parquet")), "divergences (sentiment)"))
-
-    # Regime, the liqn stress read and "today's read" are sentiment/regime reads
-    # rather than raw positioning, so they lead the companion page instead of
-    # sitting at the top of Market Diary. Computed once, placed once.
-    sentiment_top = (regime_html(reg)
-             + _t(lambda: __import__("liqn").stress_panel(compact=True), "liqn stress")
-             + "<h2>Today's read &mdash; written from the data above</h2>"
-             + auto_read(conf, sig, fl, si, reg, fresh, brows, sbrow)
-             # The regime box above prints its breadth vote as a single summary
-             # line. The panels that PRODUCE that vote -- the raw internals, the
-             # Stockbee cohorts, McClellan, and the price-vs-participation
-             # divergences -- used to exist only on Market Site, so this page
-             # asserted a regime without showing its own evidence, and the AI
-             # desk sitting directly below it could not cite the reading it was
-             # reasoning from. Duplicated here rather than moved: Market Diary
-             # keeps every one of these, because that is where they are looked
-             # for. The dated feed strip leads, because a regime read off a
-             # stale feed is the one failure mode none of these panels reveal
-             # on their own.
-             + regime_inputs)
+    # The regime box, today's read, internals, Stockbee and divergences all
+    # lead Market Site's Market tab now, and freshness lives on its Data tab;
+    # repeating them here only made two pages to keep in sync. This page keeps
+    # what exists nowhere else: the crowd stress read, then the research desk.
+    sentiment_top = _t(lambda: __import__("liqn").stress_panel(compact=True), "liqn stress")
 
     try:
         import tickerdesk as TDK, aitab as AIT, chartdata as CDA, json as _json
@@ -1302,9 +1284,18 @@ def build(out=None):
         print("etfx combined specs failed:", e, flush=True)
         efc = {}
     js_extra = ETFX_JS.replace("__EFC__", json.dumps(efc, separators=(",", ":")))
+    # The single-ticker report leads the Stocks tab; its renderer reads EFC, so
+    # it runs after ETFX_JS defines it.
+    try:
+        import deskreport as DR
+        desk_html = DR.panel(sub, efc, reg)
+        js_extra += DR.LOOKUP_JS
+    except Exception as e:
+        print("desk report failed:", e, flush=True)
+        desk_html = ""
     asof_str = f"{pd.Timestamp(cot_asof):%Y-%m-%d}"
     h = compose(pos_html, subsector_board(sub, subsrc), diary, "", js_extra,
-                asof_str, stockpage=stockpage + crowd_extra, si_html=si_tab,
+                asof_str, stockpage=desk_html + stockpage + crowd_extra, si_html=si_tab,
                 data_html=data_tab)
     open(out, "w").write(h)
     # Second page, same run: no pipeline is duplicated -- this only re-assembles
