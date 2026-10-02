@@ -13,9 +13,11 @@ tokens it takes to follow it). Each step is independent: a failure is logged
 and the next step still runs, and the summary says exactly which feeds are
 missing.
 
-Inputs that are NOT fetched here -- restore them into ~/pos first if you have
+TradingView, Finviz and moomoo subsector scans ARE fetched here now
+(cloudscans.py), as are ETF flows (etfdbflows.py) and a login-free crowd feed
+(crowdfeed.py). Inputs that are NOT fetched here -- restore them into ~/pos first if you have
 them, every one degrades gracefully when absent:
-  tv_scan.csv, tv_probes_253.csv   TradingView walk (Mac, weekly)
+  tv_probes_253.csv                TradingView walk's probe map (git has a seed)
   liqn_hist.csv, liqnnews_hist.csv liqn.ai captures (Mac, daily) -- when absent,
                                    the crowd panels read crowd_hist.csv instead
   crowd_hist.csv                   crowdfeed.py's own history: restore before,
@@ -43,7 +45,8 @@ def _seed():
     os.makedirs(D, exist_ok=True)
     # The build reads these from ~/pos; their source of truth is the repo. When
     # the repo IS ~/pos (the trigger clones straight into it) there is nothing to do.
-    for f in ("custom176-rosters.txt", "tv_probes_253.csv"):
+    for f in ("custom176-rosters.txt", "tv_probes_253.csv",
+              "finviz_xmap.json", "moomoo_xmap.json"):
         src, dst = f"{HERE}/{f}", f"{D}/{f}"
         if os.path.exists(src) and not os.path.exists(dst):
             shutil.copy(src, dst)
@@ -115,6 +118,7 @@ STEPS = [
     ("ratioscan", lambda: __import__("ratioscan").save()),
     ("etfflows",  _etfflows),
     ("crowd",     lambda: __import__("crowdfeed").run()),
+    ("scans",     lambda: __import__("cloudscans").run()),
     ("derived",   _derived),
 ]
 
