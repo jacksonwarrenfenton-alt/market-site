@@ -16,7 +16,10 @@ missing.
 Inputs that are NOT fetched here -- restore them into ~/pos first if you have
 them, every one degrades gracefully when absent:
   tv_scan.csv, tv_probes_253.csv   TradingView walk (Mac, weekly)
-  liqn_hist.csv, liqnnews_hist.csv liqn.ai captures (Mac, daily)
+  liqn_hist.csv, liqnnews_hist.csv liqn.ai captures (Mac, daily) -- when absent,
+                                   the crowd panels read crowd_hist.csv instead
+  crowd_hist.csv                   crowdfeed.py's own history: restore before,
+                                   save after (this run appends today's row)
   chart_index_src.html             chartlib's page index (Mac)
 
 With --site-url/--sentiment-url, the cross-link placeholders are substituted
@@ -111,6 +114,7 @@ STEPS = [
     ("chartdata", lambda: __import__("chartdata").save()),
     ("ratioscan", lambda: __import__("ratioscan").save()),
     ("etfflows",  _etfflows),
+    ("crowd",     lambda: __import__("crowdfeed").run()),
     ("derived",   _derived),
 ]
 
