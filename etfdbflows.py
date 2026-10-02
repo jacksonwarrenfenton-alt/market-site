@@ -98,13 +98,13 @@ def parse(sym, page_html):
     return f[["symbol", "date", "flow_bn", "aum_bn"]]
 
 
-def harvest(syms=None, workers=4, verbose=True):
-    """One page load per fund; returns the frame and writes OUT."""
+def _harvest_chunk(syms):
+    """One browser, one tab, a slice of the funds. Runs in its own (forked)
+    process -- fork, not spawn, so it works whatever __main__ is, and the parent
+    never starts Playwright itself, so there is no browser state to inherit.
+    sync Playwright cannot share a browser across threads, and a single tab is
+    strictly serial -- so parallelism has to come from processes."""
     from playwright.sync_api import sync_playwright
-    if syms is None:
-        from universe import ETF_BASKETS
-        syms = sorted({s for v in ETF_BASKETS.values() for s in v})
-    trust_proxy_ca()
     out, fails = [], []
     with sync_playwright() as p:
         kw = {"args": ["--disable-blink-features=AutomationControlled"]}
@@ -116,29 +116,46 @@ def harvest(syms=None, workers=4, verbose=True):
         # Images/fonts/ads are most of the page weight and none of the data.
         ctx.route(re.compile(r".*\.(png|jpe?g|gif|svg|woff2?|ttf|mp4)(\?.*)?$"),
                   lambda r: r.abort())
-        pages = [ctx.new_page() for _ in range(workers)]
-        queue = list(syms)
-        i = 0
-        while queue:
-            batch, queue = queue[:workers], queue[workers:]
-            for pg, sym in zip(pages, batch):
-                got = None
-                for attempt in range(2):
-                    try:
-                        pg.goto(f"https://etfdb.com/etf/{sym}/", timeout=45000,
-                                wait_until="domcontentloaded")
-                        got = parse(sym, pg.content())
-                        if got is not None:
-                            break
-                    except Exception:
-                        pass
-                    time.sleep(2 + 3 * attempt)
-                (out.append(got) if got is not None else fails.append(sym))
-                i += 1
-            if verbose and i % 40 < workers:
-                print(f"  etfdb {i}/{len(syms)} ({len(fails)} failed)",
-                      file=sys.stderr, flush=True)
+        pg = ctx.new_page()
+        for sym in syms:
+            got = None
+            for attempt in range(2):
+                try:
+                    pg.goto(f"https://etfdb.com/etf/{sym}/", timeout=45000,
+                            wait_until="domcontentloaded")
+                    got = parse(sym, pg.content())
+                    if got is not None:
+                        break
+                except Exception:
+                    pass
+                time.sleep(2 + 3 * attempt)
+            (out.append(got) if got is not None else fails.append(sym))
         b.close()
+    return (pd.concat(out, ignore_index=True) if out else None), fails
+
+
+def harvest(syms=None, workers=6, verbose=True):
+    """One page load per fund, `workers` browsers in parallel; writes OUT."""
+    from concurrent.futures import ProcessPoolExecutor, as_completed
+    import multiprocessing as mp
+    if syms is None:
+        from universe import ETF_BASKETS
+        syms = sorted({s for v in ETF_BASKETS.values() for s in v})
+    trust_proxy_ca()
+    chunks = [syms[i::workers] for i in range(workers) if syms[i::workers]]
+    out, fails, done = [], [], 0
+    with ProcessPoolExecutor(len(chunks), mp_context=mp.get_context("fork")) as ex:
+        for f in as_completed([ex.submit(_harvest_chunk, c) for c in chunks]):
+            d, fl = f.result()
+            if d is not None: out.append(d)
+            fails += fl
+            done += 1
+            if verbose:
+                print(f"  etfdb worker {done}/{len(chunks)} done ({len(fails)} failed so far)",
+                      file=sys.stderr, flush=True)
+    if fails:  # second chance, serially -- usually a transient Cloudflare hiccup
+        d, fails = _harvest_chunk(fails)
+        if d is not None: out.append(d)
     if not out:
         raise RuntimeError("etfdb harvest got nothing -- Cloudflare or layout change")
     d = pd.concat(out, ignore_index=True)
