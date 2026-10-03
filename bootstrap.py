@@ -117,7 +117,6 @@ STEPS = [
     ("chartdata", lambda: __import__("chartdata").save()),
     ("ratioscan", lambda: __import__("ratioscan").save()),
     ("etfflows",  _etfflows),
-    ("liqn",      lambda: __import__("liqncloud").run()),   # no-op without LIQN_COOKIE
     ("crowd",     lambda: __import__("crowdfeed").run()),
     ("scans",     lambda: __import__("cloudscans").run()),
     ("derived",   _derived),
