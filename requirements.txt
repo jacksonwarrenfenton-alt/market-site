@@ -1,0 +1,9 @@
+pandas
+numpy
+pyarrow
+requests
+openpyxl
+pytrends
+lxml
+scipy
+playwright

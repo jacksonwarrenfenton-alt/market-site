@@ -109,10 +109,22 @@ def append(row):
     return d
 
 
+CROWD_HIST = f"{D}/crowd_hist.csv"   # crowdfeed.py: ApeWisdom + StockTwits
+
+
+def source():
+    """Which crowd record load() reads: liqn's own capture when it is there,
+    else the login-free cloud feed. Never a blend -- different universes."""
+    for p, lab in ((HIST, "liqn.ai"), (CROWD_HIST, "Reddit via ApeWisdom + StockTwits")):
+        if os.path.exists(p) and len(pd.read_csv(p)):
+            return p, lab
+    return None, None
+
+
 def load():
-    if not os.path.exists(HIST): return None
-    d = pd.read_csv(HIST)
-    if not len(d): return None
+    p, _ = source()
+    if p is None: return None
+    d = pd.read_csv(p)
     d["dt"] = pd.to_datetime(d.date, format="%b %d %Y", errors="coerce")
     return d.dropna(subset=["dt"]).sort_values("dt")
 
@@ -261,18 +273,24 @@ def crowd_panel():
             f'<td class="{"up" if up else "dn"}">{x["pct"]:+d}%</td></tr>'
             for x in rows) + '</tbody></table>')
 
+    _, src = source()
+    is_liqn = src == "liqn.ai"
+    win = "7d vs prior 7d" if is_liqn else "24h vs prior 24h"
     return (f'<h2>Social sentiment &mdash; crowd concentration</h2>'
             f'<div class="cwbox"><div class="cwhead">'
-            f'<span class="dim">liqn.ai Social IQ &middot; {r["date"]}</span>'
+            f'<span class="dim">{"liqn.ai Social IQ" if is_liqn else html.escape(src)} &middot; {r["date"]}</span>'
             f'<b class="{"crit" if hot else "good"}">{verdict}</b></div>'
             f'<div class="cwtiles">{tiles()}</div>'
             '<div class="cwgrid">'
             f'<div><h5>Loudest<span class="dim"> &middot; share of all posts</span></h5>{bars(loud)}</div>'
             f'<div><h5>Attention breakouts<span class="dim"> &middot; vs own baseline</span></h5>{surges(brk)}</div>'
-            f'<div><h5>Gaining the crowd<span class="dim"> &middot; 7d vs prior 7d</span></h5>{moves(gain,True)}</div>'
-            f'<div><h5>Losing the crowd<span class="dim"> &middot; 7d vs prior 7d</span></h5>{moves(lose,False)}</div>'
+            f'<div><h5>Gaining the crowd<span class="dim"> &middot; {win}</span></h5>{moves(gain,True)}</div>'
+            f'<div><h5>Losing the crowd<span class="dim"> &middot; {win}</span></h5>{moves(lose,False)}</div>'
             '</div>'
-            '<p class="dnote">Retail attention on X. Top-10 share is the '
+            + ('<p class="dnote">Retail attention on X. ' if is_liqn else
+               '<p class="dnote">Retail attention on Reddit (ApeWisdom mention counts); '
+               'bull/bear verdicts from StockTwits posters&rsquo; own tags. ')
+            + 'Top-10 share is the '
             'concentration read &mdash; the sentiment analogue of a crowded COT '
             'cohort. liqn&rsquo;s own caveat is worth keeping: attention is '
             'coincident and sometimes contrarian, and peak hype can mark a local '

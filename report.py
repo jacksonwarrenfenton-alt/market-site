@@ -18,6 +18,12 @@ EXCLUDE  = ("Ags", "Softs")
 
 COOL, WARM, MID = (0x39,0x87,0xe5), (0xe6,0x67,0x67), (0x38,0x38,0x35)
 
+
+def _ord(v):
+    """12 -> '12th', 2 -> '2nd', 93 -> '93rd' (percentiles in prose and cells)."""
+    n = int(round(float(v)))
+    return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
+
 def _na(v): return v is None or (isinstance(v, float) and np.isnan(v))
 
 def heat(pc):
@@ -64,7 +70,7 @@ def rg(r):
 def thin(r):
     v = r.get("oi_pctile52")
     if _na(v) or v >= THIN_OI: return ""
-    return (f' <span class="thin" title="Open interest in the {v:.0f}th percentile of '
+    return (f' <span class="thin" title="Open interest in the {_ord(v)} percentile of '
             f'its own 52 weeks - the reading is real, the market is just small">THIN</span>')
 
 def cname(r, ctx=""):
@@ -158,9 +164,10 @@ def confluence(df):
     rows = []
     for _, r in df.iterrows():
         if r.n_data == 0: continue
-        cot = ("&ndash;" if _na(r.cot) else f"{r.cot:.0f}th")
-        flw = ("&ndash;" if _na(r.flow_pct) else f"{r.flow_pct:+.2f}%")
-        sii = ("&ndash;" if _na(r.si_z) else f"{r.si_z:+.0f}pp")
+        # Plain U+2013, not "&ndash;": cell() escapes txt, which printed the entity literally.
+        cot = ("–" if _na(r.cot) else _ord(r.cot))
+        flw = ("–" if _na(r.flow_pct) else f"{r.flow_pct:+.2f}%")
+        sii = ("–" if _na(r.si_z) else f"{r.si_z:+.0f}pp")
         vcls = ("v3" if r.agree >= 3 else "v2" if r.agree >= 2 else "vm")
         badge = (f'<span class="vb {vcls}">{esc(r.verdict)}</span>'
                  f'<span class="vn">{int(r.agree)}/3</span>') if r.verdict else \
@@ -317,9 +324,11 @@ def si_section():
                 '<table class="mini"><thead><tr><th>Sym</th><th>Name</th><th>SI</th>'
                 '<th>% float</th><th>2w/2w</th><th>&Delta;Z</th><th>Lvl Z</th><th>DTC</th><th>ATR%</th>'
                 '<th>1m %</th></tr></thead><tbody>' + rr + "</tbody></table></div>")
-    body = (blk(blocks[0], "Biggest covers &mdash; z-ranked", "Nasdaq-listed, merged history") +
-            blk(blocks[1], "Biggest builds &mdash; z-ranked", "Nasdaq-listed, merged history") +
-            blk(blocks[2], "Biggest covers &mdash; raw %", "All listings") +
+    # The z-ranked covers/builds are the Stocks tab's "covering and building
+    # hardest" table (same file, same chg_z ranking, plus trend context), so
+    # this section keeps only what exists nowhere else: the raw % cut across
+    # every listing, unstandardised.
+    body = (blk(blocks[2], "Biggest covers &mdash; raw %", "All listings") +
             blk(blocks[3], "Biggest builds &mdash; raw %", "All listings"))
     return r.settle.max(), len(r), body
 
@@ -983,16 +992,14 @@ above. 52-week percentile in bold, 3-year faded beside it.</p>
 <h2>2 &middot; ETF flows &mdash; sector baskets</h2>
 {flow_section()}
 
-<h2>3 &middot; Short interest &mdash; biggest 2-week movers</h2>
+<h2>3 &middot; Short interest &mdash; biggest 2-week movers, raw %</h2>
 <p class="grpnote">Settlement <b>{settle.date() if settle is not None else '-'}</b>,
-{n_si or 0} names with a live chain-linked history. <b>Z-ranked</b> cuts are
-Nasdaq-listed names with a full settlement history behind them, standardised
-against each name&rsquo;s own change history; <b>raw %</b> cuts are every listing,
-unstandardised. <b>% float</b> is shares short against the tradeable float
+{n_si or 0} names with a live chain-linked history. These are the <b>raw %</b>
+cuts &mdash; every listing, unstandardised. The <b>z-ranked</b> cut (each name
+against its own change history) is the covering/building table on the
+<b>Stocks</b> tab, with price context. <b>% float</b> is shares short against the tradeable float
 (shares outstanding minus insider/restricted stock), from stockanalysis.com
-&mdash; blank where no float data exists (mostly OTC/pink-sheet ADRs). The
-full per-symbol covering/building breakdown, with price context, is on the
-<b>Single stock</b> tab.</p>
+&mdash; blank where no float data exists (mostly OTC/pink-sheet ADRs).</p>
 <div class="si2grid">{si_body}</div>
 
 <div class="note" style="margin-top:28px">
