@@ -152,6 +152,21 @@ def _tv_scan(tickers):
 
 
 def tradingview():
+    # A real walk of jman's Pine indicator (the Mac's Friday TradingView task)
+    # is the exact source; this cloud read is the stand-in. If a walk file was
+    # restored into ~/pos and is still fresh, keep it and do not overwrite it.
+    path = f"{D}/tv_scan.csv"
+    if os.path.exists(path):
+        try:
+            old = pd.read_csv(path)
+            if "src" not in old.columns and len(old):
+                dt = pd.to_datetime(old["date"].astype(str), errors="coerce").max()
+                if pd.notna(dt) and (pd.Timestamp.now() - dt).days <= 8:
+                    print(f"tradingview: keeping the indicator walk from {dt.date()} "
+                          f"({len(old)} rows) -- cloud read skipped", file=sys.stderr, flush=True)
+                    return old
+        except Exception:
+            pass
     ro = _rosters()
     px = _tv_scan([s for _, m in ro for s in m] + ["SPY"])
     if "SPY" not in px.index:
@@ -166,7 +181,7 @@ def tradingview():
         m = px.reindex([s for s in members if s in px.index]).dropna(how="all")
         if len(m) < MIN_MEMBERS:
             continue
-        r = {"date": _today(), "code": probes.get(g, members[0]), "group": g,
+        r = {"date": _today(), "src": "cloud", "code": probes.get(g, members[0]), "group": g,
              "grp_id": i, "numeric_id": i, "members": len(m)}
         for k, col in TV_WIN.items():
             # equal-weight mean, as the Pine indicator does ("EW vs SPY")
@@ -174,7 +189,7 @@ def tradingview():
         r["score"] = round((r["rs21d"] + r["rs63d"]) / 2, 3)
         rows.append(r)
     out = pd.DataFrame(rows)[["date", "code", "group", "grp_id", "numeric_id", "score",
-                              "members", "rs1d", "rs5d", "rs21d", "rs63d", "rs126d"]]
+                              "members", "rs1d", "rs5d", "rs21d", "rs63d", "rs126d", "src"]]
     out.to_csv(f"{D}/tv_scan.csv", index=False)
     print(f"tradingview: {len(out)}/{len(ro)} baskets, {len(px)} tickers priced",
           file=sys.stderr, flush=True)
