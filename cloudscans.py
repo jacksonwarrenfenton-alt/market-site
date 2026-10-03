@@ -18,10 +18,12 @@ Mac walk read jman's own Pine indicator off the chart's Data Window, which needs
 his signed-in TradingView. This instead asks TradingView's public scanner for
 every roster member's own performance over 1D/1W/1M/3M/6M -- TradingView's data,
 not our Yahoo bars, so it stays an independent outside read -- and aggregates it
-per basket with the same custom176 roster: median member return minus SPY's
-over the same window. It is not the indicator's formula; the leg is a ranking
-vote, so what has to hold is that it orders groups by relative strength from a
-source that never touched our bars, and it does. Rows carry grp_id ==
+per basket with the same custom176 roster: equal-weight (mean) member return
+minus SPY's over the same window -- the indicator's own "EW vs SPY"
+construction, on TradingView's calendar windows (1W/1M/3M/6M) rather than its
+exact 5/21/63/126-session counts. The vote uses (1M + 3M) / 2, matching the
+walk's (21D + 63D) / 2. The indicator's own 0-100 score is not reproduced; the
+leg never used it. Rows carry grp_id ==
 numeric_id (the basket's row index) because there is no probe to mis-land.
 """
 import os, re, io, sys, json, time
@@ -167,7 +169,8 @@ def tradingview():
         r = {"date": _today(), "code": probes.get(g, members[0]), "group": g,
              "grp_id": i, "numeric_id": i, "members": len(m)}
         for k, col in TV_WIN.items():
-            r[k] = round(float(m[col].median() - spy[col]), 3)
+            # equal-weight mean, as the Pine indicator does ("EW vs SPY")
+            r[k] = round(float(m[col].mean() - spy[col]), 3)
         r["score"] = round((r["rs21d"] + r["rs63d"]) / 2, 3)
         rows.append(r)
     out = pd.DataFrame(rows)[["date", "code", "group", "grp_id", "numeric_id", "score",
