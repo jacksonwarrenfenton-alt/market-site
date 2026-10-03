@@ -52,7 +52,9 @@ def feeds():
     except Exception: pass
     try:
         e = pd.read_parquet(f"{D}/earnings.parquet", columns=["date"])
-        add("Earnings calendar", e.date.min(), 10, "Nasdaq, forward 90d")
+        # The file also keeps the past month; freshness is the forward edge.
+        e = e[pd.to_datetime(e.date) >= pd.Timestamp.today().normalize()]
+        add("Earnings calendar", e.date.min(), 10, "Nasdaq, past 31d + forward 90d")
     except Exception: pass
     try:
         j = json.load(open(f"{D}/econcal.json"))

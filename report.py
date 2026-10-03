@@ -996,8 +996,8 @@ above. 52-week percentile in bold, 3-year faded beside it.</p>
 <p class="grpnote">Settlement <b>{settle.date() if settle is not None else '-'}</b>,
 {n_si or 0} names with a live chain-linked history. These are the <b>raw %</b>
 cuts &mdash; every listing, unstandardised. The <b>z-ranked</b> cut (each name
-against its own change history) is the covering/building table on the
-<b>Stocks</b> tab, with price context. <b>% float</b> is shares short against the tradeable float
+against its own change history) is the covering/building table further down
+this tab, with price context. <b>% float</b> is shares short against the tradeable float
 (shares outstanding minus insider/restricted stock), from stockanalysis.com
 &mdash; blank where no float data exists (mostly OTC/pink-sheet ADRs).</p>
 <div class="si2grid">{si_body}</div>

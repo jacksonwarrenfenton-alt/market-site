@@ -121,6 +121,42 @@ def source():
     return None, None
 
 
+def backfill(points):
+    """Merge liqn's own posts / top-10 history into liqn_hist.csv.
+
+    liqn.ai's board only shows a rolling ~3 months, so every capture should
+    hand over the points that chart shows and they are kept here for good.
+    `points`: iterable of dicts with `date` (any parseable date), `posts`, and
+    `top10_share` (percent), optionally `broad_posts`. Only dates NOT already
+    in the history are added -- a full daily capture row always wins over a
+    backfilled point. Returns the number of rows added.
+    """
+    rows = []
+    for p in points:
+        dt = pd.to_datetime(p.get("date"), errors="coerce")
+        if pd.isna(dt): continue
+        row = {c: np.nan for c in COLS}
+        row.update({"date": dt.strftime("%b %d %Y"),
+                    "posts": p.get("posts"), "top10_share": p.get("top10_share"),
+                    "broad_posts": p.get("broad_posts",
+                                         (p["posts"] * (1 - p["top10_share"] / 100))
+                                         if p.get("posts") is not None and p.get("top10_share") is not None
+                                         else np.nan)})
+        for k in ("themes", "loudest", "breakouts", "breakdowns", "gaining", "losing"):
+            row[k] = "[]" if k != "themes" else "{}"
+        rows.append(row)
+    if not rows: return 0
+    new = pd.DataFrame(rows)[COLS]
+    old = pd.read_csv(HIST) if os.path.exists(HIST) else pd.DataFrame(columns=COLS)
+    have = set(pd.to_datetime(old.date, format="%b %d %Y", errors="coerce").dropna().dt.normalize())
+    new = new[~pd.to_datetime(new.date, format="%b %d %Y").dt.normalize().isin(have)]
+    if not len(new): return 0
+    d = pd.concat([old, new], ignore_index=True)
+    d["_dt"] = pd.to_datetime(d.date, format="%b %d %Y", errors="coerce")
+    d.sort_values("_dt").drop(columns="_dt").to_csv(HIST, index=False)
+    return len(new)
+
+
 def load():
     p, _ = source()
     if p is None: return None
@@ -129,45 +165,23 @@ def load():
     return d.dropna(subset=["dt"]).sort_values("dt")
 
 
-def panel(spy=None):
-    d = load()
-    # One snapshot is not a history. Until there are at least two, this section
-    # would render a heading, a paragraph and an empty chart frame -- furniture
-    # that carries nothing. The latest reading is on the Single stock tab either
-    # way, so nothing is lost by waiting.
-    if d is None or len(d) < 2:
-        return ""
-    last = d.iloc[-1]
-    n = len(d)
-    typ = last.get("typical_share")
-    share = last.get("top10_share")
-    lean = ("narrower than usual &mdash; attention is concentrating"
-            if np.isfinite(share) and np.isfinite(typ) and share > typ else
-            "broader than usual &mdash; attention is spreading")
+def _hist_chart(d):
+    """Total daily posts (bars) with the top-10 share of chatter (line), the
+    same view liqn's own board draws -- but over the FULL stored history, not
+    liqn's rolling three months."""
     pay = {"dates": [x.strftime("%Y-%m-%d") for x in d.dt],
            "share": [None if not np.isfinite(v) else float(v) for v in d.top10_share],
            "posts": [None if not np.isfinite(v) else float(v) for v in d.posts],
            "broad": [None if not np.isfinite(v) else float(v) for v in d.broad_posts],
            "bull":  [int(v) if np.isfinite(v) else 0 for v in d.bull],
            "bear":  [int(v) if np.isfinite(v) else 0 for v in d.bear]}
-    hist_note = (f"<b>{n} daily snapshot{'s' if n != 1 else ''}</b> so far. "
-                 "liqn.ai publishes no archive, so this record begins the day it "
-                 "started being captured and lengthens by one row per run &mdash; "
-                 "treat the trend as thin until it has a few weeks behind it.")
-    return f'''<h2>Crowd concentration &mdash; history</h2>
-<p class="grpnote">The share of all crowd chatter sitting in the ten loudest
-names, tracked daily from liqn.ai&rsquo;s Social IQ board. A narrow tape means the
-crowd has piled into a handful of names, which is the condition worth fading.
-Latest reading <b>{share:.1f}%</b> against {typ:.0f}% typical &mdash; {lean}.
-{hist_note} The names behind it are on the <b>Single stock</b> tab.</p>
-<div id="lqchart"></div>
+    return f'''<div id="lqchart"></div>
 <script id="lqdata" type="application/json">{json.dumps(pay, separators=(",", ":"))}</script>
 <script>
 (function(){{
   var P=JSON.parse(document.getElementById('lqdata').textContent),N=P.dates.length;
   var box=document.getElementById('lqchart');
-  if(N<2){{box.innerHTML='<p class="dim" style="padding:12px 2px">'+
-    'One snapshot so far &mdash; the chart appears once there are at least two.</p>';return;}}
+  if(N<1){{return;}}
   var W=1180,H=250,PL=52,PR=52,PT=14,PB=26,iw=W-PL-PR,ih=H-PT-PB;
   var fp=P.posts.filter(function(x){{return x!=null;}});
   var pmax=Math.max.apply(null,fp)*1.08||1;
@@ -212,6 +226,13 @@ Latest reading <b>{share:.1f}%</b> against {typ:.0f}% typical &mdash; {lean}.
 </script>'''
 
 
+
+
+def panel(spy=None):
+    """Kept for callers; the history chart now lives inside crowd_panel()."""
+    return ""
+
+
 def crowd_panel():
     """Where the crowd actually is -- the per-ticker read, not just the aggregate."""
     d = load()
@@ -227,15 +248,18 @@ def crowd_panel():
     hot = np.isfinite(share) and np.isfinite(typ) and share > typ
     verdict = "HIGHLY CONCENTRATED" if hot else "BROAD"
     top = loud[0] if loud else None
-    surge = brk[0] if brk else None
 
     def tiles():
         t = [("Top-10 share of posts", f"{share:.0f}%",
               "of all 48h posts sit in ten tickers")]
         if top: t.append(("Loudest single name", top["t"],
                           f"{top['share']}% of all posts on its own"))
-        if surge: t.append(("Biggest attention surge", surge["t"],
-                            f"{surge['x']:g}&times; its own baseline"))
+        posts = r.get("posts")
+        if posts is not None and np.isfinite(posts):
+            prev = d.posts.iloc[-2] if len(d) > 1 else np.nan
+            chg = (f"{100*(posts/prev-1):+.0f}% vs prior capture"
+                   if np.isfinite(prev) and prev else "total crowd posts")
+            t.append(("Total posts", f"{posts:,.0f}", chg))
         return "".join(f'<div><h6>{a}</h6><div class="v">{b}</div>'
                        f'<div class="s">{c}</div></div>' for a, b, c in t)
 
@@ -281,11 +305,14 @@ def crowd_panel():
             f'<span class="dim">{"liqn.ai Social IQ" if is_liqn else html.escape(src)} &middot; {r["date"]}</span>'
             f'<b class="{"crit" if hot else "good"}">{verdict}</b></div>'
             f'<div class="cwtiles">{tiles()}</div>'
-            '<div class="cwgrid">'
+            # Posts and top-10 share over the whole stored record -- liqn's own
+            # board only keeps ~3 months, this keeps every captured day.
+            f'<h5 style="margin:4px 0 6px">Total posts &amp; top-10 share of chatter'
+            f'<span class="dim"> &middot; {len(d)} day{"s" if len(d) != 1 else ""} stored</span></h5>'
+            + _hist_chart(d) +
+            '<div class="cwgrid" style="margin-top:12px">'
             f'<div><h5>Loudest<span class="dim"> &middot; share of all posts</span></h5>{bars(loud)}</div>'
-            f'<div><h5>Attention breakouts<span class="dim"> &middot; vs own baseline</span></h5>{surges(brk)}</div>'
             f'<div><h5>Gaining the crowd<span class="dim"> &middot; {win}</span></h5>{moves(gain,True)}</div>'
-            f'<div><h5>Losing the crowd<span class="dim"> &middot; {win}</span></h5>{moves(lose,False)}</div>'
             '</div>'
             + ('<p class="dnote">Retail attention on X. ' if is_liqn else
                '<p class="dnote">Retail attention on Reddit (ApeWisdom mention counts); '

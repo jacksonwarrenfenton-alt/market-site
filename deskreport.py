@@ -288,7 +288,7 @@ ul.why b{color:var(--ink)}
 .mc h6{margin:0 0 4px;font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);
 display:flex;justify-content:space-between;gap:8px}
 .mc h6 b{color:var(--ink2);font-weight:700;letter-spacing:0;text-transform:none;font-size:11px}
-.mc svg{width:100%;height:64px;display:block}
+.mc svg:not(.mcs){width:100%;height:64px;display:block}
 .mc .na{font-size:11px;color:var(--mut);padding:20px 0;text-align:center}
 .lkrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px}
 @media(max-width:1000px){.lkrow{grid-template-columns:1fr}}
