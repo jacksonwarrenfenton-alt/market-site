@@ -102,6 +102,7 @@ def build(sub=None):
                     "rs_m": _f(r.get("rs_m")), "rs_q": _f(r.get("rs_q")),
                     "rs_rank": int(r["rs_rank"]) if np.isfinite(r.get("rs_rank", np.nan)) else None,
                     "ew_rank": int(r["ew_rank"]) if np.isfinite(r.get("ew_rank", np.nan)) else None,
+                    "med_rank": int(r["med_rank"]) if np.isfinite(r.get("med_rank", np.nan)) else None,
                     "conf_n": int(r["c_n"]) if np.isfinite(r.get("c_n", np.nan)) else None,
                     "conf_cov": int(r["c_cov"]) if np.isfinite(r.get("c_cov", np.nan)) else None,
                     "conf_dir": int(r["c_dir"]) if np.isfinite(r.get("c_dir", np.nan)) else 0,

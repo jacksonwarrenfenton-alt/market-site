@@ -191,7 +191,7 @@ function render(t){
     }).join('');
     cards.push('<div class="dcard wide"><h4>Group &middot; '+esc(g)+'</h4>'+
       '<div class="kv"><span>Rank</span><b>'+m.rank+' of 253</b></div>'+
-      '<div class="kv"><span>RS rank / EW rank</span><b>'+m.rs_rank+' / '+m.ew_rank+'</b></div>'+
+      '<div class="kv"><span>RS rank / median rank</span><b>'+m.rs_rank+' / '+(m.med_rank!=null?m.med_rank:'&ndash;')+'</b></div>'+
       '<div class="kv"><span>Confluence</span><b class="'+
         (m.conf_dir>0?'up':(m.conf_dir<0?'dn':''))+'">'+
         (m.conf_n||0)+' of '+(m.conf_cov||0)+' legs '+

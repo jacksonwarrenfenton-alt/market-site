@@ -28,7 +28,7 @@ LEGS = [
     ("bread", "Breadth",      "share of members beating SPY over 1 month"),
     ("flow",  "ETF flow",     "1-month flow as % of AUM in the basket that covers this group"),
     ("si",    "Short int.",   "short-interest breadth tilt across the group's members"),
-    ("tv",    "TradingView",  "the chart indicator's own 21D/63D RS, read from the Data Window"),
+    ("tv",    "TradingView",  "your TradingView indicator's own 21D/63D RS (its exact math, computed daily)"),
     ("fvz",   "Finviz group", "Finviz industry-group 1w/3m performance, crosswalked to this basket"),
     ("moo",   "moomoo group", "moomoo Sectors single-period performance, crosswalked to this basket"),
 ]
@@ -145,7 +145,7 @@ def build(df, bars=None, bench=None, si=None, flow_by_basket=None, group_basket=
     if df is None or not len(df): return df
     members = df.attrs.get("members", {})
     raw = pd.DataFrame(index=df.index)
-    raw["med"]    = df["rs_m"]
+    raw["med"]    = df["med_rs_m"] if "med_rs_m" in df else df["rs_m"]
     raw["ew"]     = df["ew_rs_m"]
     raw["short"]  = df["rs_w"]
     raw["long"]   = df["rs_q"]
