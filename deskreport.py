@@ -222,11 +222,41 @@ def build(sub, efc, regime=None):
                  "cp": [[k, round(float(x), 2)] for k, x in corr.tail(2).iloc[::-1].items() if x > 0.3],
                  "cn": [[k, round(float(x), 2)] for k, x in corr.head(2).items() if x < -0.15]}
 
+    # Futures, as the old ticker desk had them: every COT contract with a price
+    # ticker, keyed by that ticker (GC=F) and by its plain name ("GOLD"), with
+    # the four cohort 52-week percentiles and the large-spec path.
+    F, FA = {}, {}
+    try:
+        import universe as U
+        px = pd.read_parquet(f"{D}/prices.parquet") if os.path.exists(f"{D}/prices.parquet") else None
+        cb = cot.sort_values("date") if cot is not None else None
+        for code, k in (cb.groupby("cftc_contract_market_code") if cb is not None else []):
+            tk = (U.PRICE_MAP.get(code) or (None, None))[0]
+            if not tk: continue
+            k = k.tail(52); r = k.iloc[-1]
+            def pc(c):
+                v = r.get(c)
+                return None if v is None or not np.isfinite(v) else round(float(v))
+            nm = (U.COT_UNIVERSE.get(code) or (str(r.contract_market_name).title(), ""))[0]
+            p = None
+            if px is not None and tk in px.columns:
+                s_ = px[tk].dropna().iloc[-PATH_DAYS::3]
+                if len(s_) > 5:
+                    p = [round(100 * (x / float(s_.iloc[0]) - 1)) for x in s_.values]
+            F[tk] = {"nm": nm, "asof": str(pd.Timestamp(r["date"]).date()),
+                     "ls": pc("ls_pctile52"), "ss": pc("ss_pctile52"),
+                     "comm": pc("comm_pctile52"), "oi": pc("oi_pctile52"),
+                     "s": [None if not np.isfinite(x) else round(float(x)) for x in k.ls_pctile52],
+                     "p": p}
+            FA[nm.upper()] = tk
+    except Exception as e:
+        print("futures index failed:", e, file=sys.stderr, flush=True)
+
     labels = dict(CORR_SET)
     reg = None
     if regime is not None:
         reg = {"r": regime.get("regime"), "s": round(float(regime.get("score", 0)), 2)}
-    return {"TK": TK, "TG": TG, "TS": TS, "TC": TC, "L": labels, "R": reg,
+    return {"TK": TK, "TG": TG, "TS": TS, "TC": TC, "F": F, "FA": FA, "L": labels, "R": reg,
             "asof": str(c.index.max().date())}
 
 
@@ -296,8 +326,23 @@ function spark(v,o){o=o||{};var a=v.filter(x=>x!=null);if(a.length<2)return '<di
 function pane(spec,k,n){if(!spec)return null;var p=spec.panes.find(q=>q.k===k);if(!p)return null;return p.v.slice(-n);}
 function bar(lab,v,thr){var c=v>=60?'#1baf7a':v<=35?'#e66767':'#fab219';
  return '<div class="bb"><span>'+lab+'</span><i><b style="width:'+v+'%;background:'+c+'"></b></i><em>'+v+'%</em></div>';}
+function ord(n){return n+((n%100>=11&&n%100<=13)?'th':(['th','st','nd','rd'][n%10]||'th'));}
+function showF(tk){
+ var f=X.F[tk], W=[];
+ function cohort(lab,v,hint){if(v==null)return;
+   var ext=v>=90||v<=10;W.push('<li class="'+(ext?'n':'o')+'">'+lab+' at the <b>'+ord(v)+'</b> 52-week percentile'+(v>=90?' &mdash; crowded long':v<=10?' &mdash; washed out / crowded short':'')+(hint?' <span class="dim">'+hint+'</span>':'')+'</li>');}
+ cohort('Large specs',f.ls,'(trend followers)');cohort('Small specs',f.ss,'(retail)');cohort('Commercials',f.comm,'(hedgers, the contrarian tell)');cohort('Open interest',f.oi,'');
+ var h='<div class="lkhead"><h3>'+esc(f.nm)+'</h3><span class="px">'+esc(tk)+'</span><span class="dim">CFTC COT as of '+esc(f.asof)+'</span></div>'
+  +'<div class="lkgrid"><div><ul class="why">'+W.join('')+'</ul></div><div class="mini4">'
+  +'<div class="mc"><h6>'+esc(tk)+' &middot; 6 months<b>'+f1(f.p?f.p[f.p.length-1]:null,'%')+'</b></h6>'+(f.p?spark(f.p,{c:'#c3c2b7',zero:true}):'<div class="na">no price path</div>')+'</div>'
+  +'<div class="mc"><h6>Large specs &middot; 52-week percentile<b>'+(f.ls!=null?ord(f.ls):'')+'</b></h6>'+spark(f.s,{c:'#fab219',band:[10,90]})+'</div>'
+  +'</div></div>';
+ box.innerHTML=h;
+}
 function show(sym){
  sym=(sym||'').trim().toUpperCase(); if(!sym) return;
+ var fk=X.F[sym]?sym:(X.FA[sym]||(X.F[sym+'=F']?sym+'=F':null));
+ if(fk&&!X.TK[sym]){showF(fk);return;}
  var t=X.TK[sym], EF=(typeof EFC!=='undefined'?EFC:{}), ef=EF[sym];
  if(!t&&!ef){box.innerHTML='<p class="dim">'+esc(sym)+' is not in the screened universe (US common stock over $300M) or the ETF set.</p>';return;}
  t=t||{}; var g=X.TG[t.g]||null, sec=g?X.TS[g.s]:null, etf=g&&g.etf, E=EF[ef?sym:etf], sie=ef?sym:(g&&g.sie), ES=EF[sie];
@@ -342,7 +387,7 @@ function show(sym){
 }
 document.getElementById('lkgo').onclick=function(){show(inp.value);};
 inp.addEventListener('keydown',function(e){if(e.key==='Enter')show(inp.value);});
-var dl=document.getElementById('lklist'); if(dl) dl.innerHTML=Object.keys(X.TK).concat(Object.keys(typeof EFC!=='undefined'?EFC:{})).slice(0,6000).map(s=>'<option value="'+s+'">').join('');
+var dl=document.getElementById('lklist'); if(dl) dl.innerHTML=Object.keys(X.TK).concat(Object.keys(typeof EFC!=='undefined'?EFC:{}),Object.keys(X.F),Object.keys(X.FA)).slice(0,6500).map(s=>'<option value="'+s+'">').join('');
 var first=Object.keys(X.TG).length? X.TG[Object.keys(X.TG)[0]].mem[0][0] : null;
 show(first||'SPY'); inp.value=first||'';
 })();
@@ -363,6 +408,6 @@ def panel(sub, efc_syms, regime=None):
             'be checked, not taken on faith. Click any group member to look it up.</p>'
             '<div class="lk"><div class="lkbar"><input id="lkin" list="lklist" placeholder="Ticker, e.g. HUT" '
             'autocomplete="off"><button class="btn" id="lkgo">Look up</button>'
-            f'<span class="dim">{len(data["TK"]):,} stocks &middot; {len(efc_syms):,} ETFs &middot; as of {data["asof"]}</span>'
+            f'<span class="dim">{len(data["TK"]):,} stocks &amp; ETFs &middot; {len(data["F"])} futures &middot; as of {data["asof"]}</span>'
             '<datalist id="lklist"></datalist></div><div class="lkout" id="lkout"></div></div>'
             f'<script>window.__LK__={payload};</script>')
