@@ -495,12 +495,8 @@ def compose(pos_html, subsector, diary, css_extra, js_extra, asof, stockpage="",
     head = re.search(r'(<header>.*?</header>)', body, re.S)
     hdr = head.group(1) if head else ""
     body = body.replace(hdr, "") if hdr else body
-    # report.py's section 3 (name-level short-interest movers) repeats the
-    # Stocks tab's covering/building table; drop it here so it shows once.
-    a = body.find("<h2>3 &middot; Short interest")
-    b = body.find('<div class="note" style="margin-top:28px">', a)
-    if a >= 0 and b > a:
-        body = body[:a] + body[b:]
+    # report.py's section 3 now carries only the raw-% short-interest cut; its
+    # z-ranked half lives once, on the Stocks tab.
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Market Site &mdash; {asof}</title>
