@@ -1,0 +1,620 @@
+// This Pine Script® code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © jacksonwarrenfentondk0k7
+
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Amphibiantrading
+
+//@version=6
+indicator('Industry Group Strength - EW vs SPY (Final Groups)', overlay = false, dynamic_requests = true)
+
+// Classification revision: 2026-08-31; supplied universe originated 2026-08-29.
+// 253 custom business-exposure baskets; 2,625 members, each ticker assigned once.
+// Eligibility checked against the retrieved TradingView snapshot on 2026-08-31:
+// market cap > $500M; latest close * 10D average share volume > $5M.
+// This is a dollar-volume proxy, not exact average daily dollar turnover.
+// Removed: SBGI (liquidity), CCXI (SPAC), PSUS (fund), LBTYK/BEP (duplicate exposure).
+// Adds 49 qualifying depositary receipts from the supplied reference watchlists.
+// Original-universe-only companion available; no claim to cover every eligible global stock.
+// 4-30 members per basket. Sector order follows the supplied 11 watchlists.
+// Custom sector labels are not official BICS/GICS. Cross-sector themes are deliberate.
+// Sources and every assignment: final-group-rundown.md and reference-reconciliation.md.
+// Added 1D, 1W and 6M table metrics using 1, 5 and 126 calculation bars.
+// Period labels assume a 1D calculation timeframe; group score remains based on 1M and 3M.
+// Reclassification changes historical basket returns and order-derived group IDs.
+// This is a present-day membership view, not a point-in-time historical universe.
+// Performance values and Z-scores are also exposed in the Data Window.
+
+//----------settings----------//
+bench     = input.symbol('SPY', 'Benchmark', display = display.none)
+ma1Len    = input.int(21, 'Fast MA Length', minval = 1, display = display.none)
+ma2Len    = input.int(50, 'Slow MA Length', minval = 1, display = display.none)
+atrLen    = input.int(14, 'SPY ATR Length (Vol-Adj)', minval = 1, group = 'Metric')
+metricSel = input.string('RS vs SPY', 'RS Type', options = ['Absolute %', 'RS vs SPY', 'Vol-Adj RS (SPY ATR14)'], group = 'Metric')
+zLen      = input.int(100, 'Z-Score Lookback (calculation bars)', minval = 20, group = 'Metric')
+calcTf    = input.string('1D', 'Calculation Timeframe', options = ['1', '5', '15', '30', '60', '120', '240', '1D', '1W', '1M'], group = 'Calculation')
+confirmed = input.bool(true, 'Use Confirmed Higher-TF Data', tooltip = 'Recommended on intraday charts. Daily/weekly/monthly values update only after that calculation bar closes.', group = 'Calculation')
+topScore  = input.float(90.0, 'Top-Group Score Threshold', minval = 0, maxval = 100, step = 1, group = 'Screener')
+showTable = input.bool(true, 'Show Table', group = 'Table')
+tablePos  = input.string('Top Right', 'Table Position', options = ['Top Right', 'Top Left', 'Bottom Right', 'Bottom Left'], group = 'Table')
+fullName  = input.bool(false, 'Show Full Group Name', group = 'Table')
+showScore = input.bool(true, 'Show Score', group = 'Table')
+showId    = input.bool(true, 'Show Group ID', group = 'Table')
+showDay   = input.bool(true, 'Show 1 Day', group = 'Table')
+showWeek  = input.bool(true, 'Show 1 Week', group = 'Table')
+showMonth = input.bool(true, 'Show Month', group = 'Table')
+showQtr   = input.bool(true, 'Show 3 Month', group = 'Table')
+showHalf  = input.bool(true, 'Show 6 Month', group = 'Table')
+showCount = input.bool(true, 'Show Member Count', group = 'Table')
+theme     = input.string('Dark', 'Color Mode', ['Dark', 'Light'], display = display.none)
+
+if timeframe.in_seconds(calcTf) < timeframe.in_seconds()
+    runtime.error('Calculation Timeframe must be equal to or higher than the chart timeframe')
+
+//----------industry groups----------//
+type industry
+    string name
+    string[] symbols
+
+var indArr = array.from(
+     industry.new('Communications - Telecom Carriers & Spectrum', array.from('VZ','TMUS','T','ECHO','BCE','RCI','TIGO','TU','VEON','TDS','AD','ATEX')),
+     industry.new('Communications - Cable, Fiber & Business Connectivity', array.from('CMCSA','CHTR','LUMN','LBTYA','UNIT','IDT','OOMA')),
+     industry.new('Communications - Internet, Social & Audience Platforms', array.from('GOOG','META','RDDT','PINS','MTCH','SNAP','JOYY','GRND','DJT','OPRA','WB','YELP')),
+     industry.new('Communications - Advertising Agencies, Lead Generation & Print', array.from('OMC','LAMR','OUT','PTRN','CMPR','STGW','CCO','QNST','DLX','EVER','MAX')),
+     industry.new('Communications - Advertising Technology', array.from('APP','TTD','MGNI','LFTO','DV','APPS','TBLA','MNTN','IBTA','CRTO','PUBM','NEXN')),
+     industry.new('Communications - Film, Television & Streaming Video', array.from('NFLX','DIS','WBD','FOX','ROKU','PSKY','VSNT','LION','FUBO','IQ','ANGX','AMCX')),
+     industry.new('Communications - Video Games & Development Platforms', array.from('NTES','TTWO','RBLX','U')),
+     industry.new('Communications - Music & Audio Platforms', array.from('SPOT','WMG','TME','SIRI')),
+     industry.new('Communications - Publishing, Digital Media & Broadcasting', array.from('NWS','NYT','NXST','RUM','PPLI','WLY','ZD','WBTN','NMAX','TDAY','DJCO','EVC','SCHL')),
+     industry.new('Communications - Live Sports, Events & Ticketing', array.from('LYV','TKO','FWONA','LLYVA','MSGS','SPHR','MANU','MSGE','STUB')),
+     industry.new('Technology - Cloud & Enterprise Infrastructure', array.from('MSFT','ORCL','IBM','NTNX','DOCN','KC','RXT')),
+     industry.new('Technology - AI Cloud & GPU Services', array.from('NBIS','CRWV','IREN','SHAZ','BRUN','WYFI')),
+     industry.new('Technology - Data-Center Development & HPC Hosting', array.from('HUT','WULF','APLD','GDS','CIFR','CORZ','CSQR','FRMI')),
+     industry.new('Technology - Enterprise AI Applications', array.from('PLTR','SOUN','INOD','AI','BBAI','RZLV')),
+     industry.new('Technology - Cybersecurity', array.from('PANW','CRWD','FTNT','NET','ZS','RBRK','GEN','CHKP','S','QLYS','NTSK','VRNS','TENB','RPD')),
+     industry.new('Technology - Identity & Fraud Prevention', array.from('OKTA','SAIL','YOU','RDVT','MITK','RSKD','OSPN')),
+     industry.new('Technology - DevOps, IT Management & Observability', array.from('DDOG','DT','FROG','ESTC','GTLB','NTCT','PRGS','PD','NABL')),
+     industry.new('Technology - Data Platforms & Analytics', array.from('SNOW','MDB','TDC','AMPL')),
+     industry.new('Technology - Backup, Content & Information Management', array.from('DBX','OTEX','CVLT','BOX','AVPT','BLZE')),
+     industry.new('Technology - Workflow & Work Management', array.from('NOW','TEAM','DOCU','PATH','PEGA','MNDY','APPN','ASAN')),
+     industry.new('Technology - Voice, Video & Contact Centers', array.from('TWLO','ZM','RNG','FIVN','BAND')),
+     industry.new('Technology - Customer Engagement & Marketing Software', array.from('CRM','HUBS','ZETA','KVYO','BRZE','FRSH','RAMP','CXM','GTM','SMWB','SPT')),
+     industry.new('Technology - Payroll & Human Capital Software', array.from('ADP','WDAY','PAYX','PAYC','PCTY')),
+     industry.new('Technology - Accounting, Tax & Reporting', array.from('INTU','WK','BILL','VERX','BL','DFIN')),
+     industry.new('Technology - Commerce & Hospitality Software', array.from('SHOP','TOST','GLBE','AGYS','LSPD','VYX','PAR')),
+     industry.new('Technology - Construction & Property Software', array.from('ADSK','BSY','PCOR','TTAN','APPF')),
+     industry.new('Technology - Industrial Data, Navigation & Supply-Chain Software', array.from('ROP','IOT','PTC','TRMB','MANH','DSGX','MBGL','OCTV','BB','SPSC','NN','ITRN')),
+     industry.new('Technology - Legal, Public-Sector & Professional Software', array.from('TRI','TYL','INTA','BLKB','CLVT','LZ')),
+     industry.new('Technology - Creative, Web & Media Tools', array.from('ADBE','BSP','VRSN','FIG','GDDY','DLB','WIX','ADEA')),
+     industry.new('Technology - IT Consulting & Managed Services', array.from('ACN','CTSH','GIB','DOX','G','EPAM','EXLS','KD','CNXC','DXC','GLOB','EFOR','GDYN')),
+     industry.new('Technology - IT Distribution & Solutions', array.from('SNX','CDW','ARW','AVT','INGM','NSIT','PLUS','CNXN','SCSC')),
+     industry.new('Technology - Network Infrastructure & Application Delivery', array.from('CSCO','ANET','UI','FFIV','AKAM','FSLY','EXTR','DGII','CALX','ATEN','VISN','HLIT','RDWR','ADTN','NTGR')),
+     industry.new('Technology - Servers & Enterprise Computing', array.from('DELL','HPE','SMCI','PENG')),
+     industry.new('Technology - Memory & Data Storage', array.from('MU','SNDK','STX','WDC','NTAP','P','SIMO','QMCO')),
+     industry.new('Technology - Personal Computing & Consumer Electronics', array.from('AAPL','GRMN','HPQ','LOGI','SONO','CRSR')),
+     industry.new('Technology - Transaction, Identification & Display Hardware', array.from('ZBRA','VNT','CXT','PBI','DBD','DAKT')),
+     industry.new('Technology - Connected Home & Personal Safety', array.from('LIF','REZI','ALRM','ARLO')),
+     industry.new('Technology - Electronics Manufacturing Services', array.from('FLEX','CLS','JBL','SANM','PLXS','BHE','KE')),
+     industry.new('Technology - Connectors, PCBs & Passive Components', array.from('APH','TEL','TTMI','LFUS','VSH','BDC','BELFA')),
+     industry.new('Technology - Sensors & Electronic Components', array.from('ST','KN','CTS','VPG','MEI')),
+     industry.new('Technology - Power Delivery & Data-Center Cooling', array.from('VRT','NVT','MAIR','AEIS','MOD','VICR')),
+     industry.new('Technology - Analog, Mixed-Signal & Embedded Chips', array.from('TXN','ADI','NXPI','MCHP','SITM','ALGM','HIMX','AMBQ','INDI')),
+     industry.new('Technology - Power Semiconductors', array.from('MPWR','ON','DIOD','NVTS','POWI','WOLF','AOSL')),
+     industry.new('Technology - AI Networking & Interconnect Chips', array.from('AVGO','MRVL','ALAB','CRDO')),
+     industry.new('Technology - Compute, Programmable Logic & Foundries', array.from('NVDA','AMD','INTC','CBRS','GFS','TSEM','LSCC')),
+     industry.new('Technology - RF, Connectivity & Edge Chips', array.from('QCOM','MTSI','SMTC','SWKS','QRVO','SLAB','MXL','CRUS','PI','SYNA','AMBA','LAES')),
+     industry.new('Technology - Semiconductor Design Software & IP', array.from('ARM','CDNS','SNPS','RMBS','IDCC','PDFS','AIP','CEVA')),
+     industry.new('Technology - Wafer Equipment & Process Control', array.from('LRCX','AMAT','KLAC','MKSI','ONTO','NVMI','CAMT','ACMR','ACLS','UCTT','VECO','ICHR')),
+     industry.new('Technology - Assembly, Packaging & Test', array.from('TER','AMKR','FORM','KLIC','AEHR','COHU')),
+     industry.new('Technology - Semiconductor & Electronic Materials', array.from('Q','ENTG','MTRN','AXTI','ROG','PLAB')),
+     industry.new('Technology - Optical Communications & Photonic Interconnects', array.from('GLW','LITE','COHR','CIEN','FN','AAOI','VIAV','POET','LWLG')),
+     industry.new('Technology - Lasers, Infrared & Display Optics', array.from('NOVT','OLED','IPGP','LASR','KOPN','LPTH')),
+     industry.new('Technology - Quantum Computing', array.from('IONQ','QNT','QBTS','RGTI','XNDU','INFQ','QUBT','HQ','PSQL')),
+     industry.new('Industrials - Aerospace Platforms, Engines & Avionics', array.from('GE','BA','HONA','TDY','ARXS','MOG.A','CAE')),
+     industry.new('Industrials - Aerospace Components & Aftermarket', array.from('HWM','TDG','HEI','ATI','CW','WWD','FTAI','CR','SARO','ESE','HXL','LOAR','DPC','VSEC','KRMN','AIR','DCO','AADX','PKE')),
+     industry.new('Industrials - Defense Platforms, Electronics & Weapons', array.from('RTX','LMT','GD','NOC','LHX','ESLT','TXT','HII','DRS','MRCY','NPK')),
+     industry.new('Industrials - Drones & Autonomous Defense', array.from('KTOS','AVAV','ONDS','AVEX','RCAT','UMAC','SWMR')),
+     industry.new('Industrials - Advanced Air Mobility', array.from('JOBY','BETA','ACHR','ATRO','AMPX')),
+     industry.new('Industrials - Defense IT, Intelligence & Government Services', array.from('LDOS','CACI','BAH','SAIC','PSN','AMTM','KBR','VVX')),
+     industry.new('Industrials - Space & Satellites', array.from('SPCX','RKLB','ASTS','GSAT','VSAT','PL','IRDM','MDA','FLY','LUNR','RDW','VOYG','HAWK','YSS','BKSY','GILT','SATL','FEIM','TSAT','SPIR')),
+     industry.new('Industrials - Public Safety & Security Technology', array.from('MSI','AXON','OSIS','CLBT','NSSC','EVLV','CGNT')),
+     industry.new('Industrials - Security, Corrections & Protection Services', array.from('MSA','ADT','BCO','BRC','GEO','CXW','CDRE')),
+     industry.new('Industrials - Diversified Industrial Technology', array.from('PH','MMM','ITW','HON','AME','DOV','ITT','FTV')),
+     industry.new('Industrials - Factory & Process Automation', array.from('EMR','ROK','SYM','CGNX','ALNT')),
+     industry.new('Industrials - Measurement, Testing & Instrumentation', array.from('KEYS','RAL','ITRI','MIR','TRNS')),
+     industry.new('Industrials - Electrical Grid & Power Equipment', array.from('GEV','ETN','HUBB','RRX','FPS','ENS','POWL','ATKR','PLPC','AMSC')),
+     industry.new('Industrials - HVAC, Building Controls & Climate', array.from('TT','JCI','CARR','LII','WSO','SPXC','AOS','AAON','CSW')),
+     industry.new('Industrials - Building Fixtures & Components', array.from('OTIS','MAS','ALLE','AYI','MHK','SSD','AWI','FBIN','TREX','GFF','HAYW','TILE','TGLS','MBC','APOG','LYTS','JBI')),
+     industry.new('Industrials - Construction Materials Distribution', array.from('FERG','QXO','CNM','BLDR','POOL','SITE','BXC')),
+     industry.new('Industrials - Industrial Distribution', array.from('GWW','FAST','WCC','AIT','MSM','DXPE','ADIG','DSGR','HLMN')),
+     industry.new('Industrials - Infrastructure & Utility Construction', array.from('PWR','MTZ','STRL','DY','FLR','ROAD','ECG','AGX','GVA','MWH','TPC','MYRG','PRIM','CTRI','CDNL')),
+     industry.new('Industrials - Building Installation & Specialty Contracting', array.from('FIX','EME','APG','IESC','IBP','LGN')),
+     industry.new('Industrials - Engineering & Environmental Consulting', array.from('J','TTEK','ACM','STN','WLDN','BWMN','ONT')),
+     industry.new('Industrials - Heavy Equipment & Specialty Vehicles', array.from('CAT','OSK','TEX','FSS','EQPT','ASTE','PLOW','AEBI','MTW','MLR','WNC','CMCO')),
+     industry.new('Industrials - Commercial Vehicles & Powertrains', array.from('CMI','PCAR','ALSN','BLBD','CYD')),
+     industry.new('Industrials - Agricultural & Grounds Equipment', array.from('DE','CNH','TTC','AGCO','ALG','LNN')),
+     industry.new('Industrials - Flow, Motion & Process Equipment', array.from('IR','NDSN','IEX','GGG','FLS','GTES','FELE','KAI','HLIO','GRC','EPAC','GHM')),
+     industry.new('Industrials - Water Infrastructure & Treatment Equipment', array.from('XYL','VLTO','WTS','WMS','PNR','ZWS','BMI','MWA','NWPX')),
+     industry.new('Industrials - Metalworking, Bearings & Industrial Tools', array.from('SNA','RBC','LECO','SWK','TKR','ESAB','SXI','WOR','KMT','ELMT')),
+     industry.new('Industrials - Food & Specialty Process Machinery', array.from('JBTM','MIDD','ALH','MFP','TNC','KODK')),
+     industry.new('Industrials - Digital Manufacturing & 3D Printing', array.from('XMTR','PRLB','SSYS','DDD')),
+     industry.new('Industrials - Equipment & Vehicle Rental', array.from('URI','SUNB','UHAL','R','HRI','CAR','WSC','MGRC','CTOS','HTZ')),
+     industry.new('Industrials - Waste Collection & Environmental Services', array.from('WM','RSG','WCN','CLH','GFL','CWST','NVRI')),
+     industry.new('Industrials - Filtration, Pollution Control & Engineered Products', array.from('DCI','NPO','CECO','AIN','MYE','MATV')),
+     industry.new('Industrials - Facility, Uniform & Food Services', array.from('CTAS','ROL','ARMK','UNF','ABM','VSTS','HCSG','BV')),
+     industry.new('Industrials - Professional Consulting, Research & Testing', array.from('ULS','IT','ANDG','NIQ','FCN','FA','EXPO','MMS','CBZ','HURN','TIC','ICFI','CRAI')),
+     industry.new('Industrials - Staffing, Recruitment & PEO Services', array.from('BZ','RHI','KFY','TNET','MAN','NSP','AMN','UPWK','KFRC','BBSI','KELYA')),
+     industry.new('Industrials - Freight Rail & Rolling Stock', array.from('UNP','CSX','CP','NSC','CNI','WAB','TRN','GBX')),
+     industry.new('Industrials - Parcel, Freight Forwarding & Contract Logistics', array.from('UPS','FDX','EXPD','CHRW','ZTO','YMM','GXO','RXO','HUBG','FWRD')),
+     industry.new('Industrials - Trucking & Ground Freight', array.from('ODFL','JBHT','XPO','FDXF','TFII','KNX','SAIA','LSTR','SNDR','ARCB','WERN','MRTN','HTLD','CVLG')),
+     industry.new('Industrials - Tankers & Petroleum Shipping', array.from('FRO','INSW','HAFN','STNG','TRMD','DHT','TNK','ECO','NAT','TEN','TK','ASC')),
+     industry.new('Industrials - Dry Bulk, Containers & Diversified Shipping', array.from('KEX','MATX','CMBT','SBLK','ZIM','DAC','NMM','CMRE','SFL','GSL','GNK','SB','HSHP')),
+     industry.new('Industrials - Gas Shipping & Floating LNG', array.from('GLNG','BWLP','LPG','FLNG','NVGS')),
+     industry.new('Industrials - Airlines, Airports & Transport Infrastructure', array.from('DAL','FER','UAL','LUV','AAL','CPA','ALK','CAAP','SKYW','ALGT','JBLU','ULCC','VRRM')),
+     industry.new('Financials - Diversified US Banks', array.from('JPM','BAC','WFC','C','USB','PNC','TFC')),
+     industry.new('Financials - Canadian & International Banks', array.from('RY','TD','UBS','BMO','BNS','CM','DB','BAP','IFS','NTB','BLX')),
+     industry.new('Financials - Digital Banks & Consumer-Lending Platforms', array.from('NU','AFRM','SOFI','CHYM','KLAR','DAVE','SEZL','UPST','INTR','HAPN','PGY','WLTH')),
+     industry.new('Financials - Consumer Credit, Specialty Lending & Recovery', array.from('AXP','COF','SYF','ALLY','FCFS','OMF','CACC','ENVA','SLM','NNI','BFH','ECPG','EZPW','PRG','ATLC','JCAP','UPBD','NAVI','WRLD','PRAA')),
+     industry.new('Financials - Custody & Asset Servicing', array.from('BNY','STT','NTRS','SEIC')),
+     industry.new('Financials - Traditional Asset Managers', array.from('BLK','TROW','BEN','IVZ','AMG','VCTR','FHI','CNS','WT','APAM','AB','SII','AAMI','VRTS','RHLD')),
+     industry.new('Financials - Alternative Asset Managers', array.from('BX','KKR','BN','BAM','APO','ARES','TPG','OWL','CG','PS','STEP','HLNE','DBRG','GCMG','PAX')),
+     industry.new('Financials - BDCs & Direct Lending', array.from('ARCC','BXSL','OBDC','MAIN','OTF','FSK','GBDC','HTGC','TSLX','TRIN','CSWC','MSDL','PSEC','OCSL','GSBD','BBDC','KBDC','CGBD','MFIC','BCSF','FDUS','PFLT')),
+     industry.new('Financials - Holding Companies & Principal Investments', array.from('BRK.A','IEP','GPGI','BH','CODI','CNNE')),
+     industry.new('Financials - Investment Banks & Institutional Brokers', array.from('MS','GS','JEF','EVR','VIRT','HLI','SNEX','BGC','MC','PIPR','MRX','PJT','LAZ','LCLN','PWP','OPY')),
+     industry.new('Financials - Retail Brokers & Wealth Platforms', array.from('SCHW','IBKR','HOOD','AMP','RJF','LPLA','FUTU','SF','FRHC','XP','BULL','ETOR','TIGR')),
+     industry.new('Financials - Exchanges & Trading Infrastructure', array.from('CME','ICE','NDAQ','TW','MKTX','MIAX')),
+     industry.new('Financials - Financial Data, Ratings & Decision Analytics', array.from('SPGI','MCO','MSCI','VRSK','FICO','EFX','TRU','FDS','MORN','NRDS')),
+     industry.new('Financials - Banking, Insurance & Investment Software', array.from('FIS','BR','SSNC','GWRE','JKHY','ACIW','CCC','QTWO','NCNO','ALKT')),
+     industry.new('Financials - Payments & Merchant Infrastructure', array.from('V','MA','XYZ','PYPL','FISV','CPAY','GPN','WSE','PAYP','WEX','RELY','PAY','DLO','FOUR','NATL','EEFT','PAGS','PAYO','STNE','FLYW','WU','EVTC','MQ','PICS','PAYS','CASS')),
+     industry.new('Financials - Crypto Exchanges, Custody & Tokenization', array.from('COIN','CRCL','GLXY','BLSH','SECZ','BTGO','GEMI')),
+     industry.new('Financials - Crypto Treasury & Investment Exposure', array.from('MSTR','BMNR','XXI','PURR','ASST','SBET','BTBT')),
+     industry.new('Financials - Bitcoin Mining', array.from('RIOT','MARA','IOND','CLSK','BTDR','KEEL','ABTC')),
+     industry.new('Financials - Life Insurance & Retirement', array.from('MFC','MET','AFL','SLF','PRU','PFG','UNM','CRBG','EQH','GL','VOYA','JXN','PRI','LNC','CNO','GNW','FG','BHF')),
+     industry.new('Financials - Reinsurance & Insurance Capital', array.from('RGA','EG','RNR','SPNT','PLGO')),
+     industry.new('Financials - Property & Casualty Insurance - Diversified', array.from('CB','PGR','TRV','ALL','AIG','HIG','ACGL','CINF','WRB','MKL','L','AIZ','CNA','ERIE','AFG','ORI','THG','AXS','RLI','SIGI','WTM','AGO')),
+     industry.new('Financials - Property & Casualty Insurance - Specialty', array.from('KNSL','MCY','ARX','HG','PLMR','SLDE','SKWD','HCI','HMN','KMPR','SAFT','UFCS','TRUP','UVE','BOW','HRTG','EIG','AII')),
+     industry.new('Financials - Digital Insurance & Distribution', array.from('LMND','LIFE','PRCH','HIPO','ROOT')),
+     industry.new('Financials - Insurance Brokers & Claims Services', array.from('MRSH','AON','AJG','WTW','BRO','RYAN','NP','BWIN','CRVL','GSHD','TWFG')),
+     industry.new('Financials - Mortgage & Title Insurance', array.from('FNF','FAF','ACT','MTG','ESNT','RDN','NMIH','STC','ITIC')),
+     industry.new('Financials - Mortgage Origination & Real-Estate Finance', array.from('RKT','FIGR','PFSI','UWMC','AGM','WD')),
+     industry.new('Financials - Mortgage REITs & Property Credit', array.from('NLY','AGNC','STWD','RITM','DX','BXMT','ARR','EFC','ORC','LADR','CIM','ABR','MFA','ADAM','ARI','PMT','IVR','FBRT','TRTX','RWT')),
+     industry.new('Financials - Regional & Community Banks: Size Tier 1', array.from('FITB','MTB','HBAN','CFG','RF','FCNCA','KEY','EWBC','PNFP','FHN','UMBF','BPOP','WTFC','SSB','CFR','ONB','PB','WAL','COLB','BOKF','CBSH','CBC','VLY','FNB','UBSI','GBCI','HWC','HOMB','ASB','AUB')),
+     industry.new('Financials - Regional & Community Banks: Size Tier 2', array.from('ABCB','OZK','FLG','AX','EBC','TFSL','FFIN','SFBS','FULT','IBOC','TCBI','FBP','UCB','CATY','WSFS','CVBF','INDB','WSBC','RNST','BANF','MCHB','NIC','PRK','FIBK','TOWN','FFBC','SBCF','CBU','BKU','SFNC')),
+     industry.new('Financials - Regional & Community Banks: Size Tier 3', array.from('FHB','CLBK','PFS','BOH','BANC','FBK','TRMK','TBBK','NBTB','WAFD','CUBI','FBNC','FRME','BBT','BUSE','SYBT','MBIN','BANR','EFSC','NWBI','OFG','HTH','FCF','SRCE','CHCO','GABC','OCFC','LOB','NBHC','DCOM')),
+     industry.new('Financials - Regional & Community Banks: Size Tier 4', array.from('HOPE','FSUN','STBA','BY','TCBK','TFIN','BFC','CASH','RBCAA','QCRH','OBK','CNOB','LKFN','AMAL','BHRB','PEBO','TMP','CTBI','PFBC','ESQ','WABC','FMBH','OSBC','HFWA','UVSP','MCB','AMTB','FSBC','NBN','CFFN')),
+     industry.new('Financials - Regional & Community Banks: Size Tier 5', array.from('BFST','HBNC','CPF','TRST','CAC','THFF','FMNB','HAFC','NBBK','GSBC','EGBN','IBCP','SMBC','FISI','PGC','HTB','WASH','CCB','CWBC','CARE','MSBI','ACNB','HIFS','KRNY','SFST','HBCP')),
+     industry.new('Financials - Asset & Infrastructure Finance', array.from('AER','GATX','HASI','WLFC')),
+     industry.new('Consumer Discretionary - Passenger Vehicles & EV Manufacturers', array.from('TSLA','RACE','GM','F','RIVN','STLA','LI','XPEV','NIO','LCID')),
+     industry.new('Consumer Discretionary - Auto Components & Drivetrain', array.from('MGA','BWA','APTV','ALV','LEA','GTX','GNTX','ATMU','VGNT','DAN','VC','PHIN','GT','DCH','ADNT','THRM')),
+     industry.new('Consumer Discretionary - Autonomy & LiDAR', array.from('AUR','MBLY','PONY','HSAI','OUST','WRD','AEVA')),
+     industry.new('Consumer Discretionary - Auto Dealers & Vehicle Marketplaces', array.from('CVNA','CPRT','PAG','KMX','LAD','AN','RUSHA','OPLN','ABG','CARG','GPI','ATHM','SAH','ACVA','CARS')),
+     industry.new('Consumer Discretionary - Auto Aftermarket & Services', array.from('ORLY','AZO','GPC','LKQ','VVV','DORM','AAP','DRVN','XPEL')),
+     industry.new('Consumer Discretionary - Mobility, Delivery & Local Commerce', array.from('UBER','DASH','GRAB','CART','LYFT','LIME','VIA')),
+     industry.new('Consumer Discretionary - E-Commerce Marketplaces', array.from('AMZN','BABA','PDD','MELI','SE','EBAY','JD','CPNG','ETSY','GCT','REAL','LQDT','GRPN')),
+     industry.new('Consumer Discretionary - Apparel Brands & Accessories', array.from('TPR','RL','AS','LULU','GIL','LEVI','ZGN','VFC','KTB','PVH','COLM','FIGS','UA','WWW','CPRI','GIII','GOOS','OXM','MOV')),
+     industry.new('Consumer Discretionary - Footwear Brands', array.from('NKE','DECK','ONON','BIRK','CROX','SHOO')),
+     industry.new('Consumer Discretionary - Apparel & Off-Price Retail', array.from('TJX','ROST','BURL','GAP','VSXY','URBN','ANF','VIPS','BOOT','AEO','BKE','RVLV','CRI','WINA','REF','CTRN')),
+     industry.new('Consumer Discretionary - General Merchandise & Department Stores', array.from('TGT','DG','DLTR','FIVE','DDS','GME','M','OLLI','MNSO','KSS','SVV')),
+     industry.new('Consumer Discretionary - Specialty Retail & Consumer Categories', array.from('ULTA','TSCO','BBY','DKS','CHWY','SIG','WRBY','ASO','SBH','EYE')),
+     industry.new('Consumer Discretionary - Home Improvement & Furnishings Retail', array.from('HD','LOW','WSM','W','FND','RH','BOBS','LZB','ARHS','ETD')),
+     industry.new('Consumer Discretionary - Home, Office & Household Durables', array.from('SN','SGI','HNI','WHR','NWL','SPB','MLKN','HELE')),
+     industry.new('Consumer Discretionary - Homebuilders & Manufactured Housing', array.from('DHI','PHM','LEN','NVR','TOL','SKY','MTH','CVCO','MHO','KBH','GRBK','CCS','LGIH','DFH','BZH','HOV')),
+     industry.new('Consumer Discretionary - Home & Personal Services', array.from('SCI','LTH','HRB','FTDR','GHC','PLNT','OSW','MATW')),
+     industry.new('Consumer Discretionary - Education & Workforce Training', array.from('EDU','DUOL','TAL','LAUR','CVSA','LOPE','BFAM','LRN','MH','PRDO','STRA','COUR','UTI','APEI','LINC')),
+     industry.new('Consumer Discretionary - Restaurants - Quick Service & Coffee', array.from('MCD','SBUX','YUM','QSR','YUMC','DPZ','BROS','JMKE','CHA','ARCO','WEN','PZZA','DNUT')),
+     industry.new('Consumer Discretionary - Restaurants - Casual & Fast Casual', array.from('CMG','DRI','TXRH','EAT','CAVA','CAKE','WING','SHAK','BJRI','CBRL','BLMN','SG','FWRG','KRUS')),
+     industry.new('Consumer Discretionary - Hotels, Resorts & Vacation Ownership', array.from('MAR','HLT','H','HTHT','WH','CHH','ATAT','TNL','VAC','HGV','TH')),
+     industry.new('Consumer Discretionary - Travel Booking & Corporate Travel', array.from('BKNG','ABNB','EXPE','TCOM','NAVN','MMYT','GBTG','TRIP','SABR')),
+     industry.new('Consumer Discretionary - Cruise Lines', array.from('RCL','VIK','CCL','NCLH','LIND')),
+     industry.new('Consumer Discretionary - Casinos & Gaming Operators', array.from('LVS','MGM','WYNN','CZR','RRR','BYD','PENN','MCRI','MLCO')),
+     industry.new('Consumer Discretionary - Online Betting & Gaming Technology', array.from('FLUT','DKNG','SGHC','CHDN','RSI','SRAD','GENI','BRSL')),
+     industry.new('Consumer Discretionary - Cinemas, Parks & Attractions', array.from('MTN','CNK','IMAX','AMC','PRKS','FUN','PRSU','MCS')),
+     industry.new('Consumer Discretionary - Sporting Goods, Toys & Leisure Products', array.from('HAS','GOLF','MAT','YETI','CALY','PTON','RGR','SWBI')),
+     industry.new('Consumer Discretionary - Boats, RVs & Powersports', array.from('BC','DOO','THO','PII','HOG','PATK','LCII','HZO','WGO','FOXF','CWH','MBUU')),
+     industry.new('Consumer Staples - Grocery, Warehouse & Convenience Retail', array.from('WMT','COST','KR','CASY','BJ','SFM','ACI','TBBB','PSMT','WMK','YSWY','IMKTA','GO')),
+     industry.new('Consumer Staples - Food Distribution & Agricultural Merchandising', array.from('SYY','USFD','PFGC','CHEF','UNFI')),
+     industry.new('Consumer Staples - Agricultural Merchandising & Renewable Feedstocks', array.from('ADM','BG','DAR','ANDE','REX','GPRE')),
+     industry.new('Consumer Staples - Protein, Produce & Farm Products', array.from('TSN','JBS','SFD','PPC','CALM','SEB','AGRO','DMC','DOLE','AVO')),
+     industry.new('Consumer Staples - Packaged Foods, Snacks & Pet Food', array.from('MDLZ','HSY','KHC','GIS','MKC','SJM','MICC','HRL','CAG','LW','CPB','POST','FRPT','MZTI','TR','UTZ','JJSF','NOMD','FLO','SENEA','JBSS','MAMA','OFRM')),
+     industry.new('Consumer Staples - Nutrition, Ingredients & Supplements', array.from('IFF','INGR','SXT','BCPC','HLF','BRBR','SMPL')),
+     industry.new('Consumer Staples - Nonalcoholic Beverages', array.from('KO','PEP','MNST','CCEP','KDP','COKE','CELH','PRMB','COCO','FIZZ')),
+     industry.new('Consumer Staples - Alcohol, Tobacco & Cannabis', array.from('PM','MO','STZ','TAP','TRLV','RLX','SAM','TPB','CRON','UVV','TLRY')),
+     industry.new('Consumer Staples - Beauty, Personal & Consumer Health', array.from('PG','CL','EL','KVUE','KMB','ELF','BBWI','IPAR','COTY','PBH','PRGO','EPC','ODD','HNST')),
+     industry.new('Consumer Staples - Home Care, Garden & Household Consumables', array.from('CHD','CLX','REYN','SMG','CENT','ENR','ODC')),
+     industry.new('Healthcare - Clinical, Practice & Life-Science Software', array.from('VEEV','WAY','DOCS','HTFL','HSTM','PHR','CCSI','WEAV')),
+     industry.new('Healthcare - Digital Care & Prescription Access', array.from('HNGE','HIMS','OMDA','GDRX','TDOC')),
+     industry.new('Healthcare - Benefits & Value-Based Care', array.from('HQY','PRVA','PGNY','ASTH','AGL','EVH')),
+     industry.new('Healthcare - Managed Care & Health Plans', array.from('UNH','ELV','CI','HUM','CNC','MOH','OSCR','ALHC','CLOV')),
+     industry.new('Healthcare - Hospitals & Surgical Facilities', array.from('HCA','THC','UHS','ACHC','SGRY','NUTX')),
+     industry.new('Healthcare - Post-Acute, Senior & Home Care', array.from('EHC','BTSG','ENSG','CHE','PACS','NHC','AVAH','BKD','ADUS','SNDA','PNTG')),
+     industry.new('Healthcare - Outpatient, Specialty & Emergency Care', array.from('DVA','LFST','CON','GRDN','MD','USPH','LMRI','GMRS','STLN')),
+     industry.new('Healthcare - Pharmacy, Infusion & Medical Distribution', array.from('CVS','MCK','COR','CAH','HSIC','OPCH','AHCO')),
+     industry.new('Healthcare - Diagnostic Labs & Imaging', array.from('LH','DGX','LNTH','RDNT')),
+     industry.new('Healthcare - Precision Diagnostics & Genomic Testing', array.from('NTRA','GH','TEM','CAI','BLLN','ADPT','GRAL','VCYT','CDNA','WGS','NEO','PSNL','FRNM','CSTL')),
+     industry.new('Healthcare - Life-Science Tools & Bioprocessing', array.from('TMO','DHR','A','WAT','ILMN','MTD','RVTY','TECH','BIO','RGEN','AVTR','TWST','QGEN','BRKR','TXG','NEOG','ALMR','MRVI','BLFS','AZTA','CYRX','MLAB')),
+     industry.new('Healthcare - Clinical Research & Development Services', array.from('IQV','MEDP','CRL','ICLR','FTRE')),
+     industry.new('Healthcare - Computational & Antibody Discovery Platforms', array.from('ABCL','GENB','RXRX','ABSI','SDGR','CERT','OABI')),
+     industry.new('Healthcare - Animal Health', array.from('IDXX','ZTS','ELAN','PAHC')),
+     industry.new('Healthcare - Diversified Biopharma', array.from('LLY','JNJ','ABBV','MRK','AZN','AMGN','GILD','PFE','VRTX','BMY','REGN','BIIB','INCY')),
+     industry.new('Healthcare - Specialty Pharma, Generics & Gastrointestinal', array.from('VTRS','JAZZ','AMRX','OGN','ZLAB','BHC','ALVO','ANIP','ARDX','AMPH','PHAT','IRWD')),
+     industry.new('Healthcare - Drug Royalties & Licensing', array.from('RPRX','HALO','LGND','ANAB','INVA')),
+     industry.new('Healthcare - Diabetes, Sleep & Patient Monitoring', array.from('RMD','DXCM','PODD','MMED','INSP','TNDM','BBNX','TCMD')),
+     industry.new('Healthcare - Cardiovascular & Critical-Care Devices', array.from('BSX','EW','PEN','MMSI','HAE','LIVN','ICUI','IRTC','TMDX','ATRC','LMAT','KMTS','AORT','AVR')),
+     industry.new('Healthcare - Orthopedics, Spine & Regenerative Devices', array.from('SYK','ZBH','GMED','AXGN','VCEL','ATEC','ENOV','IART','BVS','SIBN','KIDS')),
+     industry.new('Healthcare - Eye Care & Dental Devices', array.from('ALC','COO','ALGN','GKOS','BLCO','NVST','XRAY','STAA')),
+     industry.new('Healthcare - Surgery, Robotics & Treatment Systems', array.from('ISRG','MDT','TFX','PLSE','ESTA','OMCL','CNMD','PRCT','INMD')),
+     industry.new('Healthcare - Medical Supplies, Components & Sterilization', array.from('ABT','BDX','MDLN','WST','STE','SOLV','BAX','STVN','SHC','ITGR','UFPT')),
+     industry.new('Healthcare - Diagnostic, Imaging & Cancer Devices', array.from('GEHC','BFLY','NVCR','DRTS','IRMD','QDEL','CBLL','VREX','DCTH')),
+     industry.new('Healthcare - RNA, Gene Editing & Genetic Medicines', array.from('ALNY','ARWR','KRYS','IONS','CRSP','DYN','QURE','BEAM','RARE','SRPT','STOK','TSHA','NTLA','MGTX','SANA','SLDB','WVE','DSGN','FDMT','NGNE','PRME','RGNX','SCTX')),
+     industry.new('Healthcare - Metabolic, Obesity & Endocrine Medicines', array.from('ASND','MDGL','CORT','CRNX','RYTM','VKTX','GPCR','NAMS','MBX','KLRA','SEPN','XERS','LXRX','SGMT','ALT','VOGX')),
+     industry.new('Healthcare - Cardiorenal & Pulmonary Medicines', array.from('INSM','UTHR','CYTK','TVTX','LQDA','TRVI','MLYS','BRVE','KARD','AVLN','MNKD','APMD','SVRA','TBPH','TECX')),
+     industry.new('Healthcare - Rare Disease & Hematology Medicines', array.from('BBIO','BMRN','SRRK','MIRM','PTCT','EWTX','IRON','BCRX','PHVS','COAG','ADMA','AGIO','DMRA','ETON','MAZE','ZVRA','CAPR')),
+     industry.new('Healthcare - Neuroscience: Neurology & Epilepsy', array.from('NBIX','PRAX','TGTX','XENE','ACAD','AMLX','DNLI','SUPN','RAPP','HRMY','ANNX','CTNM')),
+     industry.new('Healthcare - Neuroscience: Psychiatry, Pain & Addiction', array.from('AXSM','ALKS','DFTX','INDV','ATAI','BHVN','LBRX','ANRO','PCRX','ACHV','COLL','MPLT','AQST')),
+     industry.new('Healthcare - Dermatology, Eye & Allergy Medicines', array.from('BLTE','MANE','TARS','ARQT','VRDN','KOD','OCUL','PVLA','HROW','EOLS','SPRY')),
+     industry.new('Healthcare - Immunology & Inflammatory Medicines', array.from('ROIV','APGE','KYMR','PTGX','IMVT','SYRE','KNSA','ORKA','DNTH','CLDX','ALMS','NKTR','VERA','AUPH','ZBIO','TRAX','CGEM','OMER','VOR','JBIO','MLTX','CRVS','GLUE','AVTX','ACRS','CLYM','STTK','ZURA')),
+     industry.new('Healthcare - Immune Cell Therapies', array.from('LEGN','IOVA','PGEN','IMTX','IMMX','ALLO','CABA','KYTX')),
+     industry.new('Healthcare - Vaccines & Anti-Infective Medicines', array.from('MRNA','BNTX','PCVX','VIR','NVAX','ABUS','ASMB','CRMD')),
+     industry.new('Healthcare - Oncology: Targeted Medicines', array.from('RVMD','EXEL','ERAS','COGT','PBLS','CELC','ELVN','RLAY','TNGX','IDYA','NRIX','NUVB','URGN','SNDX','TYRA','AVBP','ORIC','KURA','GERN','OLMA','FTH','RIGL','NVCT','VSTM','ARVN')),
+     industry.new('Healthcare - Oncology: Immunotherapy, Biologics & Platforms', array.from('SMMT','IBRX','CGON','RCUS','IMNM','SLS','ZYME','XNCR','IMCR','INBX','BCAX','REPL','AKTS','JANX','CADL','AURA','MNPR','CTMX','EIKN')),
+     industry.new('Utilities - Regulated Electric & Multi-Utilities: Larger', array.from('NEE','SO','DUK','AEP','D','SRE','ETR','XEL','EXC','ED','PCG','PEG','WEC','AEE','DTE','FTS','EIX','ES','FE','CNP')),
+     industry.new('Utilities - Regulated Electric & Multi-Utilities: Mid & Smaller', array.from('PPL','CMS','EVRG','LNT','EMA','PNW','AES','OGE','IDA','TXNM','POR','BKH','AQN','NWE','OTTR','AVA','MGEE','HE','UTL')),
+     industry.new('Utilities - Gas Utilities', array.from('ATO','NI','UGI','NFG','SWX','NJR','OGS','SR','MDU','CPK','NWN')),
+     industry.new('Utilities - Water Utilities', array.from('AWK','WTRG','AWR','CWT','HTO','MSEX')),
+     industry.new('Utilities - Merchant Power & Generation', array.from('CEG','VST','NRG','TLN','TAC','HNRG')),
+     industry.new('Utilities - Renewable Power & Infrastructure', array.from('BIP','ENLT','ORA','BEPC','FRVO','RNW','XIFR')),
+     industry.new('Energy - Integrated Oil & Canadian Producers', array.from('XOM','CVX','TTE','PBR','CNQ','SU','IMO','CVE')),
+     industry.new('Energy - Oil-Weighted Exploration & Production', array.from('COP','EOG','OXY','FANG','DVN','PR','OVV','APA','SM','CHRD','MTDR','MGY','MUR','CRC','CRGY','NOG')),
+     industry.new('Energy - Gas-Weighted Exploration & Production', array.from('EQT','EXE','AR','RRC','CNX','CRK','GPOR','BKV')),
+     industry.new('Energy - Smaller Oil & Diversified Producers', array.from('BTE','TALO','VET','KOS','DEC','SOC','REPX','OBE','VTS','GRNT','EGY','WTI')),
+     industry.new('Energy - Energy Royalties & Land', array.from('TPL','VNOM','LB','KRP')),
+     industry.new('Energy - Pipelines & Midstream', array.from('ENB','WMB','EPD','ET','KMI','TRP','TRGP','MPLX','OKE','PBA','WES','PAA','DTM','AM','KNTK','HESM','SOBO','PAGP','DKL')),
+     industry.new('Energy - LNG Export & Infrastructure', array.from('LNG','VG','CQP','EE','NEXT')),
+     industry.new('Energy - Refining, Fuel Distribution & Retail', array.from('MPC','VLO','PSX','DINO','SUN','MUSA','PBF','DK','CVI','CLMT','PARR','SUNC','WKC')),
+     industry.new('Energy - Oilfield Services & Equipment', array.from('SLB','BKR','HAL','FTI','NOV','WFRD','KGS','WHD','AROC','USAC','WBI','SEI','NESR','LBRT','DNOW','WTTR','EFXT','INVX','XPRO','FLOC','AESI','RES','PUMP','NPKI','TTI','ACDC','FET','FTK','CLB')),
+     industry.new('Energy - Offshore Services & Marine Support', array.from('OII','TDW','HLX','VTOL')),
+     industry.new('Energy - Contract Drilling', array.from('NE','RIG','VAL','PTEN','HP','SDRL','BORR','NBR','PDS')),
+     industry.new('Energy - Coal & Metallurgical Carbon', array.from('HCC','CNR','BTU','ARLP','AMR','SXC','METC')),
+     industry.new('Energy - Solar Equipment & Distributed Energy', array.from('FSLR','NXT','ENPH','RUN','SEDG','TE','SHLS','AMRC','DQ','CSIQ','ARRY','JKS')),
+     industry.new('Energy - Batteries & Energy Storage', array.from('QS','FLNC','EOSE','ENVX','NRGV','SLDP')),
+     industry.new('Energy - Hydrogen & Fuel Cells', array.from('BE','PLUG','FCEL','BLDP')),
+     industry.new('Energy - Distributed Power & Engines', array.from('INIO','GNRC','EROC','BW','PSIX','HYLN')),
+     industry.new('Energy - Nuclear Reactors & Services', array.from('BWXT','OKLO','XE','SMR','STDN','NNE','IMSR')),
+     industry.new('Energy - Uranium, Enrichment & Isotopes', array.from('CCJ','NXE','UEC','LEU','DNN','UROY','ASPI')),
+     industry.new('Materials - Fertilizers, Crop Inputs & Seeds', array.from('CTVA','NTR','CF','MOS','ICL','FMC','UAN','LXU','IPI')),
+     industry.new('Materials - Lithium & Battery Materials', array.from('ALB','SGML','LAC','LAR')),
+     industry.new('Materials - Rare Earths & Strategic Minerals', array.from('MP','ALM','USAR','CRML','UAMY','ALOY','NB')),
+     industry.new('Materials - Copper & Base Metals', array.from('SCCO','FCX','TECK','HBM','ERO','TGB','TMC','IE','NEXA','NAK','GSM')),
+     industry.new('Materials - Aluminum & Rolled Products', array.from('AA','CENX','CSTM','KALU')),
+     industry.new('Materials - Steel & Metal Service Centers', array.from('NUE','STLD','CRS','RS','TX','CMC','CLF','WS','RYZ','MTUS')),
+     industry.new('Materials - Gold Producers & Developers', array.from('NEM','AEM','B','AU','KGC','AGI','EQX','EGO','IAG','SSRM','BTG','AUGO','OGC','CGAU','ARIS','SKE','NG','FSM','SA','AAUC','HYMC','MUX','OGG','DC','GAU','ITRG','IDR')),
+     industry.new('Materials - Silver & Precious-Metal Miners', array.from('PAAS','CDE','HL','AG','AYA','EXK','SVM','USAS','VZLA','ASM','SCZM','CTGO')),
+     industry.new('Materials - Precious-Metal Royalties & Trading', array.from('WPM','FNV','RGLD','TFPM','OR','GOLD','VMET','MTA','GROY')),
+     industry.new('Materials - Cement, Aggregates & Building Materials', array.from('CRH','MLM','VMC','AMRZ','JHX','CSL','OC','EXP','KNF','USLM','RMIX')),
+     industry.new('Materials - Wood, Pulp & Paper Products', array.from('WFG','LPX','UFPI','BCC','SLVM','RYAM')),
+     industry.new('Materials - Packaging & Containers', array.from('SW','AMCR','PKG','IP','BALL','AVY','CCK','ATR','SON','SLGN','GEF','GPK','AMBP','TRS','OI','KRT')),
+     industry.new('Materials - Coatings, Adhesives & Sealants', array.from('SHW','PPG','RPM','AXTA','FUL','WDFC')),
+     industry.new('Materials - Commodity Chemicals & Industrial Gases', array.from('LIN','APD','DOW','LYB','WLK','EMN','CE','MEOH','OLN','HUN','TROX')),
+     industry.new('Materials - Specialty Chemicals & Engineered Materials', array.from('ECL','DD','SOLS','ESI','NEU','PRM','CBT','AVNT','ASH','KWR','HWKN','NGVT','CC','IOSP','MTX','SCL','PCT','ECVT','CMP','KOP')),
+     industry.new('Materials - Engineered Metal Building Products', array.from('MLI','VMI','ACA','AZZ','ROCK')),
+     industry.new('Real Estate - Data Centers & Information Storage', array.from('EQIX','DLR','IRM','BXDC')),
+     industry.new('Real Estate - Towers & Telecom Sites', array.from('AMT','CCI','SBAC','IHS')),
+     industry.new('Real Estate - Industrial & Logistics Property', array.from('PLD','EGP','LINE','FR','REXR','TRNO','STAG','COLD','LXP','IIPR')),
+     industry.new('Real Estate - Healthcare & Senior-Housing Property', array.from('WELL','VTR','DOC','OHI','AHR','JAN','CTRE','ARE','HR','SBRA','NHI','MPT','LTC','DHC')),
+     industry.new('Real Estate - Apartments & Residential Communities', array.from('VMRK','ESS','MAA','CPT','UDR','IRT','CSR','NXRT')),
+     industry.new('Real Estate - Single-Family & Manufactured Communities', array.from('INVH','SUI','ELS','AMH','UMH')),
+     industry.new('Real Estate - Retail Centers & Malls', array.from('SPG','KIM','REG','FRT','BRX','MAC','PECO','KRG','SKT','CURB','AKR','UE','IVT','CBL','ALX','CTO')),
+     industry.new('Real Estate - Net-Lease & Diversified Property', array.from('O','WPC','ADC','NNN','EPRT','BNL','FCPT','GNL','NTST','GTY','AAT','FVR')),
+     industry.new('Real Estate - Office & Government Property', array.from('BXP','CDP','VNO','CUZ','SLG','KRC','HIW','DEI','PDM','DEA','PSTL','ESRT','HPP','JBGS')),
+     industry.new('Real Estate - Hotel, Gaming & Leisure Property', array.from('VICI','HST','GLPI','RHP','EPR','APLE','PK','DRH','SHO','PEB','XHR','RLJ','SVC')),
+     industry.new('Real Estate - Self-Storage', array.from('PSA','EXR','CUBE','SMA')),
+     industry.new('Real Estate - Property Services, Brokerage & Platforms', array.from('CBRE','JLL','CSGP','COMP','Z','FSV','CIGI','CWK','OPEN','NMRK')),
+     industry.new('Real Estate - Land, Timber & Real-Estate Development', array.from('WY','RYN','MRP','HHH','JOE')))
+
+//----------helpers----------//
+f_rel(stockR, benchR) =>
+    na(stockR) or na(benchR) ? float(na) : ((1 + stockR / 100) / (1 + benchR / 100) - 1) * 100
+
+f_fmtV(v, suffix) =>
+    na(v) ? '-' : (v >= 0 ? '+' : '') + str.tostring(v, '0.00') + suffix
+
+f_cellBg(v) =>
+    na(v) ? color.new(color.gray, 80) : v >= 0 ? color.new(color.green, 70) : color.new(color.red, 70)
+
+f_zCalc(x, len, isNewBar, samples) =>
+    if isNewBar and not na(x)
+        array.push(samples, x)
+        if array.size(samples) > len
+            array.shift(samples)
+    m = array.size(samples) >= len ? array.avg(samples) : float(na)
+    sd = array.size(samples) >= len ? array.stdev(samples) : float(na)
+    na(sd) or sd == 0 ? float(na) : (x - m) / sd
+
+f_calcSma(x, len, isNewBar, samples) =>
+    if isNewBar and not na(x)
+        array.push(samples, x)
+        if array.size(samples) > len
+            array.shift(samples)
+    array.size(samples) >= len ? array.avg(samples) : float(na)
+
+// Sector codes: CM Communications, CD Consumer Discretionary, CS Consumer Staples,
+// EN Energy, FN Financials, HC Healthcare, IN Industrials, MT Materials,
+// RE Real Estate, IT Technology, UT Utilities.
+f_sectorInfo(name) =>
+    string code = 'IN'
+    int base = 700
+
+    if str.startswith(name, 'Communications - ')
+        code := 'CM'
+        base := 100
+    else if str.startswith(name, 'Technology - ')
+        code := 'IT'
+        base := 1000
+    else if str.startswith(name, 'Industrials - ')
+        code := 'IN'
+        base := 700
+    else if str.startswith(name, 'Financials - ')
+        code := 'FN'
+        base := 500
+    else if str.startswith(name, 'Consumer Discretionary - ')
+        code := 'CD'
+        base := 200
+    else if str.startswith(name, 'Consumer Staples - ')
+        code := 'CS'
+        base := 300
+    else if str.startswith(name, 'Healthcare - ')
+        code := 'HC'
+        base := 600
+    else if str.startswith(name, 'Utilities - ')
+        code := 'UT'
+        base := 1100
+    else if str.startswith(name, 'Energy - ')
+        code := 'EN'
+        base := 400
+    else if str.startswith(name, 'Materials - ')
+        code := 'MT'
+        base := 800
+    else if str.startswith(name, 'Real Estate - ')
+        code := 'RE'
+        base := 900
+
+    [code, base]
+
+f_metricWithZ(value, zValue) =>
+    f_fmtV(value, '%') + ' (' + f_fmtV(zValue, 'σ') + ')'
+
+//----------find current group----------//
+var string[] grpSyms = array.new_string()
+var string grpName = ''
+var bool grpFound = false
+var int grpId = na
+var string grpIdText = ''
+
+if barstate.isfirst
+    tk = str.upper(syminfo.ticker)
+
+    for [i, grp] in indArr
+        if not grpFound and array.includes(grp.symbols, tk)
+            [sectorCode, sectorBase] = f_sectorInfo(grp.name)
+            int sectorLocalId = 0
+
+            for j = 0 to i
+                priorGrp = array.get(indArr, j)
+                [priorCode, priorBase] = f_sectorInfo(priorGrp.name)
+
+                if priorCode == sectorCode
+                    sectorLocalId += 1
+
+            grpSyms := grp.symbols
+            grpName := grp.name
+            grpId := sectorBase + sectorLocalId
+            grpIdText := sectorCode + str.tostring(sectorLocalId)
+            grpFound := true
+
+//----------benchmark data----------//
+calcIsHigher = timeframe.in_seconds(calcTf) > timeframe.in_seconds()
+reqOffset = confirmed and calcIsHigher ? 1 : 0
+reqLookahead = confirmed and calcIsHigher ? barmerge.lookahead_on : barmerge.lookahead_off
+newCalcBar = timeframe.change(calcTf)
+
+[bR1, bR5, bR21, bR63, bR126, bAtrPct] = request.security(
+     bench,
+     calcTf,
+     [
+         ta.roc(close, 1)[reqOffset],
+         ta.roc(close, 5)[reqOffset],
+         ta.roc(close, 21)[reqOffset],
+         ta.roc(close, 63)[reqOffset],
+         ta.roc(close, 126)[reqOffset],
+         (ta.atr(atrLen) / close * 100)[reqOffset]
+     ],
+     lookahead = reqLookahead)
+
+//----------equal-weight group returns----------//
+float s1 = 0.0
+float s5 = 0.0
+float s21 = 0.0
+float s63 = 0.0
+float s126 = 0.0
+
+int n1 = 0
+int n5 = 0
+int n21 = 0
+int n63 = 0
+int n126 = 0
+
+if grpFound
+    for symbol in grpSyms
+        [r1, r5, r21, r63, r126] = request.security(
+             symbol,
+             calcTf,
+             [
+                 ta.roc(close, 1)[reqOffset],
+                 ta.roc(close, 5)[reqOffset],
+                 ta.roc(close, 21)[reqOffset],
+                 ta.roc(close, 63)[reqOffset],
+                 ta.roc(close, 126)[reqOffset]
+             ],
+             lookahead = reqLookahead,
+             ignore_invalid_symbol = true)
+
+        if not na(r1)
+            s1 += r1
+            n1 += 1
+
+        if not na(r5)
+            s5 += r5
+            n5 += 1
+
+        if not na(r21)
+            s21 += r21
+            n21 += 1
+
+        if not na(r63)
+            s63 += r63
+            n63 += 1
+
+        if not na(r126)
+            s126 += r126
+            n126 += 1
+
+absD = n1 > 0 ? s1 / n1 : float(na)
+absW = n5 > 0 ? s5 / n5 : float(na)
+absM = n21 > 0 ? s21 / n21 : float(na)
+absQ = n63 > 0 ? s63 / n63 : float(na)
+absH = n126 > 0 ? s126 / n126 : float(na)
+
+//----------equal-weight relative index----------//
+var float ewIndex = na
+
+if grpFound
+    if newCalcBar and not na(absD) and not na(bR1)
+        ewIndex := nz(ewIndex[1], 100.0) * (1 + (absD - bR1) / 100)
+    else
+        ewIndex := nz(ewIndex[1], ewIndex)
+
+var float[] ma1History = array.new_float()
+var float[] ma2History = array.new_float()
+
+ewMa1 = f_calcSma(ewIndex, ma1Len, newCalcBar, ma1History)
+ewMa2 = f_calcSma(ewIndex, ma2Len, newCalcBar, ma2History)
+
+plot(ewIndex, 'EW Group vs Benchmark (Rebalanced)', color = color.new(#2962FF, 0), linewidth = 2)
+plot(ewMa1, '21 MA', color = color.orange, linewidth = 1)
+plot(ewMa2, '50 MA', color = color.fuchsia, linewidth = 1)
+hline(100, 'Anchor', color = color.new(color.gray, 50), linestyle = hline.style_dotted)
+
+//----------relative-performance metrics----------//
+rsD = f_rel(absD, bR1)
+rsW = f_rel(absW, bR5)
+rsM = f_rel(absM, bR21)
+rsQ = f_rel(absQ, bR63)
+rsH = f_rel(absH, bR126)
+
+vaD = na(bAtrPct) or bAtrPct == 0 ? float(na) : (absD - bR1) / bAtrPct
+vaW = na(bAtrPct) or bAtrPct == 0 ? float(na) : (absW - bR5) / bAtrPct
+vaM = na(bAtrPct) or bAtrPct == 0 ? float(na) : (absM - bR21) / bAtrPct
+vaQ = na(bAtrPct) or bAtrPct == 0 ? float(na) : (absQ - bR63) / bAtrPct
+vaH = na(bAtrPct) or bAtrPct == 0 ? float(na) : (absH - bR126) / bAtrPct
+
+selD = metricSel == 'Absolute %' ? absD : metricSel == 'RS vs SPY' ? rsD : vaD
+selW = metricSel == 'Absolute %' ? absW : metricSel == 'RS vs SPY' ? rsW : vaW
+selM = metricSel == 'Absolute %' ? absM : metricSel == 'RS vs SPY' ? rsM : vaM
+selQ = metricSel == 'Absolute %' ? absQ : metricSel == 'RS vs SPY' ? rsQ : vaQ
+selH = metricSel == 'Absolute %' ? absH : metricSel == 'RS vs SPY' ? rsH : vaH
+
+//----------z-scores----------//
+var float[] zDHistory = array.new_float()
+var float[] zWHistory = array.new_float()
+var float[] zMHistory = array.new_float()
+var float[] zQHistory = array.new_float()
+var float[] zHHistory = array.new_float()
+
+zD = f_zCalc(selD, zLen, newCalcBar, zDHistory)
+zW = f_zCalc(selW, zLen, newCalcBar, zWHistory)
+zM = f_zCalc(selM, zLen, newCalcBar, zMHistory)
+zQ = f_zCalc(selQ, zLen, newCalcBar, zQHistory)
+zH = f_zCalc(selH, zLen, newCalcBar, zHHistory)
+
+//----------0-100 group score----------//
+rankRelPerf = na(rsM) or na(rsQ) ? float(na) : (rsM + rsQ) / 2.0
+groupScore = na(rankRelPerf) ? float(na) : 100.0 / (1.0 + math.exp(-0.15 * rankRelPerf))
+
+//----------Data Window / screener outputs----------//
+plot(groupScore, 'Screener: Group Score 0-100', display = display.data_window)
+plot(grpId, 'Screener: Sector Group Numeric ID', display = display.data_window)
+plot(n21, 'Screener: Group Member Count', display = display.data_window)
+plot(groupScore >= topScore ? 1 : 0, 'Screener: Top Group Pass', display = display.data_window)
+
+// Selected performance values match the table's RS Type setting.
+// These outputs appear in the Data Window without changing the chart scale.
+plot(selD, 'Table: 1D Performance', display = display.data_window)
+plot(selW, 'Table: 1W Performance', display = display.data_window)
+plot(selM, 'Table: 1M Performance', display = display.data_window)
+plot(selQ, 'Table: 3M Performance', display = display.data_window)
+plot(selH, 'Table: 6M Performance', display = display.data_window)
+
+plot(zD, 'Table: 1D Z-Score', display = display.data_window)
+plot(zW, 'Table: 1W Z-Score', display = display.data_window)
+plot(zM, 'Table: 1M Z-Score', display = display.data_window)
+plot(zQ, 'Table: 3M Z-Score', display = display.data_window)
+plot(zH, 'Table: 6M Z-Score', display = display.data_window)
+
+// Relative performance outputs always use the benchmark comparison.
+plot(rsD, 'Screener: Group 1D Rel Perf', display = display.data_window)
+plot(rsW, 'Screener: Group 5D Rel Perf', display = display.data_window)
+plot(rsM, 'Screener: Group 21D Rel Perf', display = display.data_window)
+plot(rsQ, 'Screener: Group 63D Rel Perf', display = display.data_window)
+plot(rsH, 'Screener: Group 126D Rel Perf', display = display.data_window)
+
+alertcondition(
+     groupScore >= topScore,
+     'Top Group Score',
+     'This ticker belongs to a group at or above the selected score threshold.')
+
+//----------shortened group label----------//
+f_short(name) =>
+    parts = str.split(name, ' - ')
+    core = array.size(parts) > 1 ? array.get(parts, 1) : name
+    str.length(core) > 22 ? str.substring(core, 0, 22) + '…' : core
+
+//----------compact two-row table----------//
+tblPosition = tablePos == 'Top Left' ? position.top_left :
+     tablePos == 'Bottom Right' ? position.bottom_right :
+     tablePos == 'Bottom Left' ? position.bottom_left :
+     position.top_right
+
+var table perf = table.new(tblPosition, 9, 2, border_width = 1)
+
+txtCol = theme == 'Dark' ? color.white : color.black
+hdrBg = theme == 'Dark' ? color.new(#131722, 0) : color.new(#F0F3FA, 0)
+
+if barstate.islast
+    table.clear(perf, 0, 0, 8, 1)
+
+    if showTable and grpFound
+        metricLabel = metricSel == 'Absolute %' ? 'Abs %' :
+             metricSel == 'RS vs SPY' ? 'RS %' :
+             'Vol RS'
+
+        table.cell(perf, 0, 0, fullName ? grpName : f_short(grpName), text_color = txtCol, bgcolor = hdrBg, text_halign = text.align_left)
+        table.cell(perf, 1, 0, showScore ? 'Score' : '', text_color = txtCol, bgcolor = hdrBg)
+        table.cell(perf, 2, 0, showId ? 'ID' : '', text_color = txtCol, bgcolor = hdrBg)
+        table.cell(perf, 3, 0, showDay ? '1D' : '', text_color = txtCol, bgcolor = hdrBg)
+        table.cell(perf, 4, 0, showWeek ? '1W' : '', text_color = txtCol, bgcolor = hdrBg)
+        table.cell(perf, 5, 0, showMonth ? '1 Mo' : '', text_color = txtCol, bgcolor = hdrBg)
+        table.cell(perf, 6, 0, showQtr ? '3 Mo' : '', text_color = txtCol, bgcolor = hdrBg)
+        table.cell(perf, 7, 0, showHalf ? '6M' : '', text_color = txtCol, bgcolor = hdrBg)
+        table.cell(perf, 8, 0, showCount ? '#' : '', text_color = txtCol, bgcolor = hdrBg)
+
+        table.cell(perf, 0, 1, metricLabel, text_color = txtCol, bgcolor = hdrBg, text_halign = text.align_left)
+        table.cell(perf, 1, 1, showScore ? str.tostring(groupScore, '0.0') : '', text_color = txtCol, bgcolor = showScore ? f_cellBg(groupScore - 50) : hdrBg)
+        table.cell(perf, 2, 1, showId ? grpIdText : '', text_color = txtCol, bgcolor = hdrBg)
+        table.cell(perf, 3, 1, showDay ? f_metricWithZ(selD, zD) : '', text_color = txtCol, bgcolor = showDay ? f_cellBg(selD) : hdrBg)
+        table.cell(perf, 4, 1, showWeek ? f_metricWithZ(selW, zW) : '', text_color = txtCol, bgcolor = showWeek ? f_cellBg(selW) : hdrBg)
+        table.cell(perf, 5, 1, showMonth ? f_metricWithZ(selM, zM) : '', text_color = txtCol, bgcolor = showMonth ? f_cellBg(selM) : hdrBg)
+        table.cell(perf, 6, 1, showQtr ? f_metricWithZ(selQ, zQ) : '', text_color = txtCol, bgcolor = showQtr ? f_cellBg(selQ) : hdrBg)
+        table.cell(perf, 7, 1, showHalf ? f_metricWithZ(selH, zH) : '', text_color = txtCol, bgcolor = showHalf ? f_cellBg(selH) : hdrBg)
+        table.cell(perf, 8, 1, showCount ? str.tostring(n21) : '', text_color = txtCol, bgcolor = hdrBg)
+
+    else if showTable
+        table.cell(perf, 0, 0, 'Ticker not in any group: ' + syminfo.ticker, text_color = txtCol, bgcolor = hdrBg)

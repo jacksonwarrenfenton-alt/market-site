@@ -152,9 +152,17 @@ def _tv_scan(tickers):
 
 
 def tradingview():
-    # A real walk of jman's Pine indicator (the Mac's Friday TradingView task)
-    # is the exact source; this cloud read is the stand-in. If a walk file was
-    # restored into ~/pos and is still fresh, keep it and do not overwrite it.
+    # jman's indicator computed exactly from daily closes: tvcalc.py reads the
+    # rosters and the math straight from tv_indicator.pine, so this IS the
+    # Data Window reading for every group, refreshed daily. A restored
+    # Chrome-walk file (no `src` column, <= 8 days old) is the first fallback,
+    # the TradingView screener read the last.
+    try:
+        import tvcalc
+        return tvcalc.build()
+    except Exception as e:
+        print(f"tradingview: exact indicator calc FAILED ({e}) -- trying fallbacks",
+              file=sys.stderr, flush=True)
     path = f"{D}/tv_scan.csv"
     if os.path.exists(path):
         try:
@@ -163,10 +171,14 @@ def tradingview():
                 dt = pd.to_datetime(old["date"].astype(str), errors="coerce").max()
                 if pd.notna(dt) and (pd.Timestamp.now() - dt).days <= 8:
                     print(f"tradingview: keeping the indicator walk from {dt.date()} "
-                          f"({len(old)} rows) -- cloud read skipped", file=sys.stderr, flush=True)
+                          f"({len(old)} rows)", file=sys.stderr, flush=True)
                     return old
         except Exception:
             pass
+    return _screener_read()
+
+
+def _screener_read():
     ro = _rosters()
     px = _tv_scan([s for _, m in ro for s in m] + ["SPY"])
     if "SPY" not in px.index:

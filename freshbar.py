@@ -62,7 +62,9 @@ def feeds():
     except Exception: pass
     try:
         s = pd.read_csv(f"{D}/tv_scan.csv")
-        add("TradingView scan", s.date.iloc[-1] if "date" in s else None, 40, "manual walk")
+        how = {"calc": "your indicator, computed daily", "cloud": "screener fallback"}.get(
+            str(s.src.iloc[-1]) if "src" in s else "", "Chrome walk")
+        add("TradingView scan", s.date.iloc[-1] if "date" in s else None, 40 if how == "Chrome walk" else 5, how)
     except Exception: pass
     return out
 

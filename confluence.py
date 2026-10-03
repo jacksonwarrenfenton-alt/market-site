@@ -28,7 +28,7 @@ LEGS = [
     ("bread", "Breadth",      "share of members beating SPY over 1 month"),
     ("flow",  "ETF flow",     "1-month flow as % of AUM in the basket that covers this group"),
     ("si",    "Short int.",   "short-interest breadth tilt across the group's members"),
-    ("tv",    "TradingView",  "the chart indicator's own 21D/63D RS, read from the Data Window"),
+    ("tv",    "TradingView",  "your TradingView indicator's own 21D/63D RS (its exact math, computed daily)"),
     ("fvz",   "Finviz group", "Finviz industry-group 1w/3m performance, crosswalked to this basket"),
     ("moo",   "moomoo group", "moomoo Sectors single-period performance, crosswalked to this basket"),
 ]
