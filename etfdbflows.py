@@ -10,8 +10,9 @@ gives the whole history -- no paging, no API key:
 Plain requests get a Cloudflare 403; a real Chromium gets the page. In the
 cloud container Chromium must trust the egress proxy's CA (see trust_proxy_ca).
 
-Output: ~/pos/etfdb_flows.parquet with columns symbol, date, flow_bn, aum_bn --
-the exact schema flows.per_etf_weekly() reads, so nothing downstream changes.
+Output: ~/pos/etfdb_flows.parquet with columns symbol, date, flow_bn, aum_bn,
+ONE ROW PER FUND PER WEEK ENDING FRIDAY -- the exact schema and granularity the
+Mac harvest wrote and flows.per_etf_weekly() reads (see to_weekly()).
 
 Verification (verify()): two checks against data that does not come from etfdb.
   1. AUM level  -- latest etfdb AUM vs stockanalysis.com's AUM for the same fund.
@@ -134,6 +135,23 @@ def _harvest_chunk(syms):
     return (pd.concat(out, ignore_index=True) if out else None), fails
 
 
+def to_weekly(d):
+    """Daily etfdb rows -> one row per fund per week ending Friday.
+
+    flows.per_etf_weekly() reads every row of etfdb_flows.parquet as ONE WEEK
+    (the Mac harvest stored "etfdb daily series summed to Friday"), so daily
+    rows would each be counted as a week and every rolling-week figure would
+    come out a fraction of the real one. Flow is summed over the week; AUM is
+    the week's last reading.
+    """
+    d = d.copy()
+    d["date"] = pd.to_datetime(d["date"])
+    d["date"] = d["date"] + pd.to_timedelta((4 - d["date"].dt.dayofweek) % 7, unit="D")
+    d = d.sort_values(["symbol", "date"])
+    return (d.groupby(["symbol", "date"], as_index=False)
+              .agg(flow_bn=("flow_bn", "sum"), aum_bn=("aum_bn", "last")))
+
+
 def harvest(syms=None, workers=6, verbose=True):
     """One page load per fund, `workers` browsers in parallel; writes OUT."""
     from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -158,7 +176,7 @@ def harvest(syms=None, workers=6, verbose=True):
         if d is not None: out.append(d)
     if not out:
         raise RuntimeError("etfdb harvest got nothing -- Cloudflare or layout change")
-    d = pd.concat(out, ignore_index=True)
+    d = to_weekly(pd.concat(out, ignore_index=True))
     d.to_parquet(OUT)
     print(f"etfdb flows: {d.symbol.nunique()}/{len(syms)} funds, "
           f"{d.date.min().date()} -> {d.date.max().date()}"
