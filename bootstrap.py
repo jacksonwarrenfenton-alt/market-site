@@ -66,6 +66,32 @@ def _sbstat():
     subprocess.run([sys.executable, f"{HERE}/run_sbstat.py"], check=True, cwd=HERE)
 
 
+def _integrity():
+    # The old daily trigger's STEP 2a, as code: a date covering under half the
+    # trailing-20 max symbol count is not a real session (2026-09-22 showed up
+    # with 7 symbols against ~3,200) -- drop it from BOTH bar files and redo the
+    # Stockbee stats so everything downstream sees the same sessions. An
+    # intraday last bar is only reported: there is no settled close to swap in.
+    import pandas as pd, feedcheck as FC
+    issues = FC.session_integrity()
+    sparse = sorted({i["date"] for i in issues if i["kind"] == "sparse_session"})
+    for i in issues:
+        _log(f"integrity: {i['kind']} {i.get('date', '')} -- {i.get('detail', '')}")
+    if sparse:
+        bad = pd.to_datetime(sparse)
+        for f in ("bars.parquet", "bars_deep.parquet"):
+            p = f"{D}/{f}"
+            if os.path.exists(p):
+                b = pd.read_parquet(p)
+                n = len(b)
+                b = b[~pd.to_datetime(b["date"]).dt.normalize().isin(bad)]
+                b.to_parquet(p)
+                _log(f"integrity: dropped {n - len(b)} rows on {sparse} from {f}")
+        _sbstat()
+    if not issues:
+        _log("integrity: bar frame clean (no sparse or intraday sessions)")
+
+
 def _etfflows():
     # Cloud harvest of the daily flow history the Mac used to supply, then the
     # cross-source check. A failed check is logged, not fatal: the numbers are
@@ -113,6 +139,7 @@ STEPS = [
     ("breadth",   lambda: __import__("breadth").build(force=True)),
     ("deepbars",  _deepbars),
     ("sbstat",    _sbstat),
+    ("integrity", _integrity),
     ("daily",     lambda: __import__("daily_refresh").run()),
     ("chartdata", lambda: __import__("chartdata").save()),
     ("ratioscan", lambda: __import__("ratioscan").save()),
