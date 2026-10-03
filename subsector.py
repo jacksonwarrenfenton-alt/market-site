@@ -25,6 +25,12 @@ def _pct(s):
     return s.rank(pct=True) * 100
 
 
+def _rel(g, b):
+    """The indicator's f_rel: performance relative to the benchmark as a ratio."""
+    if not (np.isfinite(g) and np.isfinite(b)): return np.nan
+    return ((1 + g / 100.0) / (1 + b / 100.0) - 1) * 100.0
+
+
 def _rs_composite(rs_w, rs_m, rs_q):
     short = RS_W_SHORT[0] * _pct(rs_w) + RS_W_SHORT[1] * _pct(rs_m)
     long_ = RS_W_LONG[0] * _pct(rs_m) + RS_W_LONG[1] * _pct(rs_q)
@@ -55,8 +61,32 @@ def build(b, u, bench_px=None):
     c = c[cover >= 0.60]
     if len(c) < 70: return None, None
 
+    groups, src = rosters(u)
+    # Roster members outside the screened bar universe (recent listings, small
+    # caps) still count in jman's indicator -- price them too, on the same
+    # trading days, so each group averages its FULL roster.
+    lack = sorted({t for m in groups.values() for t in m} - set(c.columns))
+    if lack and src == "custom176":
+        try:
+            import tvcalc
+            x = tvcalc.closes(lack)
+            x = x[[t for t in lack if t in x.columns]].reindex(c.index)
+            if len(x.columns):
+                c = c.join(x)
+        except Exception as e:
+            print(f"subsector: extra roster pricing failed ({e})", flush=True)
+
+    # Members with no bar in the last five sessions are delisted or acquired:
+    # drop them (TradingView returns nothing for a dead symbol) rather than
+    # carry a frozen price into every window.
+    lastbar = c.apply(lambda col: col.last_valid_index())
+    c = c[[t for t in c.columns if lastbar[t] is not None and lastbar[t] >= c.index[max(0, len(c) - 6)]]]
+
     def ret(win):
-        return (c.pct_change(win) * 100).iloc[-1]
+        # A member with no bar today carries its last close (Pine's
+        # request.security does the same); a new listing with too little
+        # history stays NaN and drops out of that window only.
+        return (c.ffill().pct_change(win, fill_method=None) * 100).iloc[-1]
 
     R = {w: ret(w) for w in (1, 5, 21, 63)}
     bench = {}
@@ -67,36 +97,40 @@ def build(b, u, bench_px=None):
     else:
         for w in (1, 5, 21, 63): bench[w] = float(R[w].median())
 
-    groups, src = rosters(u)
     rows = []
     weekly = c.resample("W-FRI").last().pct_change() * 100
     for name, syms in groups.items():
         m = [s for s in syms if s in c.columns]
         if len(m) < 3: continue
-        r = {w: float(R[w][m].median()) for w in (1, 5, 21, 63)}
-        # Equal-weight (arithmetic mean) replicates the Pine indicator's
-        # EW-vs-SPY construction on the identical roster. Median is robust to a
-        # single blown-up member; EW is what the on-chart table shows. Carrying
-        # both makes disagreement visible instead of silently picking one.
+        # Primary read = jman's TradingView indicator ("Industry Group Strength
+        # - EW vs SPY"): equal-weight MEAN of member returns, relative to SPY as
+        # a RATIO, ((1+g)/(1+spy)-1). The median read is kept beside it as the
+        # robustness cross-check -- a wide gap means a few members are carrying
+        # (or sinking) the average.
         e = {w: float(R[w][m].mean()) for w in (1, 5, 21, 63)}
+        md = {w: float(R[w][m].median()) for w in (1, 5, 21, 63)}
         wk = weekly[m].median(axis=1).dropna()
         sd = float(wk.tail(104).std()) or np.nan
         rows.append({
             "name": name, "n": len(m),
-            "d": r[1], "w": r[5], "m": r[21], "q": r[63],
-            "rs_w": r[5] - bench[5], "rs_m": r[21] - bench[21], "rs_q": r[63] - bench[63],
+            "d": e[1], "w": e[5], "m": e[21], "q": e[63],
+            "rs_w": _rel(e[5], bench[5]), "rs_m": _rel(e[21], bench[21]), "rs_q": _rel(e[63], bench[63]),
+            # ew_* stay as explicit aliases of the primary read for older readers
             "ew_d": e[1], "ew_w": e[5], "ew_m": e[21], "ew_q": e[63],
-            "ew_rs_w": e[5] - bench[5], "ew_rs_m": e[21] - bench[21],
-            "ew_rs_q": e[63] - bench[63],
-            "thrust": (r[5]/sd) if sd and np.isfinite(sd) else np.nan,
+            "ew_rs_w": _rel(e[5], bench[5]), "ew_rs_m": _rel(e[21], bench[21]),
+            "ew_rs_q": _rel(e[63], bench[63]),
+            "med_rs_w": _rel(md[5], bench[5]), "med_rs_m": _rel(md[21], bench[21]),
+            "med_rs_q": _rel(md[63], bench[63]),
+            "thrust": (md[5]/sd) if sd and np.isfinite(sd) else np.nan,
         })
     if not rows: return None, src
     df = pd.DataFrame(rows)
     df["rs_rank"] = (_rs_composite(df.rs_w, df.rs_m, df.rs_q).rank(pct=True) * 99).round().astype(int)
-    df["ew_rank"] = (_rs_composite(df.ew_rs_w, df.ew_rs_m, df.ew_rs_q).rank(pct=True) * 99).round().astype(int)
+    df["ew_rank"] = df["rs_rank"]
+    df["med_rank"] = (_rs_composite(df.med_rs_w, df.med_rs_m, df.med_rs_q).rank(pct=True) * 99).round().astype(int)
     # Positive = the equal-weight read is BETTER than the median read, i.e. the
     # group is being carried by a few strong members rather than broadly strong.
-    df["xchk"] = df.ew_rank - df.rs_rank
+    df["xchk"] = df.ew_rank - df.med_rank
     df = df.sort_values("rs_rank", ascending=False).reset_index(drop=True)
     df["rank"] = df.index + 1
 

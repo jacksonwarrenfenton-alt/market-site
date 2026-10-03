@@ -75,15 +75,37 @@ def closes(tickers):
         # Fetched here rather than through prices.fetch_list, which drops any
         # series under 60 bars -- the indicator still counts a recent listing
         # in every window it has history for (1D/5D/21D for a 40-day IPO).
-        import prices as P
-        from concurrent.futures import ThreadPoolExecutor
-        with ThreadPoolExecutor(6) as ex:
-            got = {tk: s for tk, s in ex.map(lambda t: P._one(t, "1y"), want) if s is not None and len(s)}
-        if got:
-            extra = pd.DataFrame(got).sort_index()
+        extra = _fetch(want)
+        if extra is not None and len(extra.columns):
             px = extra if px.empty else px.join(extra, how="outer")
     px.index = pd.to_datetime(px.index).normalize()
     return px.rename(columns={_yahoo(t): t for t in tickers})
+
+
+XCACHE = f"{D}/tvcalc_prices.parquet"
+
+
+def _fetch(want, maxage=12 * 3600):
+    """Yahoo closes for symbols the bar cache lacks, cached for half a day so
+    the TradingView step and the group board share one download."""
+    import time
+    have = None
+    if os.path.exists(XCACHE) and time.time() - os.path.getmtime(XCACHE) < maxage:
+        have = pd.read_parquet(XCACHE)
+        if set(want) <= set(have.columns):
+            return have[want]
+    import prices as P
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(6) as ex:
+        got = {tk: s for tk, s in ex.map(lambda t: P._one(t, "1y"), want) if s is not None and len(s)}
+    if not got:
+        return have
+    extra = pd.DataFrame(got).sort_index()
+    extra.index = pd.to_datetime(extra.index).normalize()
+    if have is not None:
+        extra = extra.join(have[[c for c in have.columns if c not in extra.columns]], how="outer")
+    extra.to_parquet(XCACHE)
+    return extra[[c for c in want if c in extra.columns]]
 
 
 def _roc(s, n):
@@ -111,6 +133,7 @@ def build(write=True):
     asof = spy.index[-1]
     px = px[px.index <= asof]
     bench = {k: _roc(spy, n) for k, n in WIN.items()}
+    cutoff = spy.index[max(0, len(spy) - 6)]
     # Stale members (no bar for weeks) still count in Pine -- request.security
     # carries the last value -- but a symbol with no data at all is skipped.
     probes = {}
@@ -121,7 +144,10 @@ def build(write=True):
         probes = {r.group: (r.code, r.numeric_id) for r in p.itertuples()}
     rows, missing = [], 0
     for (name, members), gid in zip(gs, ids):
-        have = [t for t in members if t in px.columns and px[t].notna().any()]
+        # A member with no bar in the last five sessions is delisted/acquired:
+        # TradingView returns nothing for a dead symbol, so it drops out.
+        have = [t for t in members if t in px.columns and px[t].notna().any()
+                and px[t].last_valid_index() >= cutoff]
         missing += len(members) - len(have)
         r = {}
         for k, n in WIN.items():

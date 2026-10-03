@@ -145,7 +145,7 @@ def build(df, bars=None, bench=None, si=None, flow_by_basket=None, group_basket=
     if df is None or not len(df): return df
     members = df.attrs.get("members", {})
     raw = pd.DataFrame(index=df.index)
-    raw["med"]    = df["rs_m"]
+    raw["med"]    = df["med_rs_m"] if "med_rs_m" in df else df["rs_m"]
     raw["ew"]     = df["ew_rs_m"]
     raw["short"]  = df["rs_w"]
     raw["long"]   = df["rs_q"]

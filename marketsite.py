@@ -889,16 +889,16 @@ def subsector_board(df, src):
         return '<div class="legs">' + "".join(cells) + '</div>'
 
     def xcell(r):
-        # Equal-weight cross-check: the Pine table's construction on the same
-        # roster. Wide gaps flag a group whose median and mean disagree.
-        er, x = r.get("ew_rank"), r.get("xchk")
-        if er is None or not np.isfinite(er):
+        # Median cross-check: the same roster and blend scored on the median
+        # member. Wide gaps flag a group whose median and mean disagree.
+        mr, x = r.get("med_rank"), r.get("xchk")
+        if mr is None or not np.isfinite(mr):
             return '<td class="dim" data-sort="-999">&ndash;</td>'
-        er, x = int(er), int(x)
+        mr, x = int(mr), int(x)
         cls = "dim" if abs(x) < 10 else ("up" if x > 0 else "dn")
-        return (f'<td class="sc {cls}" data-sort="{er}" '
-                f'title="equal-weight RS rank {er}; {x:+d} vs median rank">'
-                f'{er}<span class="xd">{x:+d}</span></td>')
+        return (f'<td class="sc {cls}" data-sort="{mr}" '
+                f'title="median RS rank {mr}; RS rank is {x:+d} vs it">'
+                f'{mr}<span class="xd">{x:+d}</span></td>')
     # Top-10 badges: a group sorted out of view on one column (say you're
     # sorted by Conf) can still be flagged as a top-10 performer on Week,
     # Month, Quarter or RS rank -- the four reads jman asked to keep visible
@@ -947,7 +947,7 @@ def subsector_board(df, src):
                 '<th>Week</th><th>Month</th><th>Quarter</th></tr></thead><tbody>'
                 + sub + '</tbody></table></td></tr>')
     heads = ["#","Group","n","Day","Week","Month","Quarter","RS 1m","RS 3m","RS rank",
-             "EW rank","Conf","Spread","Thrust","&Delta; rank"]
+             "Med rank","Conf","Spread","Thrust","&Delta; rank"]
     hdr = "".join(f'<th data-s="{i}">{h}</th>' for i, h in enumerate(heads))
     return (conf_panel(df, LEGS)
             + _rrg(df)
@@ -959,11 +959,13 @@ def subsector_board(df, src):
             f'<b>Click any column header to sort</b>. <b>Click a group name</b> to drop down '
             f'its constituents. Thrust is the week in sigma of that group&rsquo;s own '
             f'two-year weekly history; &Delta; is the rank move since the previous stored '
-            f'run. <b>EW rank</b> is the same roster and blend scored equal-weight instead '
-            f'of by median &mdash; the construction the on-chart Pine table uses &mdash; '
-            f'with its gap to the median rank beside it: <span class="up">green</span> '
-            f'means a few strong members are carrying the group, <span class="dn">red</span> '
-            f'means the median member is stronger than the average. The letter badges beside '
+            f'run. Returns and RS are your TradingView indicator&rsquo;s construction: '
+            f'the <b>equal-weight average</b> of the group&rsquo;s members, relative to SPY '
+            f'as a ratio. <b>Med rank</b> is the same roster and blend scored on the '
+            f'<b>median</b> member instead, with RS rank&rsquo;s gap to it beside it: '
+            f'<span class="up">green</span> means a few strong members are carrying the '
+            f'group, <span class="dn">red</span> means the median member is stronger than '
+            f'the average. The letter badges beside '
             f'a group name mark <b>top-10 out of {_nb}</b> on that read even when you&rsquo;ve '
             f'sorted by something else: <i class="t10 tw">W</i> week, '
             f'<i class="t10 tm">M</i> month, <i class="t10 tq">Q</i> quarter, '

@@ -158,23 +158,24 @@ def run(strict=True, verbose=True):
     except Exception as e:
         bad(f"could not verify index leverage baskets: {e}")
 
-    # 14 (PATCH F) -- the equal-weight cross-check must survive both ends of the
+    # 14 (PATCH F) -- the median cross-check (the primary read is now the
+    # indicator's equal-weight construction) must survive both ends of the
     # pipe. subsector.py can emit the columns and marketsite.py can quietly stop
     # rendering them (or the reverse), and the board still looks correct.
     try:
         import subsector as _SS, marketsite as _MS
         ssrc = inspect.getsource(_SS.build)
-        miss = [c for c in ("ew_rs_m", "ew_rank", "xchk") if f'"{c}"' not in ssrc]
+        miss = [c for c in ("ew_rs_m", "med_rank", "xchk") if f'"{c}"' not in ssrc]
         if miss:
-            bad(f"subsector.py stopped emitting EW cross-check columns: {miss}")
+            bad(f"subsector.py stopped emitting median cross-check columns: {miss}")
         else:
             msrc = inspect.getsource(_MS.subsector_board)
-            if "xcell" not in msrc or "EW rank" not in msrc:
-                bad("marketsite.py is not rendering the EW cross-check column")
+            if "xcell" not in msrc or "Med rank" not in msrc:
+                bad("marketsite.py is not rendering the median cross-check column")
             elif 'colspan="15"' not in msrc:
                 bad("constituent drop-down colspan does not match the column count")
             else:
-                ok("EW cross-check: computed in subsector, rendered in the board")
+                ok("Median cross-check: computed in subsector, rendered in the board")
         rl = [l for l in open(_SS.ROSTER) if "|" in l]
         nb = len(rl)
         nc = sum(len(l.split("|", 1)[1].split(",")) for l in rl)
