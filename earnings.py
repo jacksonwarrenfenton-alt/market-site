@@ -1,4 +1,4 @@
-"""Upcoming earnings for every name this board tracks.
+"""Earnings for every name this board tracks: the last month and the forward window.
 
 Earnings are the single biggest scheduled catalyst in a swing book -- a name at
 a positioning extreme two days before it reports is a different proposition from
@@ -34,8 +34,11 @@ def _money(s):
     except Exception: return np.nan
 
 
-def build(days=90, universe=None, verbose=True):
-    start = pd.Timestamp.today().normalize()
+def build(days=90, universe=None, verbose=True, past=31):
+    # `past` days back as well, so the calendar keeps the last month of reports
+    # (what already printed and how it was received) beside the forward window.
+    start = pd.Timestamp.today().normalize() - pd.Timedelta(days=past)
+    days = days + past
     rows = []
     for i in range(days):
         d = start + pd.Timedelta(days=i)

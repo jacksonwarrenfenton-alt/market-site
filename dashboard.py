@@ -46,8 +46,11 @@ td.lb i{display:block;height:9px;border-radius:2px}
 .hmsec h5{margin:0 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2)}
 .hmsec h5 i{font-style:normal;color:var(--mut);margin-left:6px}
 .hmt{display:flex;flex-wrap:wrap;gap:2px}
-.hmt b{flex:1 0 46px;height:34px;border-radius:3px;font-size:9px;font-weight:600;color:#fff;
-padding:3px 4px;overflow:hidden;line-height:1.15;cursor:default}
+.hmt b{flex:1 0 58px;height:42px;border-radius:3px;font-size:9px;font-weight:600;color:#fff;
+padding:3px 4px;overflow:hidden;line-height:1.15;cursor:default;display:flex;flex-direction:column;
+justify-content:space-between}
+.hmt b span{overflow:hidden;max-height:21px}
+.hmt b em{font-style:normal;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
 .hmlg{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--mut);margin:6px 0 10px}
 .hmlg i{display:inline-block;width:120px;height:8px;border-radius:2px;
 background:linear-gradient(90deg,rgb(230,103,103),rgb(56,56,53),rgb(27,175,122))}
@@ -137,7 +140,7 @@ def heatmap(sub):
         tiles = "".join(
             f'<b style="background:{_rgb(r.rs_m, scale)}" '
             f'title="{html.escape(r.grp)} &#10;1M RS {r.rs_m:+.1f}% &middot; 1W {r.rs_w:+.1f}% &middot; 3M {r.rs_q:+.1f}% &middot; rank {int(r.rank)}">'
-            f'{html.escape(r.grp[:22])}</b>' for r in g.itertuples())
+            f'<span>{html.escape(r.grp[:20])}</span><em>{r.rs_m:+.1f}%</em></b>' for r in g.itertuples())
         blocks.append(f'<div class="hmsec"><h5>{html.escape(sec)}<i>{med:+.1f}% median</i></h5>'
                       f'<div class="hmt">{tiles}</div></div>')
     return ('<h2>Group heatmap &mdash; where the strength is</h2>'
@@ -149,9 +152,96 @@ def heatmap(sub):
             f'<div class="hm">{"".join(blocks)}</div>')
 
 
+CAT_CSS = """
+.cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 16px}
+@media(max-width:1000px){.cats{grid-template-columns:1fr}}
+.cat{border:1px solid var(--grid);border-radius:6px;background:var(--s);padding:10px 12px}
+.cat h4{margin:0 0 6px;display:flex;justify-content:space-between;align-items:baseline}
+.cat h4 span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--mut);font-size:10px}
+.cat ul{list-style:none;margin:0;padding:0}
+.cat li{font-size:11.5px;line-height:1.35;padding:4px 0;border-bottom:1px solid var(--grid);
+display:flex;gap:8px;align-items:baseline}
+.cat li:last-child{border-bottom:0}
+.cat li .d{color:var(--mut);font-size:10px;min-width:52px;font-variant-numeric:tabular-nums}
+.cat li b{color:var(--ink)}
+.cat li .x{margin-left:auto;color:var(--mut);font-size:10px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cat li .up{color:#1baf7a}.cat li .dn{color:#e66767}
+.cat li a{color:var(--ink2);text-decoration:none}.cat li a:hover{color:var(--cool);text-decoration:underline}
+.cat .sub{font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);margin:8px 0 2px}
+"""
+
+
+def catalysts():
+    """What can move the tape this week: the biggest names reporting (and how
+    the last few big prints were received), high-impact economic releases, and
+    recent headlines."""
+    import json as _j
+    today = pd.Timestamp.today().normalize()
+    cols = []
+    # -- earnings
+    li = []
+    try:
+        e = pd.read_parquet(f"{D}/earnings.parquet")
+        e["d"] = pd.to_datetime(e.date)
+        up = e[(e.d >= today) & (e.d <= today + pd.Timedelta(days=7)) & (e.mcap >= 20e9)]
+        up = up.sort_values("mcap", ascending=False).head(9).sort_values(["d", "mcap"], ascending=[True, False])
+        for r in up.itertuples():
+            w = {"pre-market": "BMO", "after-hours": "AMC"}.get(str(r.when), "")
+            li.append(f'<li><span class="d">{r.d:%a %d}</span><b>{html.escape(r.symbol)}</b>'
+                      f'<span class="x">{w} &middot; ${r.mcap/1e9:,.0f}B</span></li>')
+        rx = pd.read_parquet(f"{D}/earnrx.parquet") if os.path.exists(f"{D}/earnrx.parquet") else None
+        if rx is not None and len(rx):
+            rx["d"] = pd.to_datetime(rx.date)
+            big = e[["symbol", "mcap"]].drop_duplicates("symbol")
+            rec = rx[rx.d >= today - pd.Timedelta(days=5)].merge(big, on="symbol", how="left")
+            rec = rec[rec.mcap >= 20e9].sort_values("mcap", ascending=False).head(4)
+            if len(rec):
+                li.append('<li class="sub">Just reported &middot; next-session reaction</li>')
+                for r in rec.itertuples():
+                    li.append(f'<li><span class="d">{r.d:%a %d}</span><b>{html.escape(r.symbol)}</b>'
+                              f'<span class="x {"up" if r.chg > 0 else "dn"}">{r.chg:+.1f}%</span></li>')
+    except Exception as ex:
+        print("catalysts earnings failed:", ex, file=sys.stderr, flush=True)
+    cols.append(("Big earnings", "next 7 days &middot; $20B+", li or ['<li class="dim">none scheduled</li>']))
+    # -- economic calendar
+    li, econ_sub = [], "high impact &middot; this week"
+    try:
+        ev = _j.load(open(f"{D}/econcal.json"))
+        hi = [x for x in ev if str(x.get("impact")) == "High"]
+        ev = [x for x in hi if x.get("date", "") >= today.strftime("%Y-%m-%d")]
+        if not ev and hi:   # the feed covers the current week only: on weekends show what printed
+            ev = hi
+            econ_sub = "high impact &middot; released this week"
+        for x in sorted(ev, key=lambda x: (x["date"], x.get("time", "")))[:9]:
+            fp = " &middot; ".join(p for p in (f"f {html.escape(x['forecast'])}" if x.get("forecast") else "",
+                                               f"p {html.escape(x['previous'])}" if x.get("previous") else "") if p)
+            li.append(f'<li><span class="d">{pd.Timestamp(x["date"]):%a %d} {html.escape(x.get("time") or "")}</span>'
+                      f'<span><b>{html.escape(x.get("country", ""))}</b> {html.escape(x.get("title", ""))}</span>'
+                      f'<span class="x">{fp}</span></li>')
+    except Exception as ex:
+        print("catalysts econ failed:", ex, file=sys.stderr, flush=True)
+    cols.append(("Economic events", econ_sub, li or ['<li class="dim">no high-impact releases left this week</li>']))
+    # -- news
+    li = []
+    try:
+        import newsfeed
+        for r in newsfeed.load()[:7]:
+            ts = pd.to_datetime(r.get("ts"), errors="coerce")
+            when = "" if pd.isna(ts) else ts.tz_convert("America/New_York").strftime("%a %H:%M")
+            li.append(f'<li><span class="d">{when}</span><a href="{html.escape(r.get("u", ""))}" target="_blank" rel="noopener">'
+                      f'{html.escape(r["t"])}</a></li>')
+    except Exception as ex:
+        print("catalysts news failed:", ex, file=sys.stderr, flush=True)
+    cols.append(("Recent news", "MarketWatch &middot; Yahoo Finance", li or ['<li class="dim">no headlines fetched</li>']))
+    return ('<div class="cats">' + "".join(
+        f'<div class="cat"><h4>{t}<span>{s}</span></h4><ul>{"".join(items)}</ul></div>'
+        for t, s, items in cols) + '</div>')
+
+
 def top(sub, regime_html, read_html):
-    """Tape, then regime + leaderboard side by side, then the written read."""
-    return (f"<style>{CSS}</style>" + tape()
+    """Catalysts (earnings, economic events, news), then regime + leaderboard
+    side by side, then the heatmap."""
+    return (f"<style>{CSS}{CAT_CSS}</style>" + catalysts()
             + '<div class="dash2"><div>' + regime_html
             + "<h2>Today's read &mdash; written from the data below</h2>" + read_html
             + "</div>" + leaders(sub) + "</div>" + heatmap(sub))

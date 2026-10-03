@@ -495,8 +495,13 @@ def compose(pos_html, subsector, diary, css_extra, js_extra, asof, stockpage="",
     head = re.search(r'(<header>.*?</header>)', body, re.S)
     hdr = head.group(1) if head else ""
     body = body.replace(hdr, "") if hdr else body
-    # report.py's section 3 now carries only the raw-% short-interest cut; its
-    # z-ranked half lives once, on the Stocks tab.
+    # report.py's section 3 (raw-% short-interest movers) moves to the Short
+    # interest tab with every other short-interest read.
+    a = body.find("<h2>3 &middot; Short interest")
+    b = body.find('<div class="note" style="margin-top:28px">', a)
+    if a >= 0 and b > a:
+        si_html = body[a:b].replace("<h2>3 &middot; ", "<h2>") + si_html
+        body = body[:a] + body[b:]
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Market Site &mdash; {asof}</title>
@@ -509,6 +514,7 @@ def compose(pos_html, subsector, diary, css_extra, js_extra, asof, stockpage="",
   <button class="tab" data-pane="p-sub">Groups</button>
   <button class="tab" data-pane="p-stock">Stocks</button>
   <button class="tab" data-pane="p-pos">Positioning</button>
+  <button class="tab" data-pane="p-si">Short interest</button>
   <button class="tab" data-pane="p-data">Data</button>
   <a class="xlink" href="__SENTIMENT_URL__">Sentiment &amp; Regime &rarr;</a>
 </div>
@@ -517,7 +523,8 @@ def compose(pos_html, subsector, diary, css_extra, js_extra, asof, stockpage="",
 <div id="p-diary" class="tabpane on">{diary}</div>
 <div id="p-sub" class="tabpane">{subsector}</div>
 <div id="p-stock" class="tabpane">{stockpage}</div>
-<div id="p-pos" class="tabpane">{body}{si_html}</div>
+<div id="p-pos" class="tabpane">{body}</div>
+<div id="p-si" class="tabpane">{si_html}</div>
 <div id="p-data" class="tabpane">{data_html}</div>
 </div>
 {ovh}
@@ -1170,8 +1177,8 @@ def build(out=None):
     si_tab = ("<h2>Short interest &mdash; market-wide</h2>"
              + '<p class="grpnote">FINRA bi-monthly settlements, chain-linked so a '
                'change in the covered panel cannot masquerade as a change in '
-               'positioning. Name-level covering and building live on the '
-               '<b>Stocks</b> tab.</p>'
+               'positioning. Name-level covering and building are further down '
+               'this tab.</p>'
              + _t(lambda: __import__("report").si_history_html(), "si index")
              + si_history_panel(epx)
              + si_breadth_html(si, _bars_for_si)
@@ -1182,8 +1189,8 @@ def build(out=None):
              + _t(lambda: __import__("sibaskets").html_panel(), "si baskets"))
     # Crowd attention and crowd-ranked news are about names, so they sit with
     # the single-stock reads.
-    crowd_extra = (liqn_panel()
-             + _t(lambda: __import__("liqnnews").panel(), "liqn news calendar"))
+    # The crowd history chart now sits inside the crowd panel itself.
+    crowd_extra = _t(lambda: __import__("liqnnews").panel(), "liqn news calendar")
     data_tab = (FR.panel(fresh)
              + _t(lambda: __import__("freshbar").panel(), "freshness")
              # Per-feed collection audit: each feed against its OWN cadence and
@@ -1267,12 +1274,17 @@ def build(out=None):
         aidesk_body = ""
     # Single-stock work lives on its own page; the market-level reads (tilt,
     # concentration) stay on the front, where they belong.
+    # Every short-interest read lives on its own tab; the Stocks tab keeps the
+    # name-level lookup, overlap, earnings and crowd reads.
+    _ov = _t(lambda: __import__("singlestock").html_panel(), "overlap/heat")
+    _hi = _ov.find("<h2>Sector heat")
+    _overlap, _heat = (_ov[:_hi], _ov[_hi:]) if _hi >= 0 else (_ov, "")
     stockpage = ("".join([
-        _t(lambda: __import__("singlestock").html_panel(), "overlap/heat"),
+        _overlap,
         _t(lambda: __import__("earnings").calendar_panel(), "earnings calendar"),
         _t(lambda: __import__("liqn").crowd_panel(), "crowd"),
-        _t(lambda: __import__("sitables").html_panel(), "si tables"),
     ]))
+    si_tab = (si_tab + _t(lambda: __import__("sitables").html_panel(), "si tables") + _heat)
     try:
         import etfx as EX
         efc = EX.build()

@@ -44,6 +44,7 @@ STEPS = [
     ("fedwatch",   lambda: __import__("fedwatch").fetch()),
     ("vixterm",    lambda: __import__("vixterm").snapshot()),
     ("econcal",    lambda: __import__("econcal").fetch()),
+    ("news",       lambda: __import__("newsfeed").fetch()),
     ("earnings",   lambda: __import__("earnings").build(days=90, verbose=False)),
     ("chartdata",  lambda: __import__("chartdata").save()),
     ("trends",     lambda: __import__("trends").fetch()),

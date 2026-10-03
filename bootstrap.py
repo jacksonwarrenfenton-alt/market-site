@@ -146,6 +146,10 @@ STEPS = [
     ("etfflows",  _etfflows),
     ("crowd",     lambda: __import__("crowdfeed").run()),
     ("scans",     lambda: __import__("cloudscans").run()),
+    # Earnings reactions over the last year + one rolling window, so the
+    # 91-day table and the rolling chart have real history on a cold build
+    # (the build's own fetch() only walks the last few days).
+    ("earnrx",    lambda: __import__("earnrx").backfill(days=365 + 91)),
     ("derived",   _derived),
 ]
 

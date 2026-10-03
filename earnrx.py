@@ -29,7 +29,7 @@ OUT = f"{D}/earnrx.parquet"
 ROLL_DAYS = 91          # ~1 calendar quarter, ROLLING -- never resets on a quarter boundary
 OVERLAP_DAYS = 5        # re-check the last few days every run (late/corrected reactions)
 BACKFILL_DAYS_DEFAULT = 3 * 365
-CHUNK = 20              # weekdays per backfill write -- resumable if interrupted
+CHUNK = 60              # weekdays per backfill write -- resumable if interrupted
 
 PALETTE = ["#3987e5", "#e66767", "#1baf7a", "#fab219", "#9085e9", "#5ec8d8",
            "#eb6834", "#e0709a", "#c98a2b", "#898781", "#0ca30c", "#d03b3b"]
@@ -62,8 +62,12 @@ def _reactions_for_dates(dates):
     no "next session" yet and is silently skipped, picked up on a later run
     once that session exists."""
     rows = []
-    for ds in dates:
-        for r in EA._day(ds):
+    # One Nasdaq calendar request per day; run them 8 at a time.
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(8) as ex:
+        days = list(zip(dates, ex.map(EA._day, dates)))
+    for ds, got in days:
+        for r in got:
             sym = str(r.get("symbol") or "").upper()
             if not sym: continue
             rows.append({"date": ds, "symbol": sym,
@@ -71,9 +75,24 @@ def _reactions_for_dates(dates):
     if not rows: return None
     e = pd.DataFrame(rows).drop_duplicates(["symbol", "date"])
 
-    import prices as P
-    px = P.fetch_list(sorted(e.symbol.unique()))
     sect = _sector_map()
+    # Closes come from the breadth bar cache (2 years, ~3,300 screened names),
+    # which the build already holds -- one Yahoo download per reporter made a
+    # year's backfill take ~40 minutes and bloated the shared ETF price cache
+    # with thousands of single stocks. Roster names the bar cache lacks are the
+    # only ones fetched, into their own cache file.
+    px = None
+    bp = f"{D}/bars.parquet"
+    if os.path.exists(bp):
+        b = pd.read_parquet(bp, columns=["date", "symbol", "close"])
+        b = b[b.symbol.isin(set(e.symbol))]
+        px = b.pivot_table(index="date", columns="symbol", values="close").sort_index()
+    want = sorted(s for s in set(e.symbol) if s in sect and (px is None or s not in px.columns))
+    if want:
+        import prices as P
+        extra = P.fetch_list(want, cache=f"{D}/earnrx_prices.parquet", rng="2y")
+        px = extra if px is None else px.join(extra[[c for c in extra.columns if c not in px.columns]], how="outer")
+    if px is None or not len(px): return None
 
     out = []
     for _, r in e.iterrows():
